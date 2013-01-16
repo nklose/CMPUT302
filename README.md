@@ -6,3 +6,4 @@ To Do
 - License the code
 - Learn basics of Sifteo SDK; e.g. create a "hello world" application
 - Meet with client; get list of games
+- Come up with a team name!
