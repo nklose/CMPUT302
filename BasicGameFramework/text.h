@@ -8,26 +8,38 @@
 #pragma once
 
 #include <sifteo.h>
-#include "fontdata.h"
+#include "constants.h"
 using namespace Sifteo;
 
 class TextRenderer {
 public:
-    FB128Drawable &fb;
-    UByte2 position;
 
-    TextRenderer(FB128Drawable &fb) : fb(fb) {}
+    TextRenderer(VideoBuffer &_vid, RGB565 _fb, RGB565 _g);
 
-    void drawText(const char *str);
+    void init(const unsigned firstLine, const unsigned numLines);
 
+    /* Given x, y coords draw text in the given color on the VideoBuffer */
+    void drawText(const unsigned x, const unsigned y, const char *str);
+
+    /* Get the size of a text segment */
     static unsigned measureText(const char *str);
 
-    void drawCentered(const char *str);
+    /* Given a y coord draw text in a given color, centered on the x axis, on the VideoBuffer */
+    void drawCentered(const unsigned y, const char *str);
 
 private:
+    // Member variables
+    VideoBuffer &vid;
+	FB128Drawable &fb;
+	UByte2 position;
+	RGB565 fg, bg;
+
+    void renderText(const char *str);
 
     static unsigned measureGlyph(char ch);
 
-    void drawGlyph(char ch);
+    void renderGlyph(char ch);
 
 };
+
+RGB565 makeColor(uint8_t alpha);

@@ -1,9 +1,14 @@
+
+
+#pragma once
+
+#include <sifteo.h>
+using namespace Sifteo;
+
 /*
  * 8x8 variable-width binary font, AUTOMATICALLY GENERATED
  * by fontgen.py from 04B_03__.TTF
  */
-
-#pragma once
 
 static const uint8_t font_data[] = {
     0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
@@ -98,3 +103,14 @@ static const uint8_t font_data[] = {
     0x05,0x00,0x00,0x09,0x09,0x09,0x0e,0x08,0x06,
     0x05,0x00,0x00,0x0f,0x04,0x02,0x0f,0x00,0x00,
 };
+
+
+const unsigned FONT_HEIGHT = 8;
+
+// COLORS
+const RGB565 BLACK = RGB565::fromRGB(0x000000);
+const RGB565 WHITE = RGB565::fromRGB(0xFFFFFF);
+const RGB565 BLUE = RGB565::fromRGB(0x0900FF);
+const RGB565 RED = RGB565::fromRGB(0xFF0900);
+const RGB565 GREEN = RGB565::fromRGB(0x00FF09);
+const RGB565 YELLOW = RGB565::fromRGB(0xFFFF00);

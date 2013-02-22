@@ -4,6 +4,12 @@
 #include <sifteo.h>
 using namespace Sifteo;
 
+/**
+ * This class is essentially an example un-implemented class base for handlng events for sensory
+ * 		input. For each different situation where specific controls are needed a different
+ * 		implementation of this class can be used. That was one object can be created for each
+ * 		control situation and they can be swapped between in the game loop via install()
+ */
 class SensorListener {
 public:
 	VideoBuffer *vid;
