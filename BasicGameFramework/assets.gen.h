@@ -6,5 +6,8 @@
 
 #pragma once
 
+extern Sifteo::AssetGroup BootAssets;
+extern const Sifteo::AssetImage Title;
 extern Sifteo::AssetGroup IconAssets;
 extern const Sifteo::AssetImage Icon;
+extern const Sifteo::AssetAudio SampleSound;

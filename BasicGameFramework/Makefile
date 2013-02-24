@@ -6,7 +6,8 @@ OBJS = \
 	$(ASSETS).gen.o \
 	main.o \
 	SensorListener.o \
-	text.o
+	text.o \
+	image.o
 	
 ASSETDEPS += *.png $(ASSETS).lua
 CDEPS += *.h

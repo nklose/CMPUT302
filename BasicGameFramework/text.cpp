@@ -9,33 +9,35 @@
 #include "text.h"
 using namespace Sifteo;
 
-TextRenderer::TextRenderer(VideoBuffer &_vid, RGB565 _fg, RGB565 _bg)
-	: vid(_vid), fb(vid.fb128), fg(_fg), bg(_bg)
+TextRenderer::TextRenderer(unsigned _cube, VideoBuffer &_vid, RGB565 _fg, RGB565 _bg)
+	: cubeid(_cube), vid(_vid), fb(vid.fb128), fg(_fg), bg(_bg)
 {
-	position.x = 0;
-	position.y = 0;
+	firstLine = numLines = position.x = position.y = 0;
 }
 
-void TextRenderer::init(const unsigned firstLine = 0, const unsigned numLines = LCD_height)
+/* Initialize this renderer by attaching the VideoBuffer to it's cube as well as paint the background */
+void TextRenderer::init(const unsigned _firstLine = 0, const unsigned _numLines = LCD_height)
 {
+	firstLine = _firstLine;
+	numLines = _numLines;
 	/*
 	 * Init framebuffer, paint a solid background.
 	 */
 
 	vid.initMode(SOLID_MODE);
 	vid.colormap[0] = bg;
-	vid.attach(0);
+	vid.attach(cubeid);
 
 	System::paint();
 
 	/*
 	 * Now set up a letterboxed 128x48 mode. This uses windowing to
-	 * start drawing on scanline 40, and draw a total of 48 scanlines.
+	 * start drawing on scanline firstLine, and draw a total of numLines scanlines.
 	 *
 	 * initMode() will automatically wait for the above rendering to finish.
 	 */
 
-	vid.initMode(FB128, firstLine, numLines);
+	vid.initMode(FB128, _firstLine, _numLines);
 	vid.colormap[0] = bg;
 }
 
@@ -98,6 +100,13 @@ void TextRenderer::renderGlyph(char ch) {
 
 	fb.bitmap(position, size, data, 1);
 	position.x += escapement;
+}
+
+/* Change the cube that this renderer is attached to, and call init() again */
+void TextRenderer::changeCube(unsigned cube)
+{
+	cubeid = cube;
+	init(firstLine, numLines);
 }
 
 // UTILITY FUNCTIONS
