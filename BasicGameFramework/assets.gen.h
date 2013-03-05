@@ -7,6 +7,8 @@
 #pragma once
 
 extern Sifteo::AssetGroup BootAssets;
+extern const Sifteo::AssetImage LoadingBg;
+extern Sifteo::AssetGroup TestAssets;
 extern const Sifteo::AssetImage Title;
 extern Sifteo::AssetGroup IconAssets;
 extern const Sifteo::AssetImage Icon;
