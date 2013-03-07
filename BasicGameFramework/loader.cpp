@@ -19,7 +19,7 @@ void MyLoader::load(AssetGroup &group, AssetSlot slot)
     LOG("Loader, (%P, %d): starting\n", &group, slot.sys);
 
     // The bootstrap group should already be installed on all cubes.
-    ASSERT(BootAssets.isInstalled(cubes));
+    //ASSERT(Boot1.isInstalled(cubes));
 
     // Early out if the group in question is already loaded
     if (group.isInstalled(cubes)) {

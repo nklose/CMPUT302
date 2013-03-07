@@ -7,28 +7,6 @@ void SensorListener::install()
 	Events::neighborRemove.set(&SensorListener::onNeighborRemove, this);
 	Events::cubeAccelChange.set(&SensorListener::onAccelChange, this);
 	Events::cubeTouch.set(&SensorListener::onTouch, this);
-	Events::cubeBatteryLevelChange.set(&SensorListener::onBatteryChange, this);
-	Events::cubeConnect.set(&SensorListener::onConnect, this);
-
-	// Handle already-connected cubes
-	for (CubeID cube : CubeSet::connected())
-		onConnect(cube);
-}
-
-/* Called upon the event of a cube first connecting to the base */
-void SensorListener::onConnect(unsigned id)
-{
-	LOG("Cube %d connected\n", id);
-
-	vid[id].initMode(BG0_ROM);
-	vid[id].attach(id);
-	motion[id].attach(id);
-}
-
-/* Called upon the event of a cubes battery charge changing measurably */
-void SensorListener::onBatteryChange(unsigned id)
-{
-	LOG("Battery changed: %02x\n", id);
 }
 
 /* Called upon the event of a cube being touched */

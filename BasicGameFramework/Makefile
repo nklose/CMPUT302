@@ -6,6 +6,7 @@ OBJS = \
 	$(ASSETS).gen.o \
 	SensorListener.o \
 	text.o \
+	game.o \
 	loader.o \
 	main.o
 	

@@ -22,12 +22,6 @@ public:
 
 private:
 
-    /* Called upon the event of a cube first connecting to the base */
-    void onConnect(unsigned id);
-
-    /* Called upon the event of a cubes battery charge changing measurably */
-    void onBatteryChange(unsigned id);
-
     /* Called upon the event of a cube being touched */
     void onTouch(unsigned id);
 
