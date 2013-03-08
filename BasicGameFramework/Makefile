@@ -8,6 +8,7 @@ OBJS = \
 	text.o \
 	game.o \
 	loader.o \
+	levels.gen.o \
 	main.o
 	
 ASSETDEPS += assets/*.png $(ASSETS).lua

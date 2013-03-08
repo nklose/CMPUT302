@@ -20,8 +20,10 @@ void main()
 {
 	Game game;
 
+	/* For now, loop the game */
 	while(1)
 	{
+		LOG("NEW WHILE LOOP\n");
 		game.title();
 		game.init();
 		game.run();

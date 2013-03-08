@@ -16,6 +16,8 @@ MyLoader::MyLoader(CubeSet cubes, AssetSlot loaderSlot, VideoBuffer *vid)
 
 void MyLoader::load(AssetGroup &group, AssetSlot slot)
 {
+	VideoMode mode = vid[0].mode();
+
     LOG("Loader, (%P, %d): starting\n", &group, slot.sys);
 
     // The bootstrap group should already be installed on all cubes.
@@ -78,11 +80,6 @@ void MyLoader::load(AssetGroup &group, AssetSlot slot)
             unsigned p = 1 + assetLoader.cubeProgress(cube, LCD_width - 1);
             vid[cube].stamp.setHWindow(0, p);
 
-            LOG("Progress on cube %d: %d / %d (%d)\n", int(cube),
-                assetLoader.cubes[cube].progress,
-                assetLoader.cubes[cube].total,
-                p);
-
             // Animate the colormap at a steady rate
             const RGB565 bg = RGB565::fromRGB(0xff7000);
             const RGB565 fg = RGB565::fromRGB(0xffffff);
@@ -100,5 +97,9 @@ void MyLoader::load(AssetGroup &group, AssetSlot slot)
         frame++;
     }
     
+    // return cubes to previous video mode
+    for (CubeID cube : cubes)
+            vid[cube].initMode(mode);
+
     LOG("Loader, (%P, %d): done\n", &group, slot.sys);
 }

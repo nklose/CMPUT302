@@ -10,6 +10,7 @@
 
 #include <sifteo.h>
 #include "loader.h"
+#include "levels.gen.h"
 #include "assets.gen.h"
 
 using namespace Sifteo;
@@ -20,25 +21,27 @@ extern AssetSlot MainSlot;
 
 class Game {
 public:
-    Game() : running(true) {};
+    Game() : running(false) {};
 
     void title();
     void init();
     void run();
     void cleanup();
 
-    void draw();
-
 private:
     bool running;
 
     // Event handlers
-    void onNeighborAdd(unsigned c0, unsigned s0, unsigned c1, unsigned s1);
-    void onNeighborRemove(unsigned c0, unsigned s0, unsigned c1, unsigned s1);
     void onAccelChange(unsigned id);
     void onShake(unsigned id);
     void onTilt(unsigned id, Byte3 tiltInfo);
+    void onTouch(unsigned id);
     void onRestart();
 };
+
+// utility funcs
+
+void wait(unsigned n);
+void shuffleLoad();
 
 #endif
