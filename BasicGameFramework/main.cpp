@@ -23,10 +23,10 @@ void main()
 	/* For now, loop the game */
 	while(1)
 	{
-		LOG("NEW WHILE LOOP\n");
-		game.title();
+		LOG("NEW MAIN WHILE LOOP\n");
 		game.init();
-		game.run();
+		game.title(); // to call from or after init?
+		game.run(); // to call from or after title?
 		game.cleanup();
 	}
 }

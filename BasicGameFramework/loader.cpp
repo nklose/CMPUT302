@@ -100,6 +100,6 @@ void MyLoader::load(AssetGroup &group, AssetSlot slot)
     // return cubes to previous video mode
     for (CubeID cube : cubes)
             vid[cube].initMode(mode);
-
+	
     LOG("Loader, (%P, %d): done\n", &group, slot.sys);
 }
