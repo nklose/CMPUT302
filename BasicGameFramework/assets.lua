@@ -7,13 +7,29 @@ Icon = image{"assets/icon.png"}
 BootAssets = group{quality=8.90}
 LoadingBg = image{"assets/loading.png"}
 Bravo = image{"assets/bravo.png"}
---TEST
-Grid = image{"assets/playfield.png", pinned=1}
 
--- Test AssetGroup
+--TEST
+-- Menu Assets
 TestAssets = group{quality=9.05}
 Title = image{"assets/welcomeTitle.png", flat=1}
 SampleSound = sound{"assets/test.wav"}
+
+BgTile = image{ "assets/Menu/bg.png", pinned=1 }
+Grid = image{"assets/playfield.png", pinned=1}
+
+IconSandwich = image{ "assets/Menu/IconSandwich.png" }
+IconChroma = image{ "assets/Menu/IconChroma.png" }
+
+Tip0 = image{ "assets/Menu/Tip0.png" }
+Tip1 = image{ "assets/Menu/Tip1.png" }
+
+Footer = image{ "assets/Menu/Footer.png" }
+
+LabelEmpty = image{ "assets/Menu/LabelEmpty.png" }
+LabelUser1 = image{"assets/Menu/LabelAdrian.png"}
+LabelUser2 = image{"assets/Menu/LabelMatthew.png"}
+--LabelSandwich = image{ "assets/Menu/LabelSandwich.png" }
+-- END TEST
 
 -- Level1 (Format for 1 level with 3 images in this file)
 Level1Assets = group{quality=9.2}

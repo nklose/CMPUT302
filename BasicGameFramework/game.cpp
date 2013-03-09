@@ -22,10 +22,9 @@ AudioChannel audio(0);
 struct Level *lvl;
 
 // TEST - Add Menu Item images and Asset Images
-static struct MenuItem menItems[] = { {&Bravo, &Bravo}, {&Bravo, &Bravo}, {&Bravo, &Bravo}, {NULL, NULL} };
-static struct MenuAssets menAssets = {&Grid, &Bravo, &Bravo, {&Bravo, &Bravo, &Bravo, NULL}};
+static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
+static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
 
-//TODO: As listed below
 /* Display title screen and set up user's game */
 void Game::title()
 {
@@ -42,22 +41,74 @@ void Game::title()
 	LOG("Waiting in title\n");
 	wait(1);
 
-	// Ask user to select username from a list (list made in customization screen?)
+	displayMenu();
+}
 
-// TEST - Failed VM Fault - Stupid Hungry Cat Monkeys always ruining stuff
-//    Menu m(vid[0], &menAssets, menItems);
+// Display menu of available users
+void Game::displayMenu(){
 
-//    m.anchor(2);
-//    struct MenuEvent e;
-//    uint8_t item;
+	// Ask user to select user from a list
+	// (list made in customization screen by client?)
+    Menu m(vid[0], &menAssets, menItems);
+    m.anchor(2);
 
-	// Load "file" of user. Current level, recorded stats, etc
-	// -> Load 'game' Dr. designed for this user? Or use same 'game' for everyone?
-	// --> Jake can explain if this doesn't make sense
+    struct MenuEvent e;
+    uint8_t item;
 
-	// Display "PLAY"
-	// Return when clicked so run can be executed (or directly call run)
+    while (1) {
+        while (m.pollEvent(&e)) {
 
+            switch (e.type) {
+
+                case MENU_ITEM_PRESS:
+                        m.anchor(e.item);
+                    break;
+
+                case MENU_EXIT:
+                    // this is not possible when pollEvent is used as the condition to the while loop.
+                    // NOTE: this event should never have its default handler skipped.
+                    ASSERT(false);
+                    break;
+
+                case MENU_NEIGHBOR_ADD:
+                    LOG("found cube %d on side %d of menu (neighbor's %d side)\n",
+                         e.neighbor.neighbor, e.neighbor.masterSide, e.neighbor.neighborSide);
+                    break;
+
+                case MENU_NEIGHBOR_REMOVE:
+                    LOG("lost cube %d on side %d of menu (neighbor's %d side)\n",
+                         e.neighbor.neighbor, e.neighbor.masterSide, e.neighbor.neighborSide);
+                    break;
+
+                case MENU_ITEM_ARRIVE:
+                    LOG("arriving at menu item %d\n", e.item);
+                    item = e.item;
+                    break;
+
+                case MENU_ITEM_DEPART:
+                    LOG("departing from menu item %d, scrolling %s\n", item, e.direction > 0 ? "forward" : "backward");
+                    break;
+
+                case MENU_PREPAINT:
+                    // do your implementation-specific drawing here
+                    // NOTE: this event should never have its default handler skipped.
+                    break;
+
+                case MENU_UNEVENTFUL:
+                    // this should never happen. if it does, it can/should be ignored.
+                    ASSERT(false);
+                    break;
+            }
+            m.performDefault();
+        }
+
+        LOG("Selected User: %d\n", e.item);
+    	// TODO: Load "file" of user. Current level, recorded stats, etc
+    	// -> Load 'game' Dr. designed for this user? Or use same 'game' for everyone?
+    	// --> Jake can explain if this doesn't make sense
+
+        return;
+    }
 }
 
 void Game::init()
@@ -135,6 +186,7 @@ void Game::onShake(unsigned id)
 }
 
 //TODO: Why called every time a cube is moved? -> Except when one cube moves another.. (Jake)
+// Can we reduce sensitivity?
 /* Called upon the event of a cube being tilted. This is a sub-call of onAccelChange. */
 void Game::onTilt(unsigned id, Byte3 tiltInfo)
 {
@@ -168,8 +220,7 @@ void Game::onTouch(unsigned id)
 /* Main game loop over defined levels */
 void Game::run()
 {
-	// TODO: Note, loops 0-1-2-0-1-2-0-1-2 as level #.
-	// ->Make a game ending
+	// TODO: Make a game ending. It just repeats at the moment
     for (unsigned i = 0; i < numLevels; i++)
     {
     	loader.load(LevelAssets[i].grp, MainSlot);
@@ -197,6 +248,8 @@ void Game::run()
     		vid[k].bg0.image(vec(0,0), Bravo);
 
     	System::paint();
+
+    	// TODO: record all info that need be recorded
 
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level

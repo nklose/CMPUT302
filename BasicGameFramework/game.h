@@ -24,6 +24,7 @@ public:
     Game() : running(false) {};
 
     void title();
+    void displayMenu();
     void init();
     void run();
     void cleanup();
