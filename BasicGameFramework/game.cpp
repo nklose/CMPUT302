@@ -25,10 +25,10 @@ struct Level *lvl;
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
 static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
 
+//TODO: As listed below
 /* Display title screen and set up user's game */
 void Game::title()
 {
-
 	//TODO: Ask Andrew if he knows of a better way to do this
 	// Load "welcome" image from TestGroup[0],
 	// which has Title image as welcomeTitle.png
@@ -117,6 +117,7 @@ void Game::init()
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
         vid[i].initMode(BG0);
+		vid[i].attach(i);
         motion[i].attach(i);
     }
 
@@ -127,8 +128,6 @@ void Game::init()
 /* Unset some event handlers */
 void Game::cleanup()
 {
-    Events::neighborAdd.unset();
-    Events::neighborRemove.unset();
     Events::cubeTouch.unset();
 }
 
@@ -280,11 +279,9 @@ void shuffleLoad()
 		randint = rand.randrange(NUM_CUBES);
 		for (int j = 0; j < i; j++)
 		{
-			LOG("i = %i, inds[j] = %i, randint = %i\n", i, inds[j], randint);
 			if (inds[j] == randint)
 				found = true;
 		}
-		LOG("inds[i] = %i\n", randint);
 		if (!found)
 			inds[i] = randint;
 		else
@@ -294,7 +291,6 @@ void shuffleLoad()
 	// display the corresponding image on the cubes, and record the goal cube
 	for (int i = 0; i < NUM_CUBES; i++)
 	{
-		LOG("%i: %i\n", i, inds[i]);
 		if (inds[i] == 0)
 			lvl->goalIndex = i;
 		vid[i].bg0.image(vec(0,0), lvl->phonemes[inds[i]]);
