@@ -22,6 +22,10 @@ struct Group {
 
 extern const unsigned numLevels;
 
+//TEST TODO: Make work or remove
+extern struct Level Level0;
+extern struct Group TestGroup[];
+
 extern struct Level Levels[];
 
 extern struct Group LevelAssets[];

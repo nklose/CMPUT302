@@ -11,6 +11,10 @@
 
 const unsigned numLevels = 3;
 
+//TESTING for title screen
+struct Level Level0 = { 3, {Title, Title, Title}, SampleSound, 0};
+struct Group TestGroup[1] = {{TestAssets}};
+
 struct Level Level1 = { 3, {L1Phoneme1, L1Phoneme2, L1Phoneme3}, L1Sound, 0};
 struct Level Level2 = { 3, {L2Phoneme1, L2Phoneme2, L2Phoneme3}, L2Sound, 0};
 struct Level Level3 = { 3, {L3Phoneme1, L3Phoneme2, L3Phoneme3}, L3Sound, 0};

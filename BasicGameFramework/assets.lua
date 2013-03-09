@@ -7,10 +7,12 @@ Icon = image{"assets/icon.png"}
 BootAssets = group{quality=8.90}
 LoadingBg = image{"assets/loading.png"}
 Bravo = image{"assets/bravo.png"}
+--TEST
+Grid = image{"assets/playfield.png", pinned=1}
 
 -- Test AssetGroup
 TestAssets = group{quality=9.05}
-Title = image{"assets/playfield.png"}
+Title = image{"assets/welcomeTitle.png", flat=1}
 SampleSound = sound{"assets/test.wav"}
 
 -- Level1 (Format for 1 level with 3 images in this file)

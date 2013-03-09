@@ -9,6 +9,8 @@
 #include "game.h"
 #include "assets.gen.h"
 #include "levels.gen.h"
+#include <sifteo/time.h>
+#include <sifteo/menu.h>
 using namespace Sifteo;
 
 // Globals
@@ -19,11 +21,43 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
 
+// TEST - Add Menu Item images and Asset Images
+static struct MenuItem menItems[] = { {&Bravo, &Bravo}, {&Bravo, &Bravo}, {&Bravo, &Bravo}, {NULL, NULL} };
+static struct MenuAssets menAssets = {&Grid, &Bravo, &Bravo, {&Bravo, &Bravo, &Bravo, NULL}};
+
+//TODO: As listed below
+/* Display title screen and set up user's game */
 void Game::title()
 {
-	/* Hey Jake, turns out you won't need to load any AssetGroups in the title screen here
-	 * 		because of how I handled the multiple levels within the main gameloop below.
-	 */
+
+	//TODO: Ask Andrew if he knows of a better way to do this
+	// Load "welcome" image from TestGroup[0],
+	// which has Title image as welcomeTitle.png
+	loader.load(TestGroup[0].grp, MainSlot);
+	lvl = &Level0;
+	for(int i = 0; i < NUM_CUBES; i++){
+		vid[i].bg0.image(vec(0,0), lvl->phonemes[0]);
+	}
+	System::paint();
+	LOG("Waiting in title\n");
+	wait(1);
+
+	// Ask user to select username from a list (list made in customization screen?)
+
+// TEST - Failed VM Fault - Stupid Hungry Cat Monkeys always ruining stuff
+//    Menu m(vid[0], &menAssets, menItems);
+
+//    m.anchor(2);
+//    struct MenuEvent e;
+//    uint8_t item;
+
+	// Load "file" of user. Current level, recorded stats, etc
+	// -> Load 'game' Dr. designed for this user? Or use same 'game' for everyone?
+	// --> Jake can explain if this doesn't make sense
+
+	// Display "PLAY"
+	// Return when clicked so run can be executed (or directly call run)
+
 }
 
 void Game::init()
@@ -38,6 +72,7 @@ void Game::init()
     Events::cubeAccelChange.set(&Game::onAccelChange, this);
 }
 
+//TODO: We don't set neighbor add or remove. Should they be removed eventualy?
 /* Unset some event handlers */
 void Game::cleanup()
 {
@@ -55,27 +90,51 @@ void Game::onAccelChange(unsigned id)
 		// Tilt/shake changed
 		static Byte3 prevTilt = {0, 0, 0};
 
+		LOG("onAccelChange and ");
 		Byte3 tilt = motion[id].tilt;
-		if (tilt.x != prevTilt.x || tilt.y != prevTilt.y || tilt.z != prevTilt.z)
+		if (tilt.x != prevTilt.x || tilt.y != prevTilt.y || tilt.z != prevTilt.z){
 			onTilt(id, tilt);
+		} else{
+			LOG("No tilt");
+		}
+
 
 		bool shake = motion[id].shake;
-		if (shake)
+		if (shake){
 			onShake(id);
+		} else {
+
+			LOG("Not Shaken\n");
+		}
 
 		prevTilt = tilt;
 	}
 }
 
+//TODO: Why is this not being called? (Jake)
 /* Called upon the event of a cube being shaken. In this game this repeats the goal sound */
 void Game::onShake(unsigned id)
 {
 	LOG("Cube shaken: %02x\n", id);
 	// If shaken strongly this may cause multiple plays...
 	//		It may need a timer of some sort to prevent this
-	audio.play(lvl->sound);
+
+	// TODO: Test this. Can't seem to call this function at all.
+	// Probably not the right way to go about it, could be attributes of a level,
+	//then only created and set once per level. Or of game, only created once.
+	// start a static timer (Should probably be set in another class?)
+	static SystemTime start = SystemTime::now();
+	float delay = 0.5f;
+	if(!(SystemTime::now() - start < delay)){
+		start = SystemTime::now();
+		LOG("Playing Sound");
+		audio.play(lvl->sound);
+	}
+
+//	audio.play(lvl->sound);
 }
 
+//TODO: Why called every time a cube is moved? -> Except when one cube moves another.. (Jake)
 /* Called upon the event of a cube being tilted. This is a sub-call of onAccelChange. */
 void Game::onTilt(unsigned id, Byte3 tiltInfo)
 {
@@ -85,25 +144,36 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
+	LOG("Cube touched: %u\n", id);
 	/* ensure only begin touch triggers end of level */
 	static bool touched[NUM_CUBES] = {false, false, false};
 
+	// TODO: Highlight cube and display/speak "Are you sure" <- or equivalent
+	// ->On clicking a confirmed cube continue else repeat above
+
 	// ensure it is the goal word cube
-	if (id != lvl->goalIndex)
+	if (id != lvl->goalIndex){
+		// TODO: Darken cube and record incorrect cube guessed
+		audio.play(lvl->sound);
 		return;
+	}
 
 	if (!touched[id])
 		running = false;
-	touched[id] = !touched[id];
-	LOG("Cube touched: %u\n", id);
+		touched[id] = !touched[id];
+		LOG(" was goal\n");
+
 }
 
 /* Main game loop over defined levels */
 void Game::run()
 {
+	// TODO: Note, loops 0-1-2-0-1-2-0-1-2 as level #.
+	// ->Make a game ending
     for (unsigned i = 0; i < numLevels; i++)
     {
     	loader.load(LevelAssets[i].grp, MainSlot);
+
     	lvl = &Levels[i];
     	running = true;
 
@@ -113,6 +183,7 @@ void Game::run()
 
     	// play goal sound once
     	audio.play(lvl->sound);
+    	LOG("Played sound for level %d in run()\n", i);
 
     	// Level loop
     	Events::cubeTouch.set(&Game::onTouch, this);
