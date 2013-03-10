@@ -1,30 +1,16 @@
 -- Metadata
-
-
 IconAssets = group{quality=9.95}
-
 Icon = image{"assets/icon.png"}
 
-
-
 -- Asset Group loaded initially to all cubes
-
 BootAssets = group{quality=8.90}
-
 LoadingBg = image{"assets/loading.png"}
-
 Bravo = image{"assets/bravo.png"}
 Title = image{"assets/welcomeTitle.png"}
-
-
---TEST
-
 Grid = image{"assets/playfield.png", pinned=1}
 
---TEST
 -- Menu Assets
-TestAssets = group{quality=9.05}
-Title = image{"assets/welcomeTitle.png", flat=1}
+MenuAssetGrp = group{quality=9.05}
 SampleSound = sound{"assets/test.wav"}
 
 BgTile = image{ "assets/Menu/bg.png", pinned=1 }
@@ -42,7 +28,6 @@ LabelEmpty = image{ "assets/Menu/LabelEmpty.png" }
 LabelUser1 = image{"assets/Menu/LabelAdrian.png"}
 LabelUser2 = image{"assets/Menu/LabelMatthew.png"}
 --LabelSandwich = image{ "assets/Menu/LabelSandwich.png" }
--- END TEST
 
 -- Level0 TestAssets
 Level0Assets = group{quality=9.0}

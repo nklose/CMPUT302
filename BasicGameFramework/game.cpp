@@ -29,13 +29,8 @@ static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & T
 /* Display title screen and set up user's game */
 void Game::title()
 {
-	//TODO: Ask Andrew if he knows of a better way to do this
-	// Load "welcome" image from TestGroup[0],
-	// which has Title image as welcomeTitle.png
-	loader.load(TestGroup[0].grp, MainSlot);
-	lvl = &Level0;
 	for(int i = 0; i < NUM_CUBES; i++){
-		vid[i].bg0.image(vec(0,0), lvl->phonemes[0]);
+		vid[i].bg0.image(vec(0,0), Title);
 	}
 	System::paint();
 	LOG("Waiting in title\n");
@@ -47,6 +42,7 @@ void Game::title()
 // Display menu of available users
 void Game::displayMenu(){
 
+	loader.load(MenuAssetGrp, MainSlot);
 	// Ask user to select user from a list
 	// (list made in customization screen by client?)
     Menu m(vid[0], &menAssets, menItems);
