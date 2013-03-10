@@ -6,27 +6,27 @@
 
 #pragma once
 
-extern Sifteo::AssetGroup Level0Assets;
-extern Sifteo::AssetGroup IconAssets;
-extern const Sifteo::AssetImage Icon;
 extern Sifteo::AssetGroup Level1Assets;
-extern const Sifteo::AssetImage L1Phoneme1;
 extern const Sifteo::AssetImage L1Phoneme2;
+extern const Sifteo::AssetImage L1Phoneme1;
 extern const Sifteo::AssetImage L1Phoneme3;
 extern Sifteo::AssetGroup BootAssets;
+extern const Sifteo::PinnedAssetImage Grid;
 extern const Sifteo::AssetImage Bravo;
 extern const Sifteo::AssetImage Title;
 extern const Sifteo::AssetImage LoadingBg;
-extern const Sifteo::PinnedAssetImage Grid;
 extern Sifteo::AssetGroup TestAssets;
-extern Sifteo::AssetGroup Level3Assets;
-extern const Sifteo::AssetImage L3Phoneme3;
-extern const Sifteo::AssetImage L3Phoneme1;
-extern const Sifteo::AssetImage L3Phoneme2;
 extern Sifteo::AssetGroup Level2Assets;
+extern const Sifteo::AssetImage L2Phoneme1;
 extern const Sifteo::AssetImage L2Phoneme2;
 extern const Sifteo::AssetImage L2Phoneme3;
-extern const Sifteo::AssetImage L2Phoneme1;
+extern Sifteo::AssetGroup Level3Assets;
+extern const Sifteo::AssetImage L3Phoneme1;
+extern const Sifteo::AssetImage L3Phoneme2;
+extern const Sifteo::AssetImage L3Phoneme3;
+extern Sifteo::AssetGroup Level0Assets;
+extern Sifteo::AssetGroup IconAssets;
+extern const Sifteo::AssetImage Icon;
 extern const Sifteo::AssetAudio SampleSound;
 extern const Sifteo::AssetAudio L1Sound;
 extern const Sifteo::AssetAudio L2Sound;
