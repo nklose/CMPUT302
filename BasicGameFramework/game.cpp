@@ -124,7 +124,6 @@ void Game::init()
     Events::cubeAccelChange.set(&Game::onAccelChange, this);
 }
 
-//TODO: We don't set neighbor add or remove. Should they be removed eventualy?
 /* Unset some event handlers */
 void Game::cleanup()
 {
@@ -204,15 +203,20 @@ void Game::onTouch(unsigned id)
 
 	// ensure it is the goal word cube
 	if (id != lvl->goalIndex){
-		// TODO: Darken cube and record incorrect cube guessed
+		LOG(" was not goal\n");
+		// TODO: Darken cube <- This might be really hard...
+		// TODO: record incorrect cube guessed
+		vid[id].bg0.image(vec(0,0), Grid);
 		audio.play(lvl->sound);
 		return;
 	}
 
 	if (!touched[id])
 		running = false;
+
 		touched[id] = !touched[id];
 		LOG(" was goal\n");
+
 
 }
 
