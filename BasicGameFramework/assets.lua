@@ -11,7 +11,7 @@ Grid = image{"assets/playfield.png", pinned=1}
 
 -- Menu Assets
 MenuAssetGrp = group{quality=9.05}
-SampleSound = sound{"assets/test.wav"}
+--SampleSound = sound{"assets/test.wav"}
 
 BgTile = image{ "assets/Menu/bg.png", pinned=1 }
 Grid = image{"assets/playfield.png", pinned=1}
