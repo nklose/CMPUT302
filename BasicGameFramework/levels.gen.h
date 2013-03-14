@@ -8,12 +8,13 @@
 #ifndef LEVELS_GEN_H_
 #define LEVELS_GEN_H_
 
-/* for now assume phoneme[0] is the goal word... */
+/* for now assume the target/goal word info is stored at index 0 in the arrays */
+// intention: 4 images/sounds per level. Currently 3 for example.
 struct Level {
-	unsigned num;
-	Sifteo::AssetImage phonemes[3];	// List of images
-	Sifteo::AssetAudio sound;			// goal sound
-	unsigned goalIndex;				// index in phonemes[] of the goal image
+	Sifteo::AssetImage phonemes[3];			// Image options for cubes
+	Sifteo::AssetAudio sounds[3];			// Sound corresponding to cubes
+	unsigned indexes[3];					// index in vid[] that each image was placed
+	Sifteo::AssetAudio goalsound;
 };
 
 struct Group {

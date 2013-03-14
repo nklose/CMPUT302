@@ -17,6 +17,7 @@ using namespace Sifteo;
 TiltShakeRecognizer motion[NUM_CUBES];
 VideoBuffer vid[NUM_CUBES];
 CubeSet allCubes(0,NUM_CUBES);
+CubeSet imageCubes(0,NUM_IMAGES);
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
@@ -109,7 +110,7 @@ void Game::displayMenu(){
 
 void Game::init()
 {
-	// set up the mode as well as attach the TiltShakeRecognizer
+	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
         vid[i].initMode(BG0);
@@ -161,22 +162,27 @@ void Game::onAccelChange(unsigned id)
 void Game::onShake(unsigned id)
 {
 	LOG("Cube shaken: %02x\n", id);
-	// If shaken strongly this may cause multiple plays...
-	//		It may need a timer of some sort to prevent this
 
-	// TODO: Test this. Can't seem to call this function at all.
-	// Probably not the right way to go about it, could be attributes of a level,
-	//then only created and set once per level. Or of game, only created once.
-	// start a static timer (Should probably be set in another class?)
+	if (id == NUM_CUBES-1)
+				return;
+
+	// Basic protection against multiple-plays of the audio clip
 	static SystemTime start = SystemTime::now();
 	float delay = 0.5f;
 	if(!(SystemTime::now() - start < delay)){
 		start = SystemTime::now();
-		LOG("Playing Sound");
-		audio.play(lvl->sound);
-	}
+		LOG("Playing sound on cube %i", id);
 
-//	audio.play(lvl->sound);
+		// figure out which sound is for this cube id
+		unsigned ind = 0;	// index within sounds array for appropriate sound
+		for (int i = 0; i < NUM_IMAGES; i++)
+		{
+			if (lvl->indexes[i] == id)
+				ind = i;
+		}
+
+		audio.play(lvl->sounds[ind]);
+	}
 }
 
 /* Called upon the event of a cube being tilted. This is a sub-call of onAccelChange. */
@@ -189,7 +195,10 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 void Game::onTouch(unsigned id)
 {
 	LOG("Cube touched: %u\n", id);
-	/* ensure only begin touch triggers end of level */
+	/*
+	 * A touch event occurs when first touching a cube screen as well as upon stopping touching
+	 * 	the cube screen. The touched array ensure that only one of these 2 events calls this func fully
+	 */
 	static bool touched[NUM_CUBES] = {false, false, false};
 
 	// TODO: Highlight cube and display/speak "Are you sure" <- or equivalent
@@ -199,16 +208,21 @@ void Game::onTouch(unsigned id)
 
 	if (touched[id])
 	{
-		if (id == lvl->goalIndex)
-		{
-			LOG(" was goal\n");
-			running = false;
-		}
+		// if cube is the speaker cube, replay goal sound
+		if (id == NUM_CUBES-1)
+			audio.play(lvl->goalsound);
 		else
 		{
-			vid[id].bg0.image(vec(0,0), Grid);
-			audio.play(lvl->sound);
-			LOG(" was not goal\n");
+			if (id == lvl->indexes[0])
+			{
+				LOG(" was goal\n");
+				running = false;
+			}
+			else
+			{
+				vid[id].bg0.image(vec(0,0), Grid);
+				LOG(" was not goal\n");
+			}
 		}
 	}
 }
@@ -229,7 +243,7 @@ void Game::run()
     	wait(1);
 
     	// play goal sound once
-    	audio.play(lvl->sound);
+    	audio.play(lvl->sounds[0]);
     	LOG("Played sound for level %d in run()\n", i);
 
     	// Level loop
@@ -265,13 +279,13 @@ void wait(unsigned n)
 void shuffleLoad()
 {
 	Random rand;
-	int inds[NUM_CUBES], randint;
+	int inds[NUM_IMAGES], randint;
 
 	// Generate 0-NUM_CUBES randomly in the inds array
-	for(int i = 0; i < NUM_CUBES; i++)
+	for(int i = 0; i < NUM_IMAGES; i++)
 	{
 		bool found = false;
-		randint = rand.randrange(NUM_CUBES);
+		randint = rand.randrange(NUM_IMAGES);
 		for (int j = 0; j < i; j++)
 		{
 			if (inds[j] == randint)
@@ -284,12 +298,14 @@ void shuffleLoad()
 	}
 
 	// display the corresponding image on the cubes, and record the goal cube
-	for (int i = 0; i < NUM_CUBES; i++)
+	for (int i = 0; i < NUM_IMAGES; i++)
 	{
-		if (inds[i] == 0)
-			lvl->goalIndex = i;
+		lvl->indexes[inds[i]] = i;
 		vid[i].bg0.image(vec(0,0), lvl->phonemes[inds[i]]);
 	}
+
+	// also display the "speaker" icon for the 4th cube
+	vid[NUM_IMAGES].bg0.image(vec(0,0), Speaker);
 
 	System::paint();
 }

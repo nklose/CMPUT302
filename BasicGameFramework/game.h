@@ -15,7 +15,8 @@
 
 using namespace Sifteo;
 
-#define NUM_CUBES     3
+#define NUM_CUBES	4
+#define NUM_IMAGES	(NUM_CUBES - 1)
 
 extern AssetSlot MainSlot;
 
