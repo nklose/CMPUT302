@@ -43,7 +43,7 @@ private:
 
 // utility funcs
 
-void wait(unsigned n);
+void wait(float n);
 void shuffleLoad();
 
 #endif

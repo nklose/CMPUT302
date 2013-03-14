@@ -240,7 +240,7 @@ void Game::run()
 
 		// load images onto cubes
     	shuffleLoad();
-    	wait(1);
+    	wait(0.5);
 
     	// play goal sound once
     	audio.play(lvl->sounds[0]);
@@ -265,7 +265,7 @@ void Game::run()
 }
 
 /* 	pause for roughly n seconds */
-void wait(unsigned n)
+void wait(float n)
 {
 	SystemTime start = SystemTime::now();
 	float elapsed = 0;
