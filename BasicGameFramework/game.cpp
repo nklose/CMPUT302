@@ -179,8 +179,6 @@ void Game::onShake(unsigned id)
 //	audio.play(lvl->sound);
 }
 
-//TODO: Why called every time a cube is moved? -> Except when one cube moves another.. (Jake)
-// Can we reduce sensitivity?
 /* Called upon the event of a cube being tilted. This is a sub-call of onAccelChange. */
 void Game::onTilt(unsigned id, Byte3 tiltInfo)
 {
@@ -197,23 +195,22 @@ void Game::onTouch(unsigned id)
 	// TODO: Highlight cube and display/speak "Are you sure" <- or equivalent
 	// ->On clicking a confirmed cube continue else repeat above
 
-	// ensure it is the goal word cube
-	if (id != lvl->goalIndex){
-		LOG(" was not goal\n");
-		// TODO: Darken cube <- This might be really hard...
-		// TODO: record incorrect cube guessed
-		vid[id].bg0.image(vec(0,0), Grid);
-		audio.play(lvl->sound);
-		return;
+	touched[id] = !touched[id];
+
+	if (touched[id])
+	{
+		if (id == lvl->goalIndex)
+		{
+			LOG(" was goal\n");
+			running = false;
+		}
+		else
+		{
+			vid[id].bg0.image(vec(0,0), Grid);
+			audio.play(lvl->sound);
+			LOG(" was not goal\n");
+		}
 	}
-
-	if (!touched[id])
-		running = false;
-
-		touched[id] = !touched[id];
-		LOG(" was goal\n");
-
-
 }
 
 /* Main game loop over defined levels */
@@ -238,9 +235,7 @@ void Game::run()
     	// Level loop
     	Events::cubeTouch.set(&Game::onTouch, this);
     	while(running)	// wait for events to be handled
-    	{
     		System::paint();
-    	}
 
     	// if here level was completed!
     	for (unsigned k = 0; k < NUM_CUBES; k++)
