@@ -144,7 +144,6 @@ void Game::onAccelChange(unsigned id)
 			LOG("No tilt");
 		}
 
-
 		bool shake = motion[id].shake;
 		if (shake){
 			onShake(id);
@@ -243,7 +242,7 @@ void Game::run()
     	wait(0.5);
 
     	// play goal sound once
-    	audio.play(lvl->sounds[0]);
+    	audio.play(lvl->goalsound);
     	LOG("Played sound for level %d in run()\n", i);
 
     	// Level loop
