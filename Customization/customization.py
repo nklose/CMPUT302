@@ -16,6 +16,11 @@ from PyQt4 import QtCore, QtGui
 from gui import Ui_mainWindow
 from os.path import basename
 from phoneme import *
+from datetime import datetime
+
+# Constant globals
+NUM_LEVELS = 10
+DEBUG = True # whether or not to print debug info to console
 
 class StartQT4(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -25,15 +30,26 @@ class StartQT4(QtGui.QMainWindow):
 
         # Make settings frame invisible until a set is selected
         self.ui.frame.setEnabled(False)
+        self.msg("Enabling frame.")
 
-        # Currently selected list elements
-        self.currentSet = None
-        self.currentPhoneme = None
-        self.currentGoal = None
+        # Clear lists
+        self.ui.listSets.clear()
+        self.ui.listPhonemes.clear()
 
-        # Instantiate the set of phoneme sets with a single phoneme
-        self.phonemes = [[Phoneme()]]
+        # Indices of objects currently selected in the interface
+        self.levelIndex = 0
+        self.setIndex = None
+        self.phonemeIndex = None
+
+        # Instantiate all levels
+        self.levels = []
+        for n in range(0, NUM_LEVELS):
+            self.levels.append(Level())
+            self.msg("Adding level " + str(n+1))
+            
+        # Update the displayed list of sets
         self.update_sets()
+        self.msg("Updating set list.")
 
         #######################################################
         # Interface Object Connections                        #
@@ -47,11 +63,6 @@ class StartQT4(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.listPhonemes,
                                QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
                                self.select_phoneme)
-
-        QtCore.QObject.connect(self.ui.listGoals,
-                               QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-                               self.select_goal)
-
         ## Buttons
 
         # Add Set
@@ -74,20 +85,20 @@ class StartQT4(QtGui.QMainWindow):
                                QtCore.SIGNAL("clicked()"),
                                self.remove_phoneme)
 
-        # Make Goal
-        QtCore.QObject.connect(self.ui.btnMakeGoal,
+        # Set Goal
+        QtCore.QObject.connect(self.ui.btnSetGoal,
                                QtCore.SIGNAL("clicked()"),
-                               self.make_goal)
-
-        # Remove Goal
-        QtCore.QObject.connect(self.ui.btnRemoveGoal,
-                               QtCore.SIGNAL("clicked()"),
-                               self.remove_goal)
+                               self.set_goal)
 
         # Load Image
         QtCore.QObject.connect(self.ui.btnLoadImage,
                                QtCore.SIGNAL("clicked()"),
                                self.load_image)
+
+        # Modify Sounds
+        QtCore.QObject.connect(self.ui.btnModifySounds,
+                               QtCore.SIGNAL("clicked()"),
+                               self.modify_sounds)
 
         # Phoneme Sound Buttons
         QtCore.QObject.connect(self.ui.btnA, QtCore.SIGNAL("clicked()"), self.a)
@@ -136,170 +147,120 @@ class StartQT4(QtGui.QMainWindow):
                                QtCore.SIGNAL("returnPressed()"),
                                self.press_enter)
 
-    # Adds a set to the list of sets
-    def add_set(self):
-        # Construct set
-        newSet = [[]]
-        self.phonemes.append(newSet)
-        self.update_sets()
-
-    # Removes a set at a given index
-    def remove_set(self):
-        # delete the item (unless one hasn't been selected yet)
-        if self.currentSet != None:
-            del self.phonemes[self.currentSet]
-            self.update_sets()
-
-            # make frame invisible
-            self.ui.frame.setEnabled(False)
 
     # Updates the displayed list of sets with the internal list.
     def update_sets(self):
+        # get the list of sets in the selected level
+        level = self.get_level()
+        levelSets = level.sets
+
+        # clear the displayed sets
         self.ui.listSets.clear()
+        self.msg("Clearing set list.")
+
+        # add each set to the list
         index = 1
-        for item in self.phonemes:
+        for item in levelSets:
             self.ui.listSets.addItem("Set " + str(index))
+            self.msg("Adding set index " + str(index))
             index += 1
         
-        # disable 'remove set' button if there is only one set
-        if len(self.phonemes) == 1:
+        # disable 'remove set' button if necessary
+        if len(levelSets) < 2:
             self.ui.btnRemoveSet.setEnabled(False)
+            self.msg("Disabling remove set button. (sets = " + str(len(levelSets)) + ")")
         else:
             self.ui.btnRemoveSet.setEnabled(True)
+            self.msg("Enabling remove set button. (sets = " + str(len(levelSets)) + ")")
 
-    # This function is called when the user selects a specific item
-    # from the list of sets.
-    def select_set(self, set):
+    # This function is called when the user selects a set from the list
+    def select_set(self, item):
         # show frame if it isn't there already
         self.ui.frame.setEnabled(True)
 
         # get the index of the selected item
-        index = self.index_from_set(set)
+        index = self.set_index(item)
 
         # remember index
-        self.currentSet = index
+        self.setIndex = index
 
         # load phonemes from the current set
         self.update_phonemes()
 
         # clear current phoneme and current goal
-        self.currentPhoneme = None
-        self.currentGoal = None
+        self.phonemeIndex = None
 
         # disable phoneme-specific ui elements
+        self.reset_phoneme_ui()
+
+        # debug string
+        currentSet = self.get_set()
+        string = "Selecting set at index " + str(index) + ":" 
+        string += currentSet.toString()
+        self.msg(string)
+
+    # This function removes phoneme-specific content from the UI
+    def reset_phoneme_ui(self):
         self.ui.btnRemovePhoneme.setEnabled(False)
-        self.ui.btnMakeGoal.setEnabled(False)
-        self.ui.btnRemoveGoal.setEnabled(False)
+        self.ui.btnSetGoal.setEnabled(False)
         self.ui.soundsGroup.setEnabled(False)
-        self.ui.btnLoadImage.setEnabled(False)
+        self.ui.imageGroup.setEnabled(False)
+        self.ui.lblSoundPath.clear()
+        self.ui.lblImagePath.clear()
         self.ui.imgPhoneme.clear()
         
+    # Enables phoneme-specific content in the UI
+    def enable_phoneme_ui(self):
+        self.ui.btnRemovePhoneme.setEnabled(True)
+        self.ui.btnSetGoal.setEnabled(True)
+        self.ui.soundsGroup.setEnabled(True)
+        self.ui.imageGroup.setEnabled(True)
+
     # Updates the phoneme lists
     def update_phonemes(self):
-        # clear displayed lists
+        # clear phoneme list
         self.ui.listPhonemes.clear()
-        self.ui.listGoals.clear()
 
         # add phonemes into appropriate lists
-        for p in range(1, len(self.phonemes[self.currentSet])):
-            # get current phoneme
-            phoneme = self.phonemes[self.currentSet][p]
-            self.ui.listPhonemes.addItem(phoneme.name)
-            if phoneme.goal:
-                self.ui.listGoals.addItem(phoneme.name)
+        phonemes = self.get_set().phonemes
+        if phonemes != None:
+            for p in range(0, len(phonemes)):
+                # get current phoneme
+                phoneme = phonemes[p]
+                if phoneme.goal:
+                    self.ui.listPhonemes.addItem(phoneme.name + " (GOAL)")
+                else:
+                    self.ui.listPhonemes.addItem(phoneme.name)
     
     # This function is called whenever the user selects an items from the phoneme list
     def select_phoneme(self, phoneme):
         # enable 'make goal' button
-        self.ui.btnMakeGoal.setEnabled(True)
-        
-        # enable remove phoneme button
-        self.ui.btnRemovePhoneme.setEnabled(True)
+        self.enable_phoneme_ui()
 
         # get the index of the selected item
-        index = self.index_from_phoneme(phoneme)
+        index = self.phoneme_index(phoneme)
 
         # remember index
-        self.currentPhoneme = index
+        self.phonemeIndex = index
 
         # Enable phoneme sounds and load image button
         self.ui.soundsGroup.setEnabled(True)
         self.ui.btnLoadImage.setEnabled(True)
 
         # Update interface with phoneme information
-        phoneme = self.phonemes[self.currentSet][index]
-        if phoneme.image_path != "":
-            self.ui.lblImagePath = phoneme.image_path
-            self.ui.imgPhoneme.setPixmap(QtGui.QPixmap(phoneme.image_path))
+        p = self.get_phoneme()
+        self.msg("Index: " + str(index))
+        self.msg("Selected phoneme at index " + str(index) + ":\n" + p.toString())
+        if p.image_path != "":
+            self.ui.lblImagePath = p.image_path
+            self.ui.imgPhoneme.setPixmap(QtGui.QPixmap(p.image_path))
         else:
-            self.ui.lblImagePath.clear()
+            self.ui.lblImagePath.setText("")
             self.ui.imgPhoneme.clear()
-        self.select_sound(phoneme.text)
+        self.select_sound(p.text)
 
         # Select appropriate sound
-        self.select_sound(phoneme.text)
-        
-    # This function is called whenever the user selects a goal from the goals list,
-    def select_goal(self, goal):
-        # enable 'remove goal' button
-        self.ui.btnRemoveGoal.setEnabled(True)
-        
-        # get the index of the selected goal
-        index = self.index_from_goal(goal)
-
-        # remember index
-        self.currentGoal = index
-
-    # This function turns a selected phoneme into a goal phoneme.
-    def make_goal(self):
-        phoneme = self.phonemes[self.currentSet][self.currentPhoneme]
-        phoneme.goal = True
-        self.update_phonemes()
-
-    # This function turns a selected goal phoneme into a regular phoneme
-    def remove_goal(self):
-        goalIndex = self.currentGoal
-        
-        # make a list of goals
-        goals = self.goal_list()
-
-        # set goal to false
-        goalPhoneme = goals[goalIndex]
-        goalPhoneme.goal = False
-
-        # Disable remove goal button
-        self.ui.btnRemoveGoal.setEnabled(False)
-
-        self.update_phonemes()
-
-    # Adds a phoneme to the list of phonemes
-    def add_phoneme(self):
-        # Construct set
-        phoneme = Phoneme()
-        
-        # set the name for the phoneme
-        phoneme.name = str(self.ui.txtNewPhoneme.text())
-        self.phonemes[self.currentSet].append(phoneme)
-        self.update_phonemes()
-
-        # clear line edit
-        self.ui.txtNewPhoneme.clear()
-
-    # Removes a phoneme from the list of phonemes
-    def remove_phoneme(self):
-        del self.phonemes[self.currentSet][self.currentPhoneme]
-        self.update_phonemes()
-
-        # disable phoneme-specific ui elements
-        self.ui.btnRemovePhoneme.setEnabled(False)
-        self.ui.btnMakeGoal.setEnabled(False)
-        self.ui.soundsGroup.setEnabled(False)
-        self.ui.btnLoadImage.setEnabled(False)
-        self.ui.imgPhoneme.clear()
-
-        # disable remove phoneme button if necessary
-        if len(self.phonemes[self.currentSet]) == 0:
-            self.ui.btnRemovePhoneme.setEnabled(False)
+        self.select_sound(p.text)
 
     # Enables or disables the 'add phoneme' button as necessary
     def check_new_phoneme(self, text):
@@ -307,10 +268,13 @@ class StartQT4(QtGui.QMainWindow):
         if text != "":
             # ensure text is unique
             uniqueName = True
-            for p in range(1, len(self.phonemes[self.currentSet])):
-                phoneme = self.phonemes[self.currentSet][p]
-                if phoneme.name == str(text):
-                    uniqueName = False
+            currentSet = self.get_set()
+            phonemes = currentSet.phonemes
+            if phonemes != None:
+                for p in range(1, len(phonemes)):
+                    phoneme = phonemes[p]
+                    if phoneme.name == str(text):
+                        uniqueName = False
             if uniqueName:
                 self.ui.btnAddPhoneme.setEnabled(True)
             else:
@@ -323,58 +287,113 @@ class StartQT4(QtGui.QMainWindow):
         if self.ui.btnAddPhoneme.isEnabled():
             self.add_phoneme()
 
-    # Returns the index of a given set as an integer.
-    def index_from_set(self, item):
-        return int(item.text()[4:]) - 1
-    
-    # Returns the index of a given phoneme as an integer.
-    def index_from_phoneme(self, item):
-        for i in range(0, len(self.phonemes[self.currentSet])):
-            phoneme = self.phonemes[self.currentSet][i]
-            if str(phoneme.name) == str(item.text()):
-                return i
-        return None
-
-    # Returns the index of a given goal as an integer.
-    def index_from_goal(self, item):
-        # count number of goals
-        numGoals = self.count_goals()
-        
-        # make a list of all the goals
-        goals = self.goal_list()
-            
-        # return the index of the selected goal
-        for i in range(0, numGoals):
-            goal = goals[i]
-            if str(item.text()) == str(goal.name):
-                return i
-        
-    # Returns the number of goal phonemes in the selected set
-    def count_goals(self):
-        goals = 0
-        for i in range(0, len(self.phonemes[self.currentSet])):
-            phoneme = self.phonemes[self.currentSet][i]
-            if phoneme.goal:
-                goals += 1
-        return goals
-
-    # Makes a list of all goals in the current phoneme set
-    def goal_list(self):
-        goals = []
-        for i in range(0, len(self.phonemes[self.currentSet])):
-            phoneme = self.phonemes[self.currentSet][i]
-            if phoneme.goal:
-                goals.append(phoneme)
-        return goals
-
     # Loads an image into the interface and saves it into the phoneme object
     def load_image(self):
-        phoneme = self.phonemes[self.currentSet][self.currentPhoneme]
+        phoneme = self.get_phoneme()
         phoneme.image_path = str(QtGui.QFileDialog.getOpenFileName())
         phoneme.image_file = basename(phoneme.image_path)
 
         self.ui.imgPhoneme.setPixmap(QtGui.QPixmap(phoneme.image_path))
         self.ui.lblImagePath.setText(phoneme.image_file)
+
+    # Returns the currently selected level
+    def get_level(self):
+        return self.levels[self.levelIndex]
+
+    # Returns the currently selected set
+    def get_set(self):
+        level = self.levels[self.levelIndex]
+        if self.setIndex != None:
+            return level.sets[self.setIndex]
+        else:
+            return None
+
+    # Returns the currently selected phoneme
+    def get_phoneme(self):
+        set = self.get_set()
+        if self.phonemeIndex != None:
+            return set.phonemes[self.phonemeIndex]
+        else:
+            return None
+        
+    # Returns the index of a given set as an integer.
+    def set_index(self, item):
+        return int(item.text()[4:]) - 1 # get text from set string
+    
+    # Returns the index of a given phoneme as an integer.
+    def phoneme_index(self, item):
+        currentSet = self.get_set()
+        phonemes = currentSet.phonemes
+        for i in range(0, len(phonemes)):
+            phoneme = phonemes[i]
+            self.msg("Phoneme name: " + str(phoneme.name))
+            self.msg("Item text: " + str(item.text()))
+            self.msg("Item text [:-7]: " + str(item.text())[:-7])
+            if str(phoneme.name) == str(item.text()):
+                self.msg("Item text == phoneme name")
+                return i
+            elif str(phoneme.name) == str(item.text())[:-7]:
+                self.msg("Item text + goal == phoneme name")
+                return i
+        return None
+
+    # Adds a set to the currently selected level
+    def add_set(self):
+        level = self.get_level()
+        self.msg("Adding set.")
+        level.add_set()
+        self.update_sets()
+
+    # Removes a set from the currently selected level
+    def remove_set(self):
+        if self.setIndex != None:
+            level = self.get_level()
+            self.msg("Removing set at index " + str(self.setIndex))
+            level.remove_set(self.setIndex)
+            self.update_sets()
+
+    # Adds a phoneme to the currently selected set
+    def add_phoneme(self):
+        # build phoneme
+        phoneme = Phoneme()
+        phoneme.name = str(self.ui.txtNewPhoneme.text())
+
+        # clear input text
+        self.ui.txtNewPhoneme.clear()
+
+        # add phoneme to set
+        currentSet = self.get_set()
+        self.msg("Adding phoneme " + phoneme.name)
+        currentSet.add_phoneme(phoneme)
+        self.msg("Current set: " + currentSet.toString())
+
+        # update phoneme list
+        self.update_phonemes()
+
+    # Removes a phoneme from the currently selected set
+    def remove_phoneme(self):
+        if self.phonemeIndex != None:
+            currentSet = self.get_set()
+            self.msg("Removing phoneme at index " + str(self.phonemeIndex))
+            currentSet.remove_phoneme(self.phonemeIndex)
+            self.reset_phoneme_ui()
+            self.update_phonemes()
+
+    # Sets the currently selected phoneme as the goal for the set
+    def set_goal(self):
+        if self.phonemeIndex != None:
+            currentSet = self.get_set()
+            currentSet.set_goal_index(self.phonemeIndex)
+            self.update_phonemes()
+
+    # Loads the phoneme sound modification inderface
+    def modify_sounds(self):
+        print('hello')
+
+    # Print debug messages, if needed
+    def msg(self, message):
+        if DEBUG:
+            print(str(datetime.time(datetime.now())) + " > DEBUG: " + message)
 
     # Individual phoneme sound button functions
     def a(self):
@@ -514,7 +533,7 @@ class StartQT4(QtGui.QMainWindow):
 
         # update current phoneme sound
         if s != "":
-            phoneme = self.phonemes[self.currentSet][self.currentPhoneme]
+            phoneme = self.get_phoneme()
             phoneme.text = s
 
     # Deselects all sound buttons in the phoneme sounds section
