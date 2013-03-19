@@ -11,6 +11,7 @@
 #include "levels.gen.h"
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
+#include <sifteo/filesystem.h>
 using namespace Sifteo;
 
 // Globals
@@ -21,6 +22,11 @@ CubeSet imageCubes(0,NUM_IMAGES);
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
+Volume vol;
+int playthrough;
+int currLevel;
+int failures[10][10];
+int hints[10][10];
 
 // TEST - Add Menu Item images and Asset Images
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -110,6 +116,16 @@ void Game::displayMenu(){
 
 void Game::init()
 {
+    // initialize incorrect guesses array to 0
+    for (int i=0; i < 10; i++)
+    {
+        for (int j=0; j < 10; j++)
+        {
+            failures[i][j] = 0;
+        }
+    }
+    // initialize playthrough counter to 0
+    playthrough = 0;
 	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
@@ -210,16 +226,21 @@ void Game::onTouch(unsigned id)
 		// if cube is the speaker cube, replay goal sound
 		if (id == NUM_CUBES-1)
 			audio.play(lvl->goalsound);
+                        incrementHints();
+                        LOG("----hints %i--------playthrough %i--------level %i----\n", hints[playthrough][currLevel], playthrough, currLevel);
+
 		else
 		{
 			if (id == lvl->indexes[0])
 			{
 				LOG(" was goal\n");
+LOG("----failures %i--------playthrough %i--------level %i----\n", failures[playthrough][currLevel], playthrough, currLevel);
 				running = false;
 			}
 			else
 			{
 				vid[id].bg0.image(vec(0,0), Grid);
+                                incrementFailures();
 				LOG(" was not goal\n");
 			}
 		}
@@ -229,11 +250,12 @@ void Game::onTouch(unsigned id)
 /* Main game loop over defined levels */
 void Game::run()
 {
+  //mapVol.attach(vol);
 	// TODO: Make a game ending. It just repeats at the moment
     for (unsigned i = 0; i < numLevels; i++)
     {
     	loader.load(LevelAssets[i].grp, MainSlot);
-
+        currLevel = i;
     	lvl = &Levels[i];
     	running = true;
 
@@ -261,6 +283,8 @@ void Game::run()
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level
     }
+    // TODO: Also doesn't get called yet.
+    playthrough++;
 }
 
 /* 	pause for roughly n seconds */
@@ -307,4 +331,16 @@ void shuffleLoad()
 	vid[NUM_IMAGES].bg0.image(vec(0,0), Speaker);
 
 	System::paint();
+}
+
+void incrementFailures()
+{
+    failures[playthrough][currLevel]++;
+    LOG("----failures %i--------playthrough %i--------level %i----\n", failures[playthrough][currLevel], playthrough, currLevel);
+}
+
+void incrementHints()
+{
+    hints[playthrough][currLevel]++;
+    LOG("----hints %i--------playthrough %i--------level %i----\n", hints[playthrough][currLevel], playthrough, currLevel);
 }
