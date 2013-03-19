@@ -20,7 +20,10 @@ from datetime import datetime
 
 # Constant globals
 NUM_LEVELS = 10
-DEBUG = True # whether or not to print debug info to console
+DEBUG = False # print debug info to console
+if len(sys.argv) > 1:
+    if sys.argv[1] == "debug": # check for command-line argument
+        DEBUG = True 
 
 class StartQT4(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -147,6 +150,11 @@ class StartQT4(QtGui.QMainWindow):
                                QtCore.SIGNAL("returnPressed()"),
                                self.press_enter)
 
+        ## Level Slider
+        QtCore.QObject.connect(self.ui.verticalSlider,
+                               QtCore.SIGNAL("valueChanged(int)"),
+                               self.change_level)
+
 
     # Updates the displayed list of sets with the internal list.
     def update_sets(self):
@@ -271,7 +279,7 @@ class StartQT4(QtGui.QMainWindow):
             currentSet = self.get_set()
             phonemes = currentSet.phonemes
             if phonemes != None:
-                for p in range(1, len(phonemes)):
+                for p in range(0, len(phonemes)):
                     phoneme = phonemes[p]
                     if phoneme.name == str(text):
                         uniqueName = False
@@ -394,6 +402,14 @@ class StartQT4(QtGui.QMainWindow):
     def msg(self, message):
         if DEBUG:
             print(str(datetime.time(datetime.now())) + " > DEBUG: " + message)
+
+    # Switches the interface to edit another level.
+    def change_level(self, newLevel):
+        self.msg("Switching to level " + str(newLevel))
+        self.levelIndex = newLevel - 1
+        self.update_sets()
+        self.reset_phoneme_ui()
+        self.ui.listPhonemes.clear()
 
     # Individual phoneme sound button functions
     def a(self):
