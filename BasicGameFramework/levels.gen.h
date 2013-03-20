@@ -15,6 +15,9 @@ struct Level {
 	Sifteo::AssetAudio sounds[3];			// Sound corresponding to cubes
 	unsigned indexes[3];					// index in vid[] that each image was placed
 	Sifteo::AssetAudio goalsound;
+        float time;
+        unsigned numHints;
+        unsigned numAttempts;
 };
 
 struct Group {
