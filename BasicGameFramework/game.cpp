@@ -24,9 +24,6 @@ AudioChannel audio(0);
 struct Level *lvl;
 Volume vol;
 int playthrough;
-int currLevel;
-int failures[10][10];
-int hints[10][10];
 
 // TEST - Add Menu Item images and Asset Images
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -116,14 +113,6 @@ void Game::displayMenu(){
 
 void Game::init()
 {
-    // initialize incorrect guesses array to 0
-    for (int i=0; i < 10; i++)
-    {
-        for (int j=0; j < 10; j++)
-        {
-            failures[i][j] = 0;
-        }
-    }
     // initialize playthrough counter to 0
     playthrough = 0;
 	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
@@ -225,22 +214,22 @@ void Game::onTouch(unsigned id)
 	{
 		// if cube is the speaker cube, replay goal sound
 		if (id == NUM_CUBES-1)
+		{
 			audio.play(lvl->goalsound);
+                        
                         incrementHints();
-                        LOG("----hints %i--------playthrough %i--------level %i----\n", hints[playthrough][currLevel], playthrough, currLevel);
-
-		else
+		} 
+                else
 		{
 			if (id == lvl->indexes[0])
 			{
 				LOG(" was goal\n");
-LOG("----failures %i--------playthrough %i--------level %i----\n", failures[playthrough][currLevel], playthrough, currLevel);
 				running = false;
 			}
 			else
 			{
 				vid[id].bg0.image(vec(0,0), Grid);
-                                incrementFailures();
+                                //incrementFailures();
 				LOG(" was not goal\n");
 			}
 		}
@@ -255,7 +244,6 @@ void Game::run()
     for (unsigned i = 0; i < numLevels; i++)
     {
     	loader.load(LevelAssets[i].grp, MainSlot);
-        currLevel = i;
     	lvl = &Levels[i];
     	running = true;
 
@@ -335,12 +323,11 @@ void shuffleLoad()
 
 void incrementFailures()
 {
-    failures[playthrough][currLevel]++;
-    LOG("----failures %i--------playthrough %i--------level %i----\n", failures[playthrough][currLevel], playthrough, currLevel);
+
 }
 
 void incrementHints()
 {
-    hints[playthrough][currLevel]++;
-    LOG("----hints %i--------playthrough %i--------level %i----\n", hints[playthrough][currLevel], playthrough, currLevel);
+    lvl->numHints++;
+    LOG("---Hints %i---", lvl->numHints);
 }
