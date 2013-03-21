@@ -12,6 +12,7 @@ Andrew Neufeld, and Anthony Sopkow.
 """
 
 import sys
+import pickle
 from PyQt4 import QtCore, QtGui
 from gui import Ui_mainWindow
 from os.path import basename
@@ -105,6 +106,16 @@ class StartQT4(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.btnModifySounds,
                                QtCore.SIGNAL("clicked()"),
                                self.modify_sounds)
+
+        # Save Settings File
+        QtCore.QObject.connect(self.ui.btnSave,
+                               QtCore.SIGNAL("clicked()"),
+                               self.save)
+
+        # Load Settings File
+        QtCore.QObject.connect(self.ui.btnLoad,
+                               QtCore.SIGNAL("clicked()"),
+                               self.load)
 
         # Phoneme Sound Buttons
         QtCore.QObject.connect(self.ui.btnA, QtCore.SIGNAL("clicked()"), self.a)
@@ -268,7 +279,7 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.lblImagePath = p.image_path
             self.ui.imgPhoneme.setPixmap(QtGui.QPixmap(p.image_path))
         else:
-            self.ui.lblImagePath.setText("")
+            self.ui.lblImagePath = ""
             self.ui.imgPhoneme.clear()
         self.select_sound(p.text)
 
@@ -418,6 +429,60 @@ class StartQT4(QtGui.QMainWindow):
         self.reset_phoneme_ui()
         self.ui.listPhonemes.clear()
 
+    # Updates the sound paths of all phonemes using the sounds config file.
+    def update_sound_paths(self):
+        try:
+            # get the collection from the sounds config file
+            with open("sounds.pk", 'rb') as input:
+                collection = pickle.load(input)
+                self.msg("Data loaded from sounds.pk.")
+                currentSet = self.get_set()
+                phonemes = currentSet.phonemes
+                # for each phoneme, update the path using the text
+                for i in range(0, len(phonemes)):
+                    phoneme = phonemes[i]
+                    # iterate through every Phoneme_Sound to find a match
+                    for ps in collection:
+                        if ps.text == phoneme.text:
+                            phoneme.sound_path = ps.path
+        except:
+            self.msg("Warning: sounds config file not found.")
+
+    # Save button functionality
+    def save(self):
+        # get path to save file to
+        path = QtGui.QFileDialog.getSaveFileName(self, 
+                                           "Save File", 
+                                           "", 
+                                           "Phoneme Awareness Configuration File (*.cfg)")
+        path = str(path) + ".cfg"
+        try:
+            with open(str(path), 'wb') as output:
+                pickle.dump(self.levels, output, pickle.HIGHEST_PROTOCOL)
+                self.msg("Save successful.")
+        except:
+            self.msg("Save failed.")
+
+
+    # Load button functionality
+    def load(self):
+        # get path to load file from
+        path = str(QtGui.QFileDialog.getOpenFileName(self,
+                                                     "Load File",
+                                                     "",
+                                                     "Phoneme Awareness Configuration File (*.cfg)"))
+
+        # get levels list from file
+        try:
+            with open(path, 'rb') as input:
+                self.levels = pickle.load(input)
+                self.msg("Settings file loaded successfully.")
+                self.update_sets()
+        except:
+            self.msg("Settings could not be loaded.")
+
+        
+
     # Individual phoneme sound button functions
     def a(self):
         self.select_sound("a")
@@ -558,6 +623,7 @@ class StartQT4(QtGui.QMainWindow):
         if s != "":
             phoneme = self.get_phoneme()
             phoneme.text = s
+            self.update_sound_paths()
 
     # Deselects all sound buttons in the phoneme sounds section
     def deselect_all(self):
