@@ -16,6 +16,9 @@ from PyQt4 import QtCore, QtGui
 from gui import Ui_mainWindow
 from os.path import basename
 from phoneme import *
+from sounds import Phoneme_Sound
+from sounds import Sounds
+from sounds import Ui_Dialog
 from datetime import datetime
 
 # Constant globals
@@ -107,8 +110,10 @@ class StartQT4(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.btnA, QtCore.SIGNAL("clicked()"), self.a)
         QtCore.QObject.connect(self.ui.btnO, QtCore.SIGNAL("clicked()"), self.o)
         QtCore.QObject.connect(self.ui.btnEU, QtCore.SIGNAL("clicked()"), self.eu)
-        QtCore.QObject.connect(self.ui.btnE_grave, QtCore.SIGNAL("clicked()"), self.e_grave)
-        QtCore.QObject.connect(self.ui.btnE_acute, QtCore.SIGNAL("clicked()"), self.e_acute)
+        QtCore.QObject.connect(self.ui.btnE_grave, QtCore.SIGNAL("clicked()"), 
+                               self.e_grave)
+        QtCore.QObject.connect(self.ui.btnE_acute, QtCore.SIGNAL("clicked()"), 
+                               self.e_acute)
         QtCore.QObject.connect(self.ui.btnE, QtCore.SIGNAL("clicked()"), self.e)
         QtCore.QObject.connect(self.ui.btnI, QtCore.SIGNAL("clicked()"), self.i)
         QtCore.QObject.connect(self.ui.btnU, QtCore.SIGNAL("clicked()"), self.u)
@@ -396,7 +401,9 @@ class StartQT4(QtGui.QMainWindow):
 
     # Loads the phoneme sound modification inderface
     def modify_sounds(self):
-        print('hello')
+        # load up sounds UI
+        self.Sounds = Sounds(self)
+        self.Sounds.show()
 
     # Print debug messages, if needed
     def msg(self, message):

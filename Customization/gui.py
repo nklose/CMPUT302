@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Tue Mar 19 12:16:58 2013
+# Created: Tue Mar 19 16:51:53 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -128,7 +128,7 @@ class Ui_mainWindow(object):
         self.btnSetGoal.setGeometry(QtCore.QRect(60, 530, 151, 31))
         self.btnSetGoal.setObjectName(_fromUtf8("btnSetGoal"))
         self.listPhonemes = QtGui.QListWidget(self.frame)
-        self.listPhonemes.setGeometry(QtCore.QRect(10, 50, 251, 451))
+        self.listPhonemes.setGeometry(QtCore.QRect(10, 50, 251, 471))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.listPhonemes.setFont(font)
@@ -501,9 +501,6 @@ class Ui_mainWindow(object):
         self.lblImagePath.setAlignment(QtCore.Qt.AlignCenter)
         self.lblImagePath.setWordWrap(True)
         self.lblImagePath.setObjectName(_fromUtf8("lblImagePath"))
-        self.lblGoalsNote = QtGui.QLabel(self.frame)
-        self.lblGoalsNote.setGeometry(QtCore.QRect(10, 510, 251, 17))
-        self.lblGoalsNote.setObjectName(_fromUtf8("lblGoalsNote"))
         self.gameSelector.addTab(self.phonemeAwarenessTab, _fromUtf8(""))
         self.dividedWordTab = QtGui.QWidget()
         self.dividedWordTab.setObjectName(_fromUtf8("dividedWordTab"))
@@ -597,7 +594,6 @@ class Ui_mainWindow(object):
         self.btnModifySounds.setText(_translate("mainWindow", "Modify Sound Files", None))
         self.imageGroup.setTitle(_translate("mainWindow", "Phoneme Image", None))
         self.btnLoadImage.setText(_translate("mainWindow", "Load Image", None))
-        self.lblGoalsNote.setText(_translate("mainWindow", "Note: goals are shown in bold.", None))
         self.gameSelector.setTabText(self.gameSelector.indexOf(self.phonemeAwarenessTab), _translate("mainWindow", "Phoneme Awareness", None))
         self.gameSelector.setTabText(self.gameSelector.indexOf(self.dividedWordTab), _translate("mainWindow", "Divided Words", None))
         self.gameSelector.setTabText(self.gameSelector.indexOf(self.workingMemoryTab), _translate("mainWindow", "Working Memory", None))
