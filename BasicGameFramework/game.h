@@ -45,7 +45,8 @@ private:
 
 void wait(float n);
 void shuffleLoad();
-void incrementFailures();
+void incrementAttempts();
 void incrementHints();
+void updateTime(double initTime);
 
 #endif

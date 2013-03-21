@@ -24,6 +24,7 @@ AudioChannel audio(0);
 struct Level *lvl;
 Volume vol;
 int playthrough;
+static SystemTime time;
 
 // TEST - Add Menu Item images and Asset Images
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -216,7 +217,6 @@ void Game::onTouch(unsigned id)
 		if (id == NUM_CUBES-1)
 		{
 			audio.play(lvl->goalsound);
-                        
                         incrementHints();
 		} 
                 else
@@ -229,7 +229,7 @@ void Game::onTouch(unsigned id)
 			else
 			{
 				vid[id].bg0.image(vec(0,0), Grid);
-                                //incrementFailures();
+                                incrementAttempts();
 				LOG(" was not goal\n");
 			}
 		}
@@ -257,10 +257,16 @@ void Game::run()
 
     	// Level loop
     	Events::cubeTouch.set(&Game::onTouch, this);
+	/* Time is broken
+        double initTime = time.uptime();
+	*/
     	while(running)	// wait for events to be handled
     		System::paint();
 
     	// if here level was completed!
+	/*
+        updateTime(initTime);
+	*/
     	for (unsigned k = 0; k < NUM_CUBES; k++)
     		vid[k].bg0.image(vec(0,0), Bravo);
 
@@ -321,13 +327,24 @@ void shuffleLoad()
 	System::paint();
 }
 
-void incrementFailures()
+void incrementAttempts()
 {
-
+    lvl->numAttempts++;
+    LOG("---Attempts %i---\n", lvl->numAttempts);
 }
 
 void incrementHints()
 {
     lvl->numHints++;
-    LOG("---Hints %i---", lvl->numHints);
+    LOG("---Hints %i---\n", lvl->numHints);
+}
+
+
+void updateTime(double initTime)
+{
+  /*
+    double finalTime = time.uptime();
+    lvl->time = (finalTime-initTime);
+    LOG("---Time %i---\n", lvl->time);
+  */
 }
