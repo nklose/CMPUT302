@@ -30,7 +30,6 @@ static SystemTime time;
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
 static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
 
-//TODO: As listed below
 /* Display title screen and set up user's game */
 void Game::title()
 {
@@ -41,9 +40,10 @@ void Game::title()
 	LOG("Waiting in title\n");
 	wait(1);
 
-	displayMenu();
+	//displayMenu();
 }
 
+//TODO: Remove? Yea, maybe
 // Display menu of available users
 void Game::displayMenu(){
 
@@ -104,7 +104,7 @@ void Game::displayMenu(){
         }
 
         LOG("Selected User: %d\n", e.item);
-    	// TODO: Load "file" of user. Current level, recorded stats, etc
+    	// notTODO: Load "file" of user. Current level, recorded stats, etc
     	// -> Load 'game' Dr. designed for this user? Or use same 'game' for everyone?
     	// --> Jake can explain if this doesn't make sense
 
@@ -162,7 +162,6 @@ void Game::onAccelChange(unsigned id)
 	}
 }
 
-//TODO: Why is this not being called? (Jake)
 /* Called upon the event of a cube being shaken. In this game this repeats the goal sound */
 void Game::onShake(unsigned id)
 {
@@ -199,14 +198,13 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
-	LOG("Cube touched: %u\n", id);
 	/*
 	 * A touch event occurs when first touching a cube screen as well as upon stopping touching
 	 * 	the cube screen. The touched array ensure that only one of these 2 events calls this func fully
 	 */
 	static bool touched[NUM_CUBES] = {false, false, false};
 
-	// TODO: Highlight cube and display/speak "Are you sure" <- or equivalent
+	// TODO?: Highlight cube and display/speak "Are you sure" <- or equivalent
 	// ->On clicking a confirmed cube continue else repeat above
 
 	touched[id] = !touched[id];
@@ -253,7 +251,6 @@ void Game::run()
 
     	// play goal sound once
     	audio.play(lvl->goalsound);
-    	LOG("Played sound for level %d in run()\n", i);
 
     	// Level loop
     	Events::cubeTouch.set(&Game::onTouch, this);
@@ -262,6 +259,7 @@ void Game::run()
 	*/
     	while(running)	// wait for events to be handled
     		System::paint();
+
 
     	// if here level was completed!
 	/*
@@ -272,7 +270,17 @@ void Game::run()
 
     	System::paint();
 
-    	// TODO: record all info that need be recorded
+    	// TODO: write all info that need be recorded
+
+    	bool advance = evaluateResults();
+    	//TODO: Find a better way to do this!
+    	//and Move this to a function.
+    	lvl->numAttempts = 0;
+    	lvl->numHints = 0;
+    	if(!advance){
+    		i--;
+    	}
+
 
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level
@@ -327,6 +335,10 @@ void shuffleLoad()
 	System::paint();
 }
 
+//TODO: Move these to a function inside the object themselves
+// It is bad coding style to couple classes like this
+// --> Less coupling more cohesion)
+//TODO: Only allow increments once per level-try per cube?
 void incrementAttempts()
 {
     lvl->numAttempts++;
@@ -347,4 +359,32 @@ void updateTime(double initTime)
     lvl->time = (finalTime-initTime);
     LOG("---Time %i---\n", lvl->time);
   */
+}
+
+//TODO: Game::evaluateResults()  ? ^v^v
+// evaluate the results of the level
+// return true iff player did well enough to advance to next level
+bool evaluateResults(){
+	//TODO: Tweak, and or change to sliders (Waiting on client)
+	float hintWeight = .5f;
+	float attemptWeight = .6f;
+	float timeWeight = .1f;
+
+	float finalResult;
+	//TODO: Change to a better threshold (user study)
+	float threshold = 1.5;
+
+	finalResult = (hintWeight * lvl->numHints)
+				+ (attemptWeight * lvl->numAttempts)
+				+ (timeWeight * lvl->time);
+
+	LOG("Hints -> %f \nattempt -> %f \ntime -> %f \ntotal: %f",
+			hintWeight*lvl->numHints, attemptWeight*lvl->numAttempts,
+			timeWeight*lvl->time, finalResult);
+
+	if(finalResult > threshold){
+		return false;
+	}
+
+	return true;
 }

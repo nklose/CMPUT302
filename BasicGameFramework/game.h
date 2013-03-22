@@ -48,5 +48,6 @@ void shuffleLoad();
 void incrementAttempts();
 void incrementHints();
 void updateTime(double initTime);
+bool evaluateResults();
 
 #endif

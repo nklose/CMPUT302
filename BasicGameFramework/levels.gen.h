@@ -15,7 +15,10 @@ struct Level {
 	Sifteo::AssetAudio sounds[3];			// Sound corresponding to cubes
 	unsigned indexes[3];					// index in vid[] that each image was placed
 	Sifteo::AssetAudio goalsound;
+		//TODO: float is smaller than double.
         double time;
+        //TODO: unsigned short is smaller than unsigned
+        // unsigned short: 0 to 65535
         unsigned numHints;
         unsigned numAttempts;
 };

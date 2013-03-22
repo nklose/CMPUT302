@@ -25,7 +25,7 @@ void main()
 	{
 		LOG("NEW MAIN WHILE LOOP\n");
 		game.init();
-		game.title(); // to call from or after init?
+		game.title();
 		game.run(); // to call from or after title?
 		game.cleanup();
 	}
