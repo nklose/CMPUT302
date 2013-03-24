@@ -26,7 +26,7 @@ Volume vol;
 int playthrough;
 static SystemTime time;
 
-// TEST - Add Menu Item images and Asset Images
+// Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
 static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
 
@@ -37,12 +37,11 @@ void Game::title()
 		vid[i].bg0.image(vec(0,0), Title);
 	}
 	System::paint();
-	LOG("Waiting in title\n");
 	wait(1);
 
 	//displayMenu();
 }
-
+/*
 //TODO: Remove? Yea, maybe
 // Display menu of available users
 void Game::displayMenu(){
@@ -111,7 +110,7 @@ void Game::displayMenu(){
         return;
     }
 }
-
+*/
 void Game::init()
 {
     // initialize playthrough counter to 0
@@ -153,9 +152,6 @@ void Game::onAccelChange(unsigned id)
 		bool shake = motion[id].shake;
 		if (shake){
 			onShake(id);
-		} else {
-
-			LOG("Not Shaken\n");
 		}
 
 		prevTilt = tilt;
@@ -215,7 +211,7 @@ void Game::onTouch(unsigned id)
 		if (id == NUM_CUBES-1)
 		{
 			audio.play(lvl->goalsound);
-                        incrementHints();
+            incrementHints();
 		} 
                 else
 		{
@@ -227,7 +223,8 @@ void Game::onTouch(unsigned id)
 			else
 			{
 				vid[id].bg0.image(vec(0,0), Grid);
-                                incrementAttempts();
+                incrementAttempts();
+    			audio.play(lvl->goalsound);
 				LOG(" was not goal\n");
 			}
 		}
