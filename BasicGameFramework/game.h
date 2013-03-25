@@ -49,5 +49,6 @@ void incrementAttempts();
 void incrementHints();
 void updateTime(SystemTime initTime, SystemTime finalTime);
 bool evaluateResults();
+void saveAll();
 
 #endif

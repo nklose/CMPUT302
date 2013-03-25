@@ -23,6 +23,7 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
 int playthrough;
+StoredObject lvlData = StoredObject::allocate();
 
 // Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -209,7 +210,7 @@ void Game::onTouch(unsigned id)
 		if (id == NUM_CUBES-1)
 		{
 			audio.play(lvl->goalsound);
-            incrementHints();
+			lvl->numHints++;
 		} 
                 else
 		{
@@ -221,8 +222,8 @@ void Game::onTouch(unsigned id)
 			else
 			{
 				vid[id].bg0.image(vec(0,0), Grid);
-                incrementAttempts();
-    			audio.play(lvl->goalsound);
+				lvl->numAttempts++;
+				audio.play(lvl->goalsound);
 				LOG(" was not goal\n");
 			}
 		}
@@ -232,7 +233,6 @@ void Game::onTouch(unsigned id)
 /* Main game loop over defined levels */
 void Game::run()
 {
-  //mapVol.attach(vol);
 	// TODO: Make a game ending. It just repeats at the moment
     for (unsigned i = 0; i < numLevels; i++)
     {
@@ -250,9 +250,6 @@ void Game::run()
     	// Level loop
 	SystemTime initTime = SystemTime::now();
     	Events::cubeTouch.set(&Game::onTouch, this);
-	/* Time is broken
-        double initTime = time.uptime();
-	*/
     	while(running)	// wait for events to be handled
     		System::paint();
 
@@ -266,7 +263,6 @@ void Game::run()
     	System::paint();
 
     	// TODO: write all info that need be recorded
-
     	bool advance = evaluateResults();
     	//TODO: Find a better way to do this!
     	//and Move this to a function.
@@ -280,7 +276,8 @@ void Game::run()
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level
     }
-    // TODO: Also doesn't get called yet.
+    // TODO: Doesn't get called yet
+    saveAll();
     playthrough++;
 }
 
@@ -330,24 +327,11 @@ void shuffleLoad()
 	System::paint();
 }
 
-//TODO: Move these to a function inside the object themselves
-// It is bad coding style to couple classes like this
-// --> Less coupling more cohesion)
 //TODO: Only allow increments once per level-try per cube?
-void incrementAttempts()
-{
-    lvl->numAttempts++;
-}
-
-void incrementHints()
-{
-    lvl->numHints++;
-}
-
 
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
-    double playTime = (finalTime.uptime() - initTime.uptime());
+    float playTime = (finalTime.uptime() - initTime.uptime());
     lvl->time = playTime;
     LOG("\n---Time %f---\n\n", lvl->time);
 }
@@ -369,7 +353,7 @@ bool evaluateResults(){
 				+ (attemptWeight * lvl->numAttempts)
 				+ (timeWeight * lvl->time);
 
-	LOG("Hints -> %f \nattempt -> %f \ntime -> %f \ntotal: %f",
+	LOG("Hints -> %f \nattempt -> %f \ntime -> %f \ntotal: %f\n",
 			hintWeight*lvl->numHints, attemptWeight*lvl->numAttempts,
 			timeWeight*lvl->time, finalResult);
 
@@ -378,4 +362,20 @@ bool evaluateResults(){
 	}
 
 	return true;
+}
+
+// Creates a 2D array to hold the 3 result parameters and a pointer to it
+// uses write() to the global StoredObject to overwrite it with all new data
+void saveAll(){
+    void *dataPointer;
+    unsigned dataSize;
+    float allResults[numLevels][3];
+    for (int i = 0; i < numLevels; i++){
+	allResults[i][0] = lvl->numHints;
+	allResults[i][1] = lvl->numAttempts;
+	allResults[i][2] = lvl->time;
+    }
+    dataPointer = &allResults;
+    dataSize = sizeof(allResults);
+    lvlData.write(dataPointer, dataSize);
 }
