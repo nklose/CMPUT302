@@ -23,6 +23,7 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
 int playthrough;
+//Volume storage = Volume::previous();
 StoredObject lvlData = StoredObject::allocate();
 
 // Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
@@ -271,13 +272,14 @@ void Game::run()
     	if(!advance){
     		i--;
     	}
-
+	if (i == 2){
+	    saveAll();
+	}
 
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level
     }
     // TODO: Doesn't get called yet
-    saveAll();
     playthrough++;
 }
 
@@ -377,5 +379,6 @@ void saveAll(){
     }
     dataPointer = &allResults;
     dataSize = sizeof(allResults);
+    LOG("\n---Size %i---\n\n", dataSize);
     lvlData.write(dataPointer, dataSize);
 }
