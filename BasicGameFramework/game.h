@@ -47,7 +47,7 @@ void wait(float n);
 void shuffleLoad();
 void incrementAttempts();
 void incrementHints();
-void updateTime(double initTime);
+void updateTime(SystemTime initTime, SystemTime finalTime);
 bool evaluateResults();
 
 #endif

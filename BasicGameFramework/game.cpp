@@ -22,9 +22,7 @@ CubeSet imageCubes(0,NUM_IMAGES);
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct Level *lvl;
-Volume vol;
 int playthrough;
-static SystemTime time;
 
 // Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -250,6 +248,7 @@ void Game::run()
     	audio.play(lvl->goalsound);
 
     	// Level loop
+	SystemTime initTime = SystemTime::now();
     	Events::cubeTouch.set(&Game::onTouch, this);
 	/* Time is broken
         double initTime = time.uptime();
@@ -259,9 +258,8 @@ void Game::run()
 
 
     	// if here level was completed!
-	/*
-        updateTime(initTime);
-	*/
+        SystemTime finalTime = SystemTime::now();
+        updateTime(initTime, finalTime);
     	for (unsigned k = 0; k < NUM_CUBES; k++)
     		vid[k].bg0.image(vec(0,0), Bravo);
 
@@ -339,23 +337,19 @@ void shuffleLoad()
 void incrementAttempts()
 {
     lvl->numAttempts++;
-    LOG("---Attempts %i---\n", lvl->numAttempts);
 }
 
 void incrementHints()
 {
     lvl->numHints++;
-    LOG("---Hints %i---\n", lvl->numHints);
 }
 
 
-void updateTime(double initTime)
+void updateTime(SystemTime initTime, SystemTime finalTime)
 {
-  /*
-    double finalTime = time.uptime();
-    lvl->time = (finalTime-initTime);
-    LOG("---Time %i---\n", lvl->time);
-  */
+    double playTime = (finalTime.uptime() - initTime.uptime());
+    lvl->time = playTime;
+    LOG("\n---Time %f---\n\n", lvl->time);
 }
 
 //TODO: Game::evaluateResults()  ? ^v^v
