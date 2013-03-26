@@ -5,22 +5,21 @@
  *      Author: Andrew Neufeld
  */
 
-#ifndef LEVELS_GEN_H_
-#define LEVELS_GEN_H_
+#pragma once
 
 /* for now assume the target/goal word info is stored at index 0 in the arrays */
-// intention: 4 images/sounds per level. Currently 3 for example.
-struct Level {
+// intention: 3 images/sounds per level. Currently 3 for example.
+struct LevelSet {
 	Sifteo::AssetImage phonemes[3];			// Image options for cubes
 	Sifteo::AssetAudio sounds[3];			// Sound corresponding to cubes
 	unsigned indexes[3];					// index in vid[] that each image was placed
 	Sifteo::AssetAudio goalsound;
-		//TODO: float is smaller than double.
-        double time;
-        //TODO: unsigned short is smaller than unsigned
-        // unsigned short: 0 to 65535
-        unsigned numHints;
-        unsigned numAttempts;
+	//TODO: float is smaller than double.
+	double time;
+	//TODO: unsigned short is smaller than unsigned
+	// unsigned short: 0 to 65535
+	unsigned numHints;
+	unsigned numAttempts;
 };
 
 struct Group {
@@ -29,8 +28,6 @@ struct Group {
 
 extern const unsigned numLevels;
 
-extern struct Level Levels[];
+extern struct LevelSet Levels[];
 
 extern struct Group LevelAssets[];
-
-#endif /* LEVELS_GEN_H_ */

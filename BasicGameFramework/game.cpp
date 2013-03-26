@@ -21,7 +21,7 @@ CubeSet allCubes(0,NUM_CUBES);
 CubeSet imageCubes(0,NUM_IMAGES);
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
-struct Level *lvl;
+struct LevelSet *lvl;
 int playthrough;
 //Volume storage = Volume::previous();
 StoredObject lvlData = StoredObject::allocate();
