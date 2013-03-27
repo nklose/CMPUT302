@@ -13,10 +13,60 @@ def generate_files(levels):
 	generate_levelGenCpp(levels)
 
 def append_assetsLua(levels):
+	# get the overall number of LevelSets
+	numLevels = 0
+	for x in range(0, len(levels)):
+		level = levels[x]
+		numLevels += len(level.sets)
+
+	# keep track of the overall LevelSet num
+	levelNum = 0
+
 	assetsLua = open('assets.lua', mode='a')		# append mode will append, not replace
+	for i in range(0, numLevels)
+		level = levels[x]
+		for j in range(0, len(level.sets))
+			levelNum += 1
+			set = level.sets[j]
+			append_LevelAssets(assetsLua, set, levelNum)	
+
+	# and remember to close the file
+	assetsLua.close()
+
+def append_levelAssets(assetfile, set, num):
+	# write intro comment and lua group descriptor
+	assetfile.write('\n-- Level' + str(num) + ' asset group\n')
+	assetfile.write('Level' + str(num) + 'Assets = group{quality=10}\n')
+
+	# filepath to sound for goal filepath
+	goalFilepath = "" 
+
+	# write LevelSet phonemes and sounds for cubes
+	for x in range(1,4):
+		phoneme = set.phonemes[x-1]
+		imgFilepath = phoneme.image_path
+		soundFilepath = phoneme.sound_path
+
+		# if goal phoneme then get filepath for GoalSound write below
+		if phoneme.goal == True:
+			goalFilepath = soundFilepath	
+
+		assetfile.write('L' + str(num) + 'Phoneme' + str(x) + ' = image{"' + imgFilepath + '"}\n')
+		assetfile.write('L' + str(num) + 'Sound' + str(x) + ' = sound{"' + soundFilepath + '", encode="pcm"}\n')
+
+	# write goal sound 
+	assetfile.write('L' + str(num) + 'GoalSound = sound{"' + goalFilepath + '", encode="pcm"}\n\n')
+
 
 def generate_levelGenCpp(levels):
+	# get the overall number of LevelSets
 	numLevels = len(levels)
+"""
+	numLevels = 0
+	for x in range(0, len(levels)):
+		level = levels[x]
+		numLevels += len(level.sets)
+"""
 	levelsGenCpp = open('levels.gen.cpp', mode='w') 	# write mode will replace entire file each time
 
 	# Write the begining, constant portion with includes to the file
@@ -76,4 +126,4 @@ def create_asset_token(levelNum, phonemeNum, assetType):
 	return "L" + str(levelNum) + assetType + str(phonemeNum)
 
 if __name__ == "__main__":
-	generate_levelGenCpp([1,2,3,4])
+	generate_levelGenCpp([[1,2,3], [1,2,3],[1,2,3]])
