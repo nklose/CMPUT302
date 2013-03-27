@@ -21,6 +21,8 @@ class Phoneme():
         string += self.sound_path + "\n\tgoal = " + str(self.goal) + "]"
         return string
 
+# A set consists of a list of phonemes, from which a few are selected
+# during a playthrough.
 class Set():
     def __init__(self):
         self.phonemes = []
@@ -61,6 +63,7 @@ class Set():
         string += "]"
         return string
 
+# A level consists of a list of sets.
 class Level():
     def __init__(self):
         self.sets = []
@@ -79,3 +82,10 @@ class Level():
     def remove_set(self, index):
         del self.sets[index]
     
+# A game consists of a list of levels as well as variables for each difficulty slider.
+class Game():
+    def __init__(self):
+        self.levels = []
+        self.failedAttemptsWeight = 50
+        self.hintsRequestedWeight = 50
+        self.timeWeight = 50

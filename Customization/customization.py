@@ -27,7 +27,7 @@ NUM_LEVELS = 10
 DEBUG = False # print debug info to console
 if len(sys.argv) > 1:
     if sys.argv[1] == "debug": # check for command-line argument
-        DEBUG = True 
+        DEBUG = False
 
 class StartQT4(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -448,8 +448,18 @@ class StartQT4(QtGui.QMainWindow):
         except:
             self.msg("Warning: sounds config file not found.")
 
-    # Save button functionality
+    # Saves the entire configuration as a file using the pickle module.
+    # The file contains a single Game() object as defined in phoneme.py.
+    # The object consists of a list of levels as well as values for each
+    # difficulty slider (failed attempts, hints requested, and time).
     def save(self):
+        # construct the game object to save
+        game = Game()
+        game.levels = self.levels
+        game.failedAttemptsWeight = self.ui.sldrFailedAttempts.value()
+        game.hintsRequestedWeight = self.ui.sldrHintsRequested.value()
+        game.timeWeight = self.ui.sldrTime.value()
+
         # get path to save file to
         path = QtGui.QFileDialog.getSaveFileName(self, 
                                            "Save File", 
@@ -458,7 +468,7 @@ class StartQT4(QtGui.QMainWindow):
         path = str(path) + ".cfg"
         try:
             with open(str(path), 'wb') as output:
-                pickle.dump(self.levels, output, pickle.HIGHEST_PROTOCOL)
+                pickle.dump(game, output, pickle.HIGHEST_PROTOCOL)
                 self.msg("Save successful.")
         except:
             self.msg("Save failed.")
@@ -472,10 +482,15 @@ class StartQT4(QtGui.QMainWindow):
                                                      "",
                                                      "Phoneme Awareness Configuration File (*.cfg)"))
 
-        # get levels list from file
+        # get game object from file
+        game = None
         try:
             with open(path, 'rb') as input:
-                self.levels = pickle.load(input)
+                game = pickle.load(input)
+                self.levels = game.levels
+                self.ui.sldrFailedAttempts.setValue(game.failedAttemptsWeight)
+                self.ui.sldrHintsRequested.setValue(game.hintsRequestedWeight)
+                self.ui.sldrTime.setValue(game.timeWeight)
                 self.msg("Settings file loaded successfully.")
                 self.update_sets()
         except:

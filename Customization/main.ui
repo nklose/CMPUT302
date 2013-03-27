@@ -226,7 +226,7 @@
        <x>100</x>
        <y>30</y>
        <width>256</width>
-       <height>521</height>
+       <height>281</height>
       </rect>
      </property>
      <property name="font">
@@ -260,7 +260,7 @@
      <property name="geometry">
       <rect>
        <x>310</x>
-       <y>560</y>
+       <y>320</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -283,7 +283,7 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>560</y>
+       <y>320</y>
        <width>41</width>
        <height>41</height>
       </rect>
@@ -1604,6 +1604,115 @@
         <bool>true</bool>
        </property>
       </widget>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>370</y>
+       <width>251</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Result Weight Settings</string>
+     </property>
+     <widget class="QLabel" name="lblFailedAttempts">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>121</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Failed Attempts:</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="sldrFailedAttempts">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>231</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>50</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblHintsRequested">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>141</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Hints Requested:</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="sldrHintsRequested">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>231</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>50</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lblTime">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>121</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Time:</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="sldrTime">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>231</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>50</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
      </widget>
     </widget>
    </widget>
