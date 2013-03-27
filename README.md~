@@ -1,16 +1,9 @@
 Sifteos for Dyslexia
 ====================
-CMPUT 302 Project 8: "Sifteo Games for Dyslexia" for Suzanne Sauvé.
-
 Copyright (c) 2013 Jake Brand, Nick Klose, Richard Leung, 
 Andrew Neufeld, and Anthony Sopkow.
 
 The Sifteos for Dyslexia project has the goal of creating games for Sifteo cubes which will help children with dyslexia learn to discern between different audible and visual phonemes.
-
-Required Packages
-=================
-1. Sifteo SDK. The Sifteo SDK is Copyright (c) 2012, Sifteo, Inc. All rights reserved.
-2. PyQt4. PyQT is Copyright (c) 2013, Riverbank Computing Limited. Riverbank Computing Limited is a company registered in England and Wales with company number 4314904.
 
 Details
 =======
