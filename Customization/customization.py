@@ -473,6 +473,15 @@ class StartQT4(QtGui.QMainWindow):
         except:
             self.msg("Save failed.")
 
+        # additionally, save the slider values into a text file
+        #try:
+        #    with open("sliders.txt", 'wb') as output:
+        #        output.write(str(game.failedAttemptsWeight) + "\n")
+        #        output.write(str(game.hintsRequestedWeight) + "\n")
+        #        output.write(str(game.timeWeight) + "\n")
+        #except:
+        #    self.msg("Slider file output failed.")
+
 
     # Load button functionality
     def load(self):
