@@ -122,7 +122,7 @@ def generate_levelGenCpp(levels):
 	# add the initializers for slider weights for difficulty scaling
 	levelsGenCpp.write('unsigned failedAttemptsWeight = ' + str(game.failedAttemptsWeight) + ';\n')
 	levelsGenCpp.write('unsigned hintsAttemptsWeight = ' + str(game.hintsAttemptsWeight) + ';\n')
-	levelsGenCpp.write('unsigned timeWeight = ' + str(game.timeWeight) + ';\n\n';)
+	levelsGenCpp.write('unsigned timeWeight = ' + str(game.timeWeight) + ';\n\n')
 
 	# and remember to close the file!
 	levelsGenCpp.close()
@@ -152,25 +152,3 @@ def create_level_line(num):
 
 def create_asset_token(levelNum, phonemeNum, assetType):
 	return "L" + str(levelNum) + assetType + str(phonemeNum)
-
-if __name__ == "__main__":	
-	levels = []
-	for x in range(0, 2):
-		levels.append(Level())
-		for y in range(0,2):
-			level = levels[x]
-			level.sets.append(Set())
-			sett = level.sets[y]
-			for z in range(0,3):
-				ph = Phoneme()
-				ph.name = "Test"
-				ph.text = "testtxt"
-				ph.image_path = "full/image_path" + str(z+1) + ".file"
-				ph.sound_path = "full/sound_path" + str(z+1) + ".file"
-				if z == 0:
-					ph.goal = True
-				else:
-					ph.goal = False
-				sett.add_phoneme(ph)
-
-	generate_files(levels, "")
