@@ -50,5 +50,6 @@ void incrementHints();
 void updateTime(SystemTime initTime, SystemTime finalTime);
 bool evaluateResults();
 void saveAll();
+void loadAll();
 
 #endif

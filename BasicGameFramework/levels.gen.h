@@ -27,7 +27,9 @@ struct Group {
 };
 
 extern const unsigned numLevels;
-
 extern struct LevelSet Levels[];
-
 extern struct Group LevelAssets[];
+
+extern unsigned failedAttemptsWeight;
+extern unsigned hintsRequestedWeight;
+extern unsigned timeWeight;

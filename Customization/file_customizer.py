@@ -4,7 +4,7 @@ from phoneme import *
 Some basic constant values
 """
 # Static string for includes of levels.gen.cpp
-LEVELS_GEN_TOP = '#include <sifteo.h>\n#include "levels.gen.h"\n#include "assets.gen.h"\n'
+LEVELS_GEN_CPP_TOP = '#include <sifteo.h>\n#include "levels.gen.h"\n#include "assets.gen.h"\n'
 # Static string that contains the static assets within assets.lua
 ASSETS_LUA_TOP = (
 		'-- Metadata\nIconAssets = group{quality=9.95}\nIcon = image{"assets/icon.png"}\n\n'
@@ -29,11 +29,12 @@ NUM_IN_SET = 3
 	This function will create the "assets.lua" file and the "levels.gen.cpp" generate_files
 		that are used for the custom game data of the Sifteos Phoneme Awareness game
 """
-def generate_files(levels, path):
-	append_assetsLua(levels, path)
-	generate_levelGenCpp(levels, path)
+def generate_files(game, path):
+	# handle each file generation
+	generate_assetsLua(game.levels, path)
+	generate_levelGenCpp(game, path)
 
-def append_assetsLua(levels):
+def generate_assetsLua(levels):
 	# get the overall number of LevelSets
 	numLevels = 0
 	for x in range(0, len(levels)):
@@ -52,12 +53,12 @@ def append_assetsLua(levels):
 		for j in range(0, len(level.sets)):
 			levelNum += 1
 			set = level.sets[j]
-			append_levelAssets(assetsLua, set, levelNum)	
+			generate_levelAssets(assetsLua, set, levelNum)	
 
 	# and remember to close the file
 	assetsLua.close()
 
-def append_levelAssets(assetfile, set, num):
+def generate_levelAssets(assetfile, set, num):
 	# write intro comment and lua group descriptor
 	assetfile.write('\n-- Level' + str(num) + ' asset group\n')
 	assetfile.write('Level' + str(num) + 'Assets = group{quality=10}\n')
@@ -92,7 +93,7 @@ def generate_levelGenCpp(levels):
 	levelsGenCpp = open(path + 'levels.gen.cpp', mode='w') 	# write mode will replace entire file each time
 
 	# Write the begining, constant portion with includes to the file
-	levelsGenCpp.write(LEVELS_GEN_TOP + '\n')
+	levelsGenCpp.write(LEVELS_GEN_CPP_TOP + '\n')
 
 	# write the constant numLevels var
 	levelsGenCpp.write('const unsigned numLevels = ' + str(numLevels) + ';\n\n')
@@ -117,6 +118,11 @@ def generate_levelGenCpp(levels):
 		if x < numLevels:
 			levelsGenCpp.write(", ")	
 	levelsGenCpp.write('};\n\n')
+
+	# add the initializers for slider weights for difficulty scaling
+	levelsGenCpp.write('unsigned failedAttemptsWeight = ' + str(game.failedAttemptsWeight) + ';\n')
+	levelsGenCpp.write('unsigned hintsAttemptsWeight = ' + str(game.hintsAttemptsWeight) + ';\n')
+	levelsGenCpp.write('unsigned timeWeight = ' + str(game.timeWeight) + ';\n\n';)
 
 	# and remember to close the file!
 	levelsGenCpp.close()

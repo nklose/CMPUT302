@@ -18,3 +18,7 @@ struct LevelSet Level3 = { {L3Phoneme1, L3Phoneme2, L3Phoneme3}, {L3Sound1, L3So
 struct LevelSet Levels[numLevels] = {Level1, Level2, Level3};
 
 struct Group LevelAssets[numLevels] = {{Level1Assets}, {Level2Assets}, {Level3Assets}};
+
+unsigned failedAttemptsWeight = 100;
+unsigned hintsRequestedWeight = 100;
+unsigned timeWeight = 40;
