@@ -230,7 +230,7 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.soundsGroup.setEnabled(False)
         self.ui.imageGroup.setEnabled(False)
         self.ui.lblSoundPath.clear()
-        self.ui.lblImagePath.clear()
+        self.ui.lblImagePath = ""
         self.ui.imgPhoneme.clear()
         
     # Enables phoneme-specific content in the UI
