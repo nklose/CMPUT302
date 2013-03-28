@@ -114,3 +114,8 @@ const RGB565 BLUE = RGB565::fromRGB(0x0900FF);
 const RGB565 RED = RGB565::fromRGB(0xFF0900);
 const RGB565 GREEN = RGB565::fromRGB(0x00FF09);
 const RGB565 YELLOW = RGB565::fromRGB(0xFFFF00);
+
+//TEST SLIDERS
+static unsigned hintSliderWeight = 40;
+static unsigned attemptSliderWeight = 60;
+static unsigned timeSliderWeight = 20;

@@ -338,26 +338,26 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
     LOG("\n---Time %f---\n\n", lvl->time);
 }
 
-//TODO: Game::evaluateResults()  ? ^v^v
 // evaluate the results of the level
 // return true iff player did well enough to advance to next level
 bool evaluateResults(){
 	//TODO: Tweak, and or change to sliders (Waiting on client)
-	float hintWeight = .5f;
-	float attemptWeight = .6f;
-	float timeWeight = .1f;
 
-	float finalResult;
+	unsigned hintsWeight = hintSliderWeight;
+	unsigned attemptsWeight= attemptSliderWeight;
+	unsigned timesWeight = timeSliderWeight;
+
+	unsigned finalResult;
 	//TODO: Change to a better threshold (user study)
-	float threshold = 1.5;
+	unsigned threshold = 12000;
 
-	finalResult = (hintWeight * lvl->numHints)
-				+ (attemptWeight * lvl->numAttempts)
-				+ (timeWeight * lvl->time);
+	finalResult = (hintsWeight * lvl->numHints)
+				+ (attemptsWeight * lvl->numAttempts)
+				+ (timesWeight * lvl->time);
 
-	LOG("Hints -> %f \nattempt -> %f \ntime -> %f \ntotal: %f\n",
-			hintWeight*lvl->numHints, attemptWeight*lvl->numAttempts,
-			timeWeight*lvl->time, finalResult);
+//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
+//			hintsWeight*lvl->numHints, attemptsWeight*lvl->numAttempts,
+//			timesWeight*lvl->time, finalResult);
 
 	if(finalResult > threshold){
 		return false;

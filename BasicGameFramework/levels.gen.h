@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "constants.h"
+
 /* for now assume the target/goal word info is stored at index 0 in the arrays */
 // intention: 3 images/sounds per level. Currently 3 for example.
 struct LevelSet {
@@ -27,9 +29,13 @@ struct Group {
 };
 
 extern const unsigned numLevels;
+
 extern struct LevelSet Levels[];
+
 extern struct Group LevelAssets[];
 
-extern unsigned failedAttemptsWeight;
-extern unsigned hintsRequestedWeight;
-extern unsigned timeWeight;
+extern unsigned hintSliderWeight;
+
+extern unsigned attemptSliderWeight;
+
+extern unsigned timeSliderWeight;
