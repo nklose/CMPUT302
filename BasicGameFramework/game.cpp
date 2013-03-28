@@ -403,7 +403,7 @@ void saveAll(){
     LOG("\nSAVING---Size %i------Pointer %p---\n\n", dataSize, dataPointer);
     lvlData.write(dataPointer, dataSize);
 }
-
+/*
 // Reads the storedObject from the current volume into the dataBuffer array
 // TODO: Use a better way of storing dynamic data
 void loadAll(){
@@ -420,3 +420,4 @@ void loadAll(){
 	LOG("\n");
     }
 }
+*/

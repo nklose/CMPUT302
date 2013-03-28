@@ -34,7 +34,7 @@ def generate_files(game, path):
 	generate_assetsLua(game.levels, path)
 	generate_levelGenCpp(game, path)
 
-def generate_assetsLua(levels):
+def generate_assetsLua(levels, path):
 	# get the overall number of LevelSets
 	numLevels = 0
 	for x in range(0, len(levels)):
@@ -64,25 +64,37 @@ def generate_levelAssets(assetfile, set, num):
 	assetfile.write('Level' + str(num) + 'Assets = group{quality=10}\n')
 
 	# filepath to sound for goal filepath
-	goalFilepath = "" 
+	goalPhoneme = ""
+	# non-goal phonemes list
+	nonGoalPhonemes = []	
 
-	# write LevelSet phonemes and sounds for cubes
+	# separate goal phoneme from others for later ordering in writing
 	for x in range(1,4):
 		phoneme = set.phonemes[x-1]
+
+		if (phoneme.goal):
+			goalPhoneme = phoneme
+		else:
+			nonGoalPhonemes.append(phoneme)
+
+	# write first phoneme, goalPhoneme, to list
+	assetfile.write('L' + str(num) + 'Phoneme' + str(1) + ' = image{"' + goalPhoneme.image_path + '"}\n')
+	assetfile.write('L' + str(num) + 'Sound' + str(1) + ' = sound{"' + goalPhoneme.sound_path + '", encode="pcm"}\n')
+
+	# write LevelSet phonemes and sounds for cubes
+	for x in range(1,3):
+		phoneme = nonGoalPhonemes[x-1] 
 		imgFilepath = phoneme.image_path
 		soundFilepath = phoneme.sound_path
 
-		# if goal phoneme then get filepath for GoalSound write below
-		if phoneme.goal == True:
-			goalFilepath = soundFilepath
+		assetfile.write('L' + str(num) + 'Phoneme' + str(x+1) + ' = image{"' + imgFilepath + '"}\n')
+		assetfile.write('L' + str(num) + 'Sound' + str(x+1) + ' = sound{"' + soundFilepath + '", encode="pcm"}\n')
 
-		assetfile.write('L' + str(num) + 'Phoneme' + str(x) + ' = image{"' + imgFilepath + '"}\n')
-		assetfile.write('L' + str(num) + 'Sound' + str(x) + ' = sound{"' + soundFilepath + '", encode="pcm"}\n')
+	# write goal sound
+	assetfile.write('L' + str(num) + 'GoalSound = sound{"' + goalPhoneme.sound_path + '", encode="pcm"}\n\n')
 
-	# write goal sound 
-	assetfile.write('L' + str(num) + 'GoalSound = sound{"' + goalFilepath + '", encode="pcm"}\n\n')
-
-def generate_levelGenCpp(levels):
+def generate_levelGenCpp(game, path):
+	levels = game.levels
 	# get the overall number of LevelSets
 	numLevels = 0
 	for x in range(0, len(levels)):
@@ -121,7 +133,7 @@ def generate_levelGenCpp(levels):
 
 	# add the initializers for slider weights for difficulty scaling
 	levelsGenCpp.write('unsigned failedAttemptsWeight = ' + str(game.failedAttemptsWeight) + ';\n')
-	levelsGenCpp.write('unsigned hintsAttemptsWeight = ' + str(game.hintsAttemptsWeight) + ';\n')
+	levelsGenCpp.write('unsigned hintsRequestedWeight = ' + str(game.hintsRequestedWeight) + ';\n')
 	levelsGenCpp.write('unsigned timeWeight = ' + str(game.timeWeight) + ';\n\n')
 
 	# and remember to close the file!
@@ -152,3 +164,30 @@ def create_level_line(num):
 
 def create_asset_token(levelNum, phonemeNum, assetType):
 	return "L" + str(levelNum) + assetType + str(phonemeNum)
+
+# if run directly, this will generate test files to show it works
+if __name__ == "__main__":	
+	game = Game()
+	levels = []
+
+	# create some levels with sets with phonemes within
+	for x in range(0, 2):
+		levels.append(Level())
+		for y in range(0,2):
+			level = levels[x]
+			level.sets.append(Set())
+			sett = level.sets[y]
+			for z in range(0,3):
+				ph = Phoneme()
+				ph.name = "Test"
+				ph.text = "testtxt"
+				ph.image_path = "full/image_path" + str(z+1) + ".file"
+				ph.sound_path = "full/sound_path" + str(z+1) + ".file"
+				if z == 0:
+					ph.goal = True
+				else:
+					ph.goal = False
+				sett.add_phoneme(ph)
+
+	game.levels = levels
+	generate_files(game, "")
