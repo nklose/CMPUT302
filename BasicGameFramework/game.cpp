@@ -30,91 +30,11 @@ StoredObject lvlData = StoredObject::allocate();
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
 static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
 
-/* Display title screen and set up user's game */
-void Game::title()
-{
-	for(int i = 0; i < NUM_CUBES; i++){
-		vid[i].bg0.image(vec(0,0), Title);
-	}
-	System::paint();
-	wait(1);
 
-	//displayMenu();
-}
-/*
-//TODO: Remove? Yea, maybe
-// Display menu of available users
-void Game::displayMenu(){
-
-	loader.load(MenuAssetGrp, MainSlot);
-	// Ask user to select user from a list
-	// (list made in customization screen by client?)
-    Menu m(vid[0], &menAssets, menItems);
-    m.anchor(2);
-
-    struct MenuEvent e;
-    uint8_t item;
-
-    while (1) {
-        while (m.pollEvent(&e)) {
-
-            switch (e.type) {
-
-                case MENU_ITEM_PRESS:
-                        m.anchor(e.item);
-                    break;
-
-                case MENU_EXIT:
-                    // this is not possible when pollEvent is used as the condition to the while loop.
-                    // NOTE: this event should never have its default handler skipped.
-                    ASSERT(false);
-                    break;
-
-                case MENU_NEIGHBOR_ADD:
-                    LOG("found cube %d on side %d of menu (neighbor's %d side)\n",
-                         e.neighbor.neighbor, e.neighbor.masterSide, e.neighbor.neighborSide);
-                    break;
-
-                case MENU_NEIGHBOR_REMOVE:
-                    LOG("lost cube %d on side %d of menu (neighbor's %d side)\n",
-                         e.neighbor.neighbor, e.neighbor.masterSide, e.neighbor.neighborSide);
-                    break;
-
-                case MENU_ITEM_ARRIVE:
-                    LOG("arriving at menu item %d\n", e.item);
-                    item = e.item;
-                    break;
-
-                case MENU_ITEM_DEPART:
-                    LOG("departing from menu item %d, scrolling %s\n", item, e.direction > 0 ? "forward" : "backward");
-                    break;
-
-                case MENU_PREPAINT:
-                    // do your implementation-specific drawing here
-                    // NOTE: this event should never have its default handler skipped.
-                    break;
-
-                case MENU_UNEVENTFUL:
-                    // this should never happen. if it does, it can/should be ignored.
-                    ASSERT(false);
-                    break;
-            }
-            m.performDefault();
-        }
-
-        LOG("Selected User: %d\n", e.item);
-    	// notTODO: Load "file" of user. Current level, recorded stats, etc
-    	// -> Load 'game' Dr. designed for this user? Or use same 'game' for everyone?
-    	// --> Jake can explain if this doesn't make sense
-
-        return;
-    }
-}
-*/
 void Game::init()
 {
     // initialize playthrough counter to 0
-    playthrough = 0;
+    playthrough = -1;
 	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
@@ -194,41 +114,66 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
-	/*
-	 * A touch event occurs when first touching a cube screen as well as upon stopping touching
-	 * 	the cube screen. The touched array ensure that only one of these 2 events calls this func fully
-	 */
-	static bool touched[NUM_CUBES] = {false, false, false};
+	if(playthrough == -1){
+		running = false;
+	}else{
+		/*
+		 * A touch event occurs when first touching a cube screen as well as upon stopping touching
+		 * 	the cube screen. The touched array ensure that only one of these 2 events calls this func fully
+		 */
+		static bool touched[NUM_CUBES] = {false, false, false};
 
-	// TODO?: Highlight cube and display/speak "Are you sure" <- or equivalent
-	// ->On clicking a confirmed cube continue else repeat above
+		// TODO?: Highlight cube and display/speak "Are you sure" <- or equivalent
+		// ->On clicking a confirmed cube continue else repeat above
 
-	touched[id] = !touched[id];
+		touched[id] = !touched[id];
 
-	if (touched[id])
-	{
-		// if cube is the speaker cube, replay goal sound
-		if (id == NUM_CUBES-1)
+		if (touched[id])
 		{
-			audio.play(lvl->goalsound);
-			lvl->numHints++;
-		} 
-                else
-		{
-			if (id == lvl->indexes[0])
+			// if cube is the speaker cube, replay goal sound
+			if (id == NUM_CUBES-1)
 			{
-				LOG(" was goal\n");
-				running = false;
-			}
-			else
-			{
-				vid[id].bg0.image(vec(0,0), Grid);
-				lvl->numAttempts++;
 				audio.play(lvl->goalsound);
-				LOG(" was not goal\n");
+				lvl->numHints++;
+			} 
+					else
+			{
+				if (id == lvl->indexes[0])
+				{
+					LOG(" was goal\n");
+					running = false;
+				}
+				else
+				{
+					vid[id].bg0.image(vec(0,0), Grid);
+					lvl->numAttempts++;
+					audio.play(lvl->goalsound);
+					LOG(" was not goal\n");
+				}
 			}
 		}
 	}
+}
+
+
+void Game::startRun(){
+		Events::cubeTouch.set(&Game::onTouch, this);
+
+    	loader.load(LevelAssets[0].grp, MainSlot);
+    	running = true;
+
+		// load images onto cubes
+		vid[0].bg0.image(vec(0,0), Speaker);
+    	wait(0.5);
+
+    	//Events::cubeTouch.set(&Game::onTouch, this);
+    	while(running)	// wait for events to be handled
+    		System::paint();
+		running = true;
+		playthrough = 0;
+		Events::cubeTouch.unset();	// disable touch while showing "bravo"
+    	wait(.5);	
+
 }
 
 /* Main game loop over defined levels */
