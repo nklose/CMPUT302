@@ -26,6 +26,7 @@ void main()
 		LOG("NEW MAIN WHILE LOOP\n");
 		game.init();
 		game.title();
+		game.startRun();
 		game.run();
 		game.cleanup();
 	}

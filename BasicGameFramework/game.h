@@ -27,6 +27,7 @@ public:
     void title();
     void displayMenu();
     void init();
+	void startRun();
     void run();
     void cleanup();
 
