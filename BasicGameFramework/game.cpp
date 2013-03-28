@@ -239,6 +239,8 @@ void Game::run()
     {
     	loader.load(LevelAssets[i].grp, MainSlot);
     	lvl = &Levels[i];
+	// TESTING
+	loadAll();
     	running = true;
 
 		// load images onto cubes
@@ -293,7 +295,7 @@ void wait(float n)
 }
 
 /* This function randomly shuffles and renders an image from the level on a cube. It also records
- * 		what cube that the goal image in placed upon within the current Level. Then paints to display.
+ * what cube that the goal image in placed upon within the current Level. Then paints to display.
  */
 void shuffleLoad()
 {
@@ -338,26 +340,27 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
     LOG("\n---Time %f---\n\n", lvl->time);
 }
 
+//TODO: Game::evaluateResults()
 // evaluate the results of the level
 // return true iff player did well enough to advance to next level
 bool evaluateResults(){
 	//TODO: Tweak, and or change to sliders (Waiting on client)
 
-	unsigned hintsWeight = hintSliderWeight;
-	unsigned attemptsWeight= attemptSliderWeight;
-	unsigned timesWeight = timeSliderWeight;
+	float hintWeight = .5f;
+	float attemptWeight = .6f;
+	float timeWeight = .1f;
 
-	unsigned finalResult;
+	float finalResult;
 	//TODO: Change to a better threshold (user study)
-	unsigned threshold = 12000;
+	float threshold = 1.5;
 
-	finalResult = (hintsWeight * lvl->numHints)
-				+ (attemptsWeight * lvl->numAttempts)
-				+ (timesWeight * lvl->time);
+	finalResult = (hintWeight * lvl->numHints)
+				+ (attemptWeight * lvl->numAttempts)
+				+ (timeWeight * lvl->time);
 
-//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
-//			hintsWeight*lvl->numHints, attemptsWeight*lvl->numAttempts,
-//			timesWeight*lvl->time, finalResult);
+	LOG("Hints -> %f \nattempt -> %f \ntime -> %f \ntotal: %f\n",
+			hintWeight*lvl->numHints, attemptWeight*lvl->numAttempts,
+			timeWeight*lvl->time, finalResult);
 
 	if(finalResult > threshold){
 		return false;
@@ -365,6 +368,8 @@ bool evaluateResults(){
 
 	return true;
 }
+// TODO: Still not saving/loading all the data, also saveAll and loadALL
+// need to be repositioned.
 
 void loadAll()
 {
@@ -394,7 +399,24 @@ void saveAll(){
 		allResults[i][2] = lvl->time;
     }
     dataPointer = &allResults;
-    dataSize = sizeof(allResults);
-    LOG("\n---Size %i---\n\n", dataSize);
+    dataSize = sizeof(float)*numLevels*3;
+    LOG("\nSAVING---Size %i------Pointer %p---\n\n", dataSize, dataPointer);
     lvlData.write(dataPointer, dataSize);
+}
+
+// Reads the storedObject from the current volume into the dataBuffer array
+// TODO: Use a better way of storing dynamic data
+void loadAll(){
+    float dataBuffer[numLevels][3];
+    unsigned dataSize = 36;
+    int temp = lvlData.read(&dataBuffer, dataSize);
+    
+    LOG("\nLOADING---Pointer %p------Temp %i---\n\n", &dataBuffer, temp);
+    LOG("Loaded Values:\n");
+    for (int i = 0; i < numLevels; i++){
+	for (int j = 0; j < 3; j++){
+	    LOG("%f ", dataBuffer[i][j]);
+	}
+	LOG("\n");
+    }
 }
