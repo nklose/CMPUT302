@@ -6,7 +6,7 @@ Icon = image{"assets/icon.png"}
 BootAssets = group{quality=8.90}
 LoadingBg = image{"assets/loading.png"}
 Bravo = image{"assets/bravo.png"}
-Title = image{"assets/welcomeTitle.png"}
+Title = image{"assets/title.png"}
 Grid = image{"assets/playfield.png", pinned=1}
 Speaker = image{"assets/speaker.png"}
 

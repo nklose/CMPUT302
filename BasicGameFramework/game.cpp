@@ -163,8 +163,10 @@ void Game::startRun(){
     	running = true;
 
 		// load images onto cubes
-		vid[0].bg0.image(vec(0,0), Speaker);
-    	wait(0.5);
+		for (unsigned i = 0; i < NUM_CUBES; i++){
+			vid[i].bg0.image(vec(0,0), Title);
+		}
+			wait(0.5);
 
     	//Events::cubeTouch.set(&Game::onTouch, this);
     	while(running)	// wait for events to be handled
