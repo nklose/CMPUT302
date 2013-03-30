@@ -4,18 +4,18 @@
 class SetData {
 public:
 	SetData();
-	int getHints();
+	int getNumHints();
 	void setHints(int numHints);
-	int getAttempts();
+	int getNumAttempts();
 	void setAttempts(int numAttempts);
-	int getSeconds();
+	int getNumSeconds();
 	void setSeconds(int numSeconds);
 	//String getGoal();
 private:
 	//String Goal;
 	int Hints;
 	int Attempts;
-	int Time;
+	int Seconds;
 };
 
 

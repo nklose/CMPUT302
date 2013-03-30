@@ -9,7 +9,7 @@
 #include "levels.gen.h"
 #include "assets.gen.h"
 
-const unsigned numLevels = 3;
+extern const unsigned numLevels;
 
 struct LevelSet Level1 = { {L1Phoneme1, L1Phoneme2, L1Phoneme3}, {L1Sound1, L1Sound2, L1Sound3}, {0}, L1GoalSound, 0, 0, 0};
 struct LevelSet Level2 = { {L2Phoneme1, L2Phoneme2, L2Phoneme3}, {L2Sound1, L2Sound2, L2Sound3}, {0}, L2GoalSound, 0, 0, 0};

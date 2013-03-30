@@ -1,27 +1,27 @@
 #include "SetData.h"
-#include <sifteo/string.h>
+
 
 SetData::SetData(){
 	//Goal = goal;
-	hints = 0;
-	attempts = 0;
-	time = 0;
+	Hints = 0;
+	Attempts = 0;
+	Seconds = 0;
 }
 
 //getters and setters for object variables
-int SetData :: getHints(){
-	retrun Hints;
+int SetData :: getNumHints(){
+	return Hints;
 }
 void SetData :: setHints(int hints){
-	Hints = hints
+	Hints = hints;
  }
-int SetData :: getAttempts(){
+int SetData :: getNumAttempts(){
 	return Attempts;
 }
  void SetData :: setAttempts(int attempts){
 	 Attempts = attempts;
  } 
-int SetData :: getSeconds(){
+int SetData :: getNumSeconds(){
 	return Seconds;
 }
  void SetData :: setSeconds(int seconds){

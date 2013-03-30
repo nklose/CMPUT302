@@ -9,8 +9,8 @@
 #include "game.h"
 #include "assets.gen.h"
 #include "levels.gen.h"
-/*#include "GameData.h" //if you add this, add the following to the MakeFile:
-	GameData.o \
+#include "GameData.h" //if you add this, add the following to the MakeFile:
+/*	GameData.o \
 	LevelData.o \
 	SetData.o \
 	*/
@@ -30,6 +30,7 @@ struct LevelSet *lvl;
 int playthrough;
 //Volume storage = Volume::previous();
 StoredObject lvlData = StoredObject::allocate();
+//GameData gameData;
 
 // Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
 static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
@@ -39,7 +40,6 @@ static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & T
 void Game::init()
 {
 	//GameData gameData;
-	//LOG("***Number of hints: %d ***", gameData.getHints()); //commented out because of structure change
 
 	// initialize playthrough counter to 0
     playthrough = -1;
@@ -122,7 +122,7 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
-	if(playthrough == -1){
+	if(playthrough == -1){//this would be the menu screen
 		running = false;
 	}else{
 		/*
@@ -150,6 +150,7 @@ void Game::onTouch(unsigned id)
 				{
 					LOG(" was goal\n");
 					running = false;
+					gameData.incrementSet();
 				}
 				else
 				{
@@ -170,18 +171,17 @@ void Game::startRun(){
     	loader.load(LevelAssets[0].grp, MainSlot);
     	running = true;
 
-		// load images onto cubes
+		// load start image on cubes
 		for (unsigned i = 0; i < NUM_CUBES; i++){
 			vid[i].bg0.image(vec(0,0), Title);
 		}
 			wait(0.5);
 
-    	//Events::cubeTouch.set(&Game::onTouch, this);
     	while(running)	// wait for events to be handled
     		System::paint();
 		running = true;
 		playthrough = 0;
-		Events::cubeTouch.unset();	// disable touch while showing "bravo"
+		Events::cubeTouch.unset();	// disable touch temporarily (clears touch)
     	wait(.5);	
 
 }
@@ -206,7 +206,7 @@ void Game::run()
     	audio.play(lvl->goalsound);
 
     	// Level loop
-	SystemTime initTime = SystemTime::now();
+		SystemTime initTime = SystemTime::now();
     	Events::cubeTouch.set(&Game::onTouch, this);
     	while(running)	// wait for events to be handled
     		System::paint();

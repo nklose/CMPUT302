@@ -12,6 +12,7 @@
 #include "loader.h"
 #include "levels.gen.h"
 #include "assets.gen.h"
+#include "GameData.h"
 
 using namespace Sifteo;
 
@@ -32,6 +33,7 @@ public:
 
 private:
     bool running;
+	GameData gameData;
 
     // Event handlers
     void onAccelChange(unsigned id);

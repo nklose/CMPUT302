@@ -9,6 +9,9 @@ OBJS = \
 	game.o \
 	loader.o \
 	levels.gen.o \
+	GameData.o \
+	LevelData.o \
+	SetData.o \
 	main.o
 	
 ASSETDEPS += assets/*.png $(ASSETS).lua
