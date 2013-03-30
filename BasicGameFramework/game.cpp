@@ -9,7 +9,11 @@
 #include "game.h"
 #include "assets.gen.h"
 #include "levels.gen.h"
-#include "GameData.h"
+/*#include "GameData.h" //if you add this, add the following to the MakeFile:
+	GameData.o \
+	LevelData.o \
+	SetData.o \
+	*/
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
 #include <sifteo/filesystem.h>
@@ -34,7 +38,7 @@ static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & T
 
 void Game::init()
 {
-	GameData gameData;
+	//GameData gameData;
 	//LOG("***Number of hints: %d ***", gameData.getHints()); //commented out because of structure change
 
 	// initialize playthrough counter to 0
