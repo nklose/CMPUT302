@@ -325,24 +325,6 @@ bool evaluateResults(){
 
 	return true;
 }
-// TODO: Still not saving/loading all the data, also saveAll and loadALL
-// need to be repositioned.
-
-void loadAll()
-{
-	unsigned datasize = sizeof(float)*numLevels*3;
-	float data[numLevels][3];
-	lvlData.read(&data, datasize);
-	LOG("---- AFTER LOAD ----\n");
-	for (int i = 0; i < numLevels; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			LOG("%f,", data[i][j]);
-		}
-		LOG("\n");
-	}
-}
 
 // Creates a 2D array to hold the 3 result parameters and a pointer to it
 // uses write() to the global StoredObject to overwrite it with all new data
@@ -360,9 +342,10 @@ void saveAll(){
     LOG("\nSAVING---Size %i------Pointer %p---\n\n", dataSize, dataPointer);
     lvlData.write(dataPointer, dataSize);
 }
-/*
+
 // Reads the storedObject from the current volume into the dataBuffer array
-// TODO: Use a better way of storing dynamic data
+// TODO: Still not saving/loading all the data, also saveAll and loadALL
+// need to be repositioned.
 void loadAll(){
     float dataBuffer[numLevels][3];
     unsigned dataSize = 36;
@@ -377,4 +360,4 @@ void loadAll(){
 	LOG("\n");
     }
 }
-*/
+
