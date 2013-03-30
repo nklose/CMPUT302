@@ -40,3 +40,11 @@ int LevelData :: getNumAttempts(){
 int LevelData :: getNumSeconds(){
 	return setDataArray[currentSet].getNumSeconds();
 }
+
+void LevelData :: incrementHints(){
+	setDataArray[currentSet].incrementHints();
+}
+
+void LevelData :: incrementAttempts(){
+	setDataArray[currentSet].incrementAttempts();
+}

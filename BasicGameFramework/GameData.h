@@ -17,6 +17,8 @@ public:
 	int getNumHints();
 	int getNumAttempts();
 	int getNumSeconds();
+	void incrementHints();
+	void incrementAttempts();
 private:
 	static int NumLevels;
 	int currentLevel;

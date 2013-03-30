@@ -143,6 +143,7 @@ void Game::onTouch(unsigned id)
 			{
 				audio.play(lvl->goalsound);
 				lvl->numHints++;
+				gameData.incrementHints();
 			} 
 					else
 			{
@@ -158,6 +159,7 @@ void Game::onTouch(unsigned id)
 					lvl->numAttempts++;
 					audio.play(lvl->goalsound);
 					LOG(" was not goal\n");
+					gameData.incrementAttempts();
 				}
 			}
 		}

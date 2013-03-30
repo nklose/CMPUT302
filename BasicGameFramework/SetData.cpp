@@ -30,3 +30,12 @@ int SetData :: getNumSeconds(){
  /*String SetData :: GetGoal(){
 	 return Goal;
  }*/
+ void SetData :: incrementHints(){
+	Hints++;
+	LOG("***Hints Given: %d ***\n", Hints); //commented out because of structure change
+ }
+
+ void SetData :: incrementAttempts(){
+	 Attempts++;
+	 LOG("***Arrempts made: %d ***\n", Attempts); //commented out because of structure change
+ } 

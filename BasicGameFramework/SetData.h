@@ -1,6 +1,8 @@
 #ifndef SETDATA_H_
 #define SETDATA_H_
 
+#include <sifteo.h>
+
 class SetData {
 public:
 	SetData();
@@ -10,6 +12,8 @@ public:
 	void setAttempts(int numAttempts);
 	int getNumSeconds();
 	void setSeconds(int numSeconds);
+	void incrementHints();
+	void incrementAttempts();
 	//String getGoal();
 private:
 	//String Goal;

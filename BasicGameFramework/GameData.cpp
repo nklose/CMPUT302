@@ -16,7 +16,19 @@ void GameData :: saveGameData(){
 void GameData :: incrementSet(){
 
 	//so, this needs some logic to determine if I've reached the end of the level
-
+	/*if (levelDataArray[currentLevel].getNumSets() == levelDataArray[currentLevel].getCurrentSet()){
+		incrementLevel();
+	}else{
+		if (){
+			levelDataArray[currentLevel].incrementSet();
+		}
+	}*/
+	//int numberOfSets = levelDataArray[currentLevel].getNumSets();
+	//int myCurrentSet = levelDataArray[currentLevel].getCurrentSet();
+	//if(numberOfSets != myCurrentSet){
+	//	levelDataArray[currentLevel].incrementSet();
+	//}
+	//levelDataArray[currentLevel].incrementSet();
 }
 
 void GameData :: incrementLevel(){
@@ -51,4 +63,12 @@ int GameData :: getNumAttempts(){
 
 int GameData :: getNumSeconds(){
 	return levelDataArray[currentLevel].getNumSeconds();
+}
+
+void GameData :: incrementHints(){
+	levelDataArray[currentLevel].incrementHints();
+}
+
+void GameData :: incrementAttempts(){
+	levelDataArray[currentLevel].incrementAttempts();
 }
