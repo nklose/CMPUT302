@@ -9,6 +9,7 @@
 #include "game.h"
 #include "assets.gen.h"
 #include "levels.gen.h"
+#include "GameData.h"
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
 #include <sifteo/filesystem.h>
@@ -33,7 +34,10 @@ static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & T
 
 void Game::init()
 {
-    // initialize playthrough counter to 0
+	GameData gameData;
+	//LOG("***Number of hints: %d ***", gameData.getHints()); //commented out because of structure change
+
+	// initialize playthrough counter to 0
     playthrough = -1;
 	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
