@@ -232,6 +232,30 @@ struct AudioTracker {
         ASSERT(volume >= 0 && volume <= _SYS_AUDIO_MAX_VOLUME);
         _SYS_tracker_setVolume(volume, ch);
     }
+
+    /**
+     * @brief Scale tempo for current song.
+     *
+     * Must only be called while a module is playing, takes effect at the end of the current tick.
+     * @param modifier Value with which to increase/decrease tempo, in percent.
+     */
+    static void setTempoModifier(int modifier)
+    {
+        ASSERT(modifier > -100);
+        _SYS_tracker_setTempoModifier(modifier);
+    }
+
+    /**
+     * @brief Set play position for current song.
+     *
+     * Must only be called while a module is playing, takes effect at the end of the current note.
+     * @param phrase Index of target phrase.
+     * @param row Index of target row in the pattern.
+     */
+    static void setPosition(uint16_t phrase, uint16_t row)
+    {
+        _SYS_tracker_setPosition(phrase, row);
+    }
 };
 
 /**
