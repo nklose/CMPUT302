@@ -1,4 +1,7 @@
 from phoneme import *
+import subprocess
+import platform
+import os
 
 """
 Some basic constant values
@@ -18,8 +21,42 @@ ASSETS_LUA_TOP = (
 		'Footer = image{ "assets/Menu/Footer.png" }\nLabelEmpty = image{ "assets/Menu/LabelEmpty.png" }\n'
 		'LabelUser1 = image{"assets/Menu/LabelAdrian.png"}\nLabelUser2 = image{"assets/Menu/LabelMatthew.png"}\n'
 	)
-# Number of images per set
+# Number of image + phoneme per set
 NUM_IN_SET = 3
+
+# file paths needed for compilation of game
+winbinpath = os.path.join('..', 'bins', 'windowsbin')
+linuxbinpath = os.path.join('..', 'bins', 'linuxbin')
+macbinpath = os.path.join('..', 'bins', 'macbin')
+gamesourcepath = os.path.join('..', 'PhonemeFrenzy')
+
+# direct filepaths to command shells for OS types
+winshellpath = os.path.join(winbinpath, 'sifteo-sdk-shell.cmd')
+linuxshellpath = os.path.join(linuxbinpath, 'sifteo-sdk-shell.sh')
+macshellpath = os.path.join(macbinpath, 'sifteo-sdk-shell.command')
+
+"""
+	compile_elf(): based upon OS, run the appropriate executables to compile the 
+						PhonemeFrenzy game
+"""
+def compile_elf():
+	# detect which OS to determine which executables to use
+	ostype = platform.system()
+	binpath = ""
+	shellpath = ""
+
+	if (ostype == 'Windows'):
+		binpath = winbinpath
+		shellpath = winshellpath
+	elif (ostype == 'Linux'):
+		binpath = linuxbinpath
+		shellpath = linuxshellpath
+	elif (ostype == 'Darwin'):	# This is Mac OSX
+		binpath = macbinpath
+		shellpath = macshellpath
+
+	makepath = os.path.join(binpath, "make")
+	shell = subprocess.call(makepath + " -C ..\PhonemeFrenzy", stdin=subprocess.PIPE, shell=True)
 
 """
 	generate_files(levels, path): 	- levels is a list of Level() objects containing game data
@@ -165,8 +202,7 @@ def create_level_line(num):
 def create_asset_token(levelNum, phonemeNum, assetType):
 	return "L" + str(levelNum) + assetType + str(phonemeNum)
 
-# if run directly, this will generate test files to show it works
-if __name__ == "__main__":	
+def generate_game():
 	game = Game()
 	levels = []
 
@@ -190,4 +226,10 @@ if __name__ == "__main__":
 				sett.add_phoneme(ph)
 
 	game.levels = levels
-	generate_files(game, "")
+	return game
+
+# if run directly, this will generate test files to show it works
+if __name__ == "__main__":	
+	#game = generate_game()
+	#generate_files(game, "")
+	compile_elf()
