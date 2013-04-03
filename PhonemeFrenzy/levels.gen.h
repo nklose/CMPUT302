@@ -28,7 +28,7 @@ struct Group {
 	Sifteo::AssetGroup &grp;
 };
 
-const unsigned numLevels = 3;
+const unsigned numLevels = 10;
 
 extern struct LevelSet Levels[];
 

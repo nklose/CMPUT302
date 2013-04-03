@@ -32,11 +32,6 @@ int playthrough;
 StoredObject lvlData = StoredObject::allocate();
 //GameData gameData;
 
-// Add Menu Item images and Asset Images //TODO: Remove if Menu/Welcome isn't going to be used at all
-static struct MenuItem menItems[] = { {&IconChroma, &LabelUser1}, {&IconSandwich, &LabelUser2}, {&IconSandwich, &LabelEmpty}, {NULL, NULL} };
-static struct MenuAssets menAssets = {&BgTile, &Footer, &LabelEmpty, {&Tip0, & Tip1, NULL}};
-
-
 void Game::init()
 {
 	//GameData gameData;
