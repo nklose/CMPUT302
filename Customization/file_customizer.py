@@ -36,8 +36,9 @@ linuxshellpath = os.path.join(linuxbinpath, 'sifteo-sdk-shell.sh')
 macshellpath = os.path.join(macbinpath, 'sifteo-sdk-shell.command')
 
 """
-	compile_elf(): based upon OS, run the appropriate executables to compile the 
-						PhonemeFrenzy game
+	compile_elf(): based upon OS, runs the appropriate executables to compile the 
+						PhonemeFrenzy game from source. To be called after
+						generate_files.
 """
 def compile_elf():
 	# detect which OS to determine which executables to use
@@ -55,8 +56,9 @@ def compile_elf():
 		binpath = macbinpath
 		shellpath = macshellpath
 
+	# somewhat magic function that will call make on the appropriate source folder
 	makepath = os.path.join(binpath, "make")
-	shell = subprocess.call(makepath + " -C ..\PhonemeFrenzy", stdin=subprocess.PIPE, shell=True)
+	shell = subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
 
 """
 	generate_files(levels, path): 	- levels is a list of Level() objects containing game data
