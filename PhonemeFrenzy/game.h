@@ -16,8 +16,8 @@
 
 using namespace Sifteo;
 
-#define NUM_CUBES	4
-#define NUM_IMAGES	(NUM_CUBES - 1)
+#define NUM_IMAGES	(NUM_PHONEMES + 0)
+#define NUM_CUBES	(NUM_IMAGES + 1)
 
 extern AssetSlot MainSlot;
 
@@ -47,6 +47,7 @@ private:
 
 void wait(float n);
 void shuffleLoad();
+void getSetIndex();
 void incrementAttempts();
 void incrementHints();
 void updateTime(SystemTime initTime, SystemTime finalTime);

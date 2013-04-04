@@ -12,7 +12,7 @@
 #include "GameData.h" //if you add this, add the following to the MakeFile:
 /*	GameData.o \
 	LevelData.o \
-	SetData.o \
+	lvlData.o \
 	*/
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
@@ -27,7 +27,7 @@ CubeSet allCubes(0,NUM_CUBES);	// all non-speaker cubes
 //MyLoader speakerLoader(speakerCube, MainSlot, vid);
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
-struct LevelSet *lvl;
+struct LevelSet *set;
 int playthrough;
 //Volume storage = Volume::previous();
 StoredObject lvlData = StoredObject::allocate();
@@ -47,17 +47,6 @@ void Game::init()
         motion[i].attach(i);
     }
 
-    /* load the level and boot assets, accounting for loop-around after end of previous game */
-    if (MainSlot.hasRoomFor(Level1Assets))
-           	loader.load(Level1Assets, MainSlot);
-	else
-	{
-		LOG("WASNT ENOUGH ROOM");
-		// if there is not enough room to load next level, erase, load BootAssets, then load it
-		MainSlot.erase();
-		loader.load(BootAssets, MainSlot);
-		loader.load(Level1Assets, MainSlot);
-	}
 	Events::cubeAccelChange.set(&Game::onAccelChange, this);
 }
 
@@ -112,11 +101,11 @@ void Game::onShake(unsigned id)
 		unsigned ind = 0;	// index within sounds array for appropriate sound
 		for (int i = 0; i < NUM_IMAGES; i++)
 		{
-			if (lvl->indexes[i] == id)
+			if (set->indexes[i] == id)
 				ind = i;
 		}
 
-		audio.play(lvl->sounds[ind]);
+		audio.play(set->sounds[ind]);
 	}
 }
 
@@ -148,13 +137,13 @@ void Game::onTouch(unsigned id)
 			// if cube is the speaker cube, replay goal sound
 			if (id == NUM_CUBES-1)
 			{
-				audio.play(lvl->goalsound);
-				lvl->numHints++;
+				audio.play(set->goalsound);
+				set->numHints++;
 				gameData.incrementHints();
 			} 
 					else
 			{
-				if (id == lvl->indexes[0])
+				if (id == set->indexes[0])
 				{
 					LOG(" was goal\n");
 					running = false;
@@ -163,8 +152,8 @@ void Game::onTouch(unsigned id)
 				else
 				{
 					vid[id].bg0.image(vec(0,0), Grid);
-					lvl->numAttempts++;
-					audio.play(lvl->goalsound);
+					set->numAttempts++;
+					audio.play(set->goalsound);
 					LOG(" was not goal\n");
 					gameData.incrementAttempts();
 				}
@@ -195,24 +184,53 @@ void Game::startRun(){
 
 }
 
+int getSetIndex(int level, int set)
+{
+	int index = 0;
+	// get up to first set of correct level
+	for (int i = 0; i < level; i++)
+	{
+		for (int j = 0; j < setsInLevel[level]; j++)
+		{
+			index++;
+		}
+	}
+	// now add the set offset
+	index += set-1;
+	return index;
+}
+
 /* Main game loop over defined levels */
 void Game::run()
 {
-	// TODO: Make a game ending. It just repeats at the moment
+	/*
+	 * HUGE NOTE: If you want the current level number below, use i. If you want the current /set/ index within LevelAssets and Levels
+	 * 				then use the setIndex value. set has been changed to "set" to reflect this change in wording, but works the same as
+	 * 				before. Any questions about this change, direct them to Andrew.
+	 */
     for (unsigned i = 0; i < numLevels; i++)
     {
+    	/* These few lines will get the index of a random set within level i */
+    	Random rand;
+    	int numSets = setsInLevel[i];
+    	int setNum = rand.randrange(numSets)+1;
+    	int setIndex = getSetIndex(i, setNum);
+
+    	LOG("\n numSets: %i setNum: %i selected at index: %i\n\n", numSets, setNum, setIndex);
+
     	// if the memory slot has enough room, freely load it
-        if (MainSlot.hasRoomFor(LevelAssets[i].grp))
-        	loader.load(LevelAssets[i].grp, MainSlot);
+        if (MainSlot.hasRoomFor(LevelAssets[setIndex].grp))
+        	loader.load(LevelAssets[setIndex].grp, MainSlot);
         else
         {
         	LOG("WASNT ENOUGH ROOM");
         	// if there is not enough room to load next level, erase, load BootAssets, then load it
         	MainSlot.erase();
         	loader.load(BootAssets, MainSlot);
-        	loader.load(LevelAssets[i].grp, MainSlot);
+        	loader.load(LevelAssets[setIndex].grp, MainSlot);
         }
-    	lvl = &Levels[i];
+        //
+    	set = &Levels[setIndex];
 		// TESTING
 		loadAll();
     	running = true;
@@ -222,7 +240,7 @@ void Game::run()
     	wait(0.5);
 
     	// play goal sound once
-    	audio.play(lvl->goalsound);
+    	audio.play(set->goalsound);
 
     	// Level loop
 		SystemTime initTime = SystemTime::now();
@@ -242,8 +260,8 @@ void Game::run()
     	bool advance = evaluateResults();
     	//TODO: Find a better way to do this!
     	//and Move this to a function.
-    	lvl->numAttempts = 0;
-    	lvl->numHints = 0;
+    	set->numAttempts = 0;
+    	set->numHints = 0;
     	if(!advance) {
     		i--;
     	}
@@ -294,8 +312,8 @@ void shuffleLoad()
 	// display the corresponding image on the cubes, and record the goal cube
 	for (int i = 0; i < NUM_IMAGES; i++)
 	{
-		lvl->indexes[inds[i]] = i;
-		vid[i].bg0.image(vec(0,0), lvl->phonemes[inds[i]]);
+		set->indexes[inds[i]] = i;
+		vid[i].bg0.image(vec(0,0), set->phonemes[inds[i]]);
 	}
 
 	// also display the "speaker" icon for the 4th cube
@@ -309,8 +327,8 @@ void shuffleLoad()
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     float playTime = (finalTime.uptime() - initTime.uptime());
-    lvl->time = playTime;
-    LOG("\n---Time %f---\n\n", lvl->time);
+    set->time = playTime;
+    LOG("\n---Time %f---\n\n", set->time);
 }
 
 // evaluate the results of the level
@@ -326,13 +344,13 @@ bool evaluateResults(){
 	//TODO: Change to a better threshold (user study)
 	unsigned threshold = 12000;
 
-	finalResult = (hintsWeight * lvl->numHints)
-				+ (attemptsWeight * lvl->numAttempts)
-				+ (timesWeight * lvl->time);
+	finalResult = (hintsWeight * set->numHints)
+				+ (attemptsWeight * set->numAttempts)
+				+ (timesWeight * set->time);
 
 	//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
-	//			hintsWeight*lvl->numHints, attemptsWeight*lvl->numAttempts,
-	//			timesWeight*lvl->time, finalResult);
+	//			hintsWeight*set->numHints, attemptsWeight*set->numAttempts,
+	//			timesWeight*set->time, finalResult);
 
 	if(finalResult > threshold){
 		return false;
@@ -348,9 +366,9 @@ void saveAll(){
     unsigned dataSize;
     float allResults[numLevels][3];
     for (int i = 0; i < numLevels; i++){
-		allResults[i][0] = lvl->numHints;
-		allResults[i][1] = lvl->numAttempts;
-		allResults[i][2] = lvl->time;
+		allResults[i][0] = set->numHints;
+		allResults[i][1] = set->numAttempts;
+		allResults[i][2] = set->time;
     }
     dataPointer = &allResults;
     dataSize = sizeof(float)*numLevels*3;

@@ -9,7 +9,8 @@
 #include "levels.gen.h"
 #include "assets.gen.h"
 
-extern const unsigned numLevels;
+const int numLevels = 5;
+const int numSets = 10;
 
 struct LevelSet Level1 = { {L1Phoneme1, L1Phoneme2, L1Phoneme3}, {L1Sound1, L1Sound2, L1Sound3}, {0}, L1GoalSound, 0, 0, 0};
 struct LevelSet Level2 = { {L2Phoneme1, L2Phoneme2, L2Phoneme3}, {L2Sound1, L2Sound2, L2Sound3}, {0}, L2GoalSound, 0, 0, 0};
@@ -23,10 +24,12 @@ struct LevelSet Level8 = { {L8Phoneme1, L8Phoneme2, L8Phoneme3}, {L8Sound1, L8So
 struct LevelSet Level9 = { {L9Phoneme1, L9Phoneme2, L9Phoneme3}, {L9Sound1, L9Sound2, L9Sound3}, {0}, L9GoalSound, 0, 0, 0};
 struct LevelSet Level10 = { {L10Phoneme1, L10Phoneme2, L10Phoneme3}, {L10Sound1, L10Sound2, L10Sound3}, {0}, L10GoalSound, 0, 0, 0};
 
-struct LevelSet Levels[numLevels] = {Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8, Level9, Level10};
+struct LevelSet Levels[numSets] = {Level1, Level2, Level3, Level4, Level5, Level6, Level7, Level8, Level9, Level10};
 
-struct Group LevelAssets[numLevels] = {{Level1Assets}, {Level2Assets}, {Level3Assets}, {Level4Assets},
+struct Group LevelAssets[numSets] = {{Level1Assets}, {Level2Assets}, {Level3Assets}, {Level4Assets},
 		{Level5Assets}, {Level6Assets}, {Level7Assets}, {Level8Assets}, {Level9Assets}, {Level10Assets}};
+
+int setsInLevel[numLevels] = { 2, 2, 2, 2, 2 };
 
 unsigned failedAttemptsWeight = 100;
 unsigned hintsRequestedWeight = 100;

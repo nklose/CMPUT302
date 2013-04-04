@@ -23,7 +23,7 @@ private:
 	static int NumLevels;
 	int currentLevel;
 	void incrementLevel();
-	LevelData levelDataArray[numLevels];//cannot have variable length of non-POD element type
+	LevelData levelDataArray[MAX_LEVELS];// set to max possible number of levels to avoid "cannot init non-POD" jazz
 	//LevelData currentLevel;
 };
 
