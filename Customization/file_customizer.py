@@ -135,10 +135,11 @@ def generate_levelAssets(assetfile, set, num):
 def generate_levelGenCpp(game, path):
 	levels = game.levels
 	# get the overall number of LevelSets
-	numLevels = 0
+	numLevels = len(levels)
+	totalNumSets = 0
 	for x in range(0, len(levels)):
 		level = levels[x]
-		numLevels += len(level.sets)
+		totalNumSets += len(level.sets)
 
 	# open the file!
 	levelsGenCpp = open(path + 'levels.gen.cpp', mode='w') 	# write mode will replace entire file each time
@@ -146,28 +147,38 @@ def generate_levelGenCpp(game, path):
 	# Write the begining, constant portion with includes to the file
 	levelsGenCpp.write(LEVELS_GEN_CPP_TOP + '\n')
 
-	# write the constant numLevels var
-	levelsGenCpp.write('const unsigned numLevels = ' + str(numLevels) + ';\n\n')
+	# write the constant num vars
+	levelsGenCpp.write('const unsigned numLevels = ' + str(numLevels) + ';\n')
+	levelsGenCpp.write('const unsigned numSets = ' + str(totalNumSets) + ';\n\n')
 
 	# write out the struct LevelSets
-	for x in range(1, numLevels+1):
+	for x in range(1, totalNumSets+1):
 		levelsGenCpp.write(create_level_line(x) + '\n')
 
 	# write out the LevelSet Levels array var and it's initializer
 	levelsGenCpp.write('struct LevelSet Levels[numLevels] = {')
-	for x in range(1,numLevels+1):
+	for x in range(1,totalNumSets+1):
 		levelsGenCpp.write('Level' + str(x))	
 		# write the commas only for non-last items
-		if x < numLevels:
+		if x < totalNumSets:
 			levelsGenCpp.write(", ")	
 	levelsGenCpp.write('};\n\n')
 
 	# write out the struct Group for level assets
 	levelsGenCpp.write('struct Group LevelAssets[numLevels] = {')
-	for x in range(1, numLevels+1):
+	for x in range(1, totalNumSets+1):
 		levelsGenCpp.write('{Level' + str(x) + 'Assets}')
-		if x < numLevels:
+		if x < totalNumSets:
 			levelsGenCpp.write(", ")	
+	levelsGenCpp.write('};\n\n')
+
+	# write the setsInLevel var which holds how many sets each level has
+	levelsGenCpp.write('int setsInLevel[numLevels] = {')
+	for x in range(0, numLevels):
+		numSets = len(levels[x].sets)
+		levelsGenCpp.write(str(numSets))
+		if x < numLevels-1:
+			levelsGenCpp.write(", ")
 	levelsGenCpp.write('};\n\n')
 
 	# add the initializers for slider weights for difficulty scaling
@@ -179,20 +190,21 @@ def generate_levelGenCpp(game, path):
 	levelsGenCpp.close()
 
 def create_level_line(num):
-	line = "struct Level Level" + str(num) + " = { "
+	line = "struct LevelSet Level" + str(num) + " = { "
 	
 	# add the static initializer for Level.phonemes[] "{L1Phoneme1, L1Phoneme2, etc" etc
 	line += '{'
 	for x in range (1, NUM_IN_SET+1):
 		line += create_asset_token(num, x, 'Phoneme')
-		line += ', '
+		if x < NUM_IN_SET:
+			line += ', '
 	line += '}, '
 
 	# add the static initializer for Level.sounds[] "{L1Sound, L1Sound, etc" etc
 	line += '{'
 	for x in range (1, NUM_IN_SET+1):
 		line += create_asset_token(num, x, 'Sound')
-		if x < num:
+		if x < NUM_IN_SET:
 			line += ', '
 	line += '}, '
 
@@ -232,6 +244,6 @@ def generate_game():
 
 # if run directly, this will generate test files to show it works
 if __name__ == "__main__":	
-	#game = generate_game()
-	#generate_files(game, "")
-	compile_elf()
+	game = generate_game()
+	generate_files(game, "")
+	#compile_elf()
