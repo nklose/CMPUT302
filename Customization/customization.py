@@ -61,112 +61,67 @@ class StartQT4(QtGui.QMainWindow):
         #######################################################
         # Interface Object Connections                        #
         #######################################################
+        itemClicked = QtCore.SIGNAL("itemClicked(QListWidgetItem *)")
+        clicked = QtCore.SIGNAL("clicked()")
 
         ## List Widgets
-        QtCore.QObject.connect(self.ui.listSets,
-                               QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-                               self.select_set)
+        QtCore.QObject.connect(self.ui.listSets, itemClicked, self.select_set)
+        QtCore.QObject.connect(self.ui.listPhonemes,itemClicked, self.select_phoneme)
 
-        QtCore.QObject.connect(self.ui.listPhonemes,
-                               QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
-                               self.select_phoneme)
         ## Buttons
+        QtCore.QObject.connect(self.ui.btnAddSet, clicked, self.add_set)
+        QtCore.QObject.connect(self.ui.btnRemoveSet, clicked, self.remove_set)
+        QtCore.QObject.connect(self.ui.btnAddPhoneme, clicked, self.add_phoneme)
+        QtCore.QObject.connect(self.ui.btnRemovePhoneme, clicked, self.remove_phoneme)
+        QtCore.QObject.connect(self.ui.btnSetGoal, clicked, self.set_goal)
+        QtCore.QObject.connect(self.ui.btnLoadImage, clicked, self.load_image)
+        QtCore.QObject.connect(self.ui.btnModifySounds, clicked, self.modify_sounds)
+        QtCore.QObject.connect(self.ui.btnSave, clicked, self.save)
+        QtCore.QObject.connect(self.ui.btnLoad, clicked, self.load)
+        QtCore.QObject.connect(self.ui.btnInstall, clicked, self.install)
+        QtCore.QObject.connect(self.ui.btnCustom, clicked, self.custom_sound)
 
-        # Add Set
-        QtCore.QObject.connect(self.ui.btnAddSet,
-                               QtCore.SIGNAL("clicked()"),
-                               self.add_set)
+        QtCore.QObject.connect(self.ui.btnA, clicked, self.a)
+        QtCore.QObject.connect(self.ui.btnO, clicked, self.o)
+        QtCore.QObject.connect(self.ui.btnEU, clicked, self.eu)
+        QtCore.QObject.connect(self.ui.btnE_grave, clicked, self.e_grave)
+        QtCore.QObject.connect(self.ui.btnE_acute, clicked, self.e_acute)
+        QtCore.QObject.connect(self.ui.btnE, clicked, self.e)
+        QtCore.QObject.connect(self.ui.btnI, clicked, self.i)
+        QtCore.QObject.connect(self.ui.btnU, clicked, self.u)
+        QtCore.QObject.connect(self.ui.btnOU, clicked, self.ou)
+        QtCore.QObject.connect(self.ui.btnAN, clicked, self.an)
+        QtCore.QObject.connect(self.ui.btnON, clicked, self.on)
+        QtCore.QObject.connect(self.ui.btnUN, clicked, self.un)
+        QtCore.QObject.connect(self.ui.btnIN, clicked, self.in2)
+        QtCore.QObject.connect(self.ui.btnUI, clicked, self.ui2)
+        QtCore.QObject.connect(self.ui.btnILL, clicked, self.ill)
+        QtCore.QObject.connect(self.ui.btnOI, clicked, self.oi)
+        QtCore.QObject.connect(self.ui.btnP, clicked, self.p)
+        QtCore.QObject.connect(self.ui.btnB, clicked, self.b)
+        QtCore.QObject.connect(self.ui.btnF, clicked, self.f)
+        QtCore.QObject.connect(self.ui.btnV, clicked, self.v)
+        QtCore.QObject.connect(self.ui.btnM, clicked, self.m)
+        QtCore.QObject.connect(self.ui.btnR, clicked, self.r)
+        QtCore.QObject.connect(self.ui.btnT, clicked, self.t)
+        QtCore.QObject.connect(self.ui.btnD, clicked, self.d)
+        QtCore.QObject.connect(self.ui.btnS, clicked, self.s)
+        QtCore.QObject.connect(self.ui.btnZ, clicked, self.z)
+        QtCore.QObject.connect(self.ui.btnN, clicked, self.n)
+        QtCore.QObject.connect(self.ui.btnL, clicked, self.l)
+        QtCore.QObject.connect(self.ui.btnK, clicked, self.k)
+        QtCore.QObject.connect(self.ui.btnG, clicked, self.g)
+        QtCore.QObject.connect(self.ui.btnCH, clicked, self.ch)
+        QtCore.QObject.connect(self.ui.btnJ, clicked, self.j)
+        QtCore.QObject.connect(self.ui.btnGN, clicked, self.gn)
 
-        # Remove Set
-        QtCore.QObject.connect(self.ui.btnRemoveSet,
-                               QtCore.SIGNAL("clicked()"),
-                               self.remove_set)
-        
-        # Add Phoneme
-        QtCore.QObject.connect(self.ui.btnAddPhoneme,
-                               QtCore.SIGNAL("clicked()"),
-                               self.add_phoneme)
-
-        # Remove Phoneme
-        QtCore.QObject.connect(self.ui.btnRemovePhoneme,
-                               QtCore.SIGNAL("clicked()"),
-                               self.remove_phoneme)
-
-        # Set Goal
-        QtCore.QObject.connect(self.ui.btnSetGoal,
-                               QtCore.SIGNAL("clicked()"),
-                               self.set_goal)
-
-        # Load Image
-        QtCore.QObject.connect(self.ui.btnLoadImage,
-                               QtCore.SIGNAL("clicked()"),
-                               self.load_image)
-
-        # Modify Sounds
-        QtCore.QObject.connect(self.ui.btnModifySounds,
-                               QtCore.SIGNAL("clicked()"),
-                               self.modify_sounds)
-
-        # Save Settings File
-        QtCore.QObject.connect(self.ui.btnSave,
-                               QtCore.SIGNAL("clicked()"),
-                               self.save)
-
-        # Load Settings File
-        QtCore.QObject.connect(self.ui.btnLoad,
-                               QtCore.SIGNAL("clicked()"),
-                               self.load)
-
-        # Phoneme Sound Buttons
-        QtCore.QObject.connect(self.ui.btnA, QtCore.SIGNAL("clicked()"), self.a)
-        QtCore.QObject.connect(self.ui.btnO, QtCore.SIGNAL("clicked()"), self.o)
-        QtCore.QObject.connect(self.ui.btnEU, QtCore.SIGNAL("clicked()"), self.eu)
-        QtCore.QObject.connect(self.ui.btnE_grave, QtCore.SIGNAL("clicked()"), 
-                               self.e_grave)
-        QtCore.QObject.connect(self.ui.btnE_acute, QtCore.SIGNAL("clicked()"), 
-                               self.e_acute)
-        QtCore.QObject.connect(self.ui.btnE, QtCore.SIGNAL("clicked()"), self.e)
-        QtCore.QObject.connect(self.ui.btnI, QtCore.SIGNAL("clicked()"), self.i)
-        QtCore.QObject.connect(self.ui.btnU, QtCore.SIGNAL("clicked()"), self.u)
-        QtCore.QObject.connect(self.ui.btnOU, QtCore.SIGNAL("clicked()"), self.ou)
-        QtCore.QObject.connect(self.ui.btnAN, QtCore.SIGNAL("clicked()"), self.an)
-        QtCore.QObject.connect(self.ui.btnON, QtCore.SIGNAL("clicked()"), self.on)
-        QtCore.QObject.connect(self.ui.btnUN, QtCore.SIGNAL("clicked()"), self.un)
-        QtCore.QObject.connect(self.ui.btnIN, QtCore.SIGNAL("clicked()"), self.in2)
-        QtCore.QObject.connect(self.ui.btnUI, QtCore.SIGNAL("clicked()"), self.ui2)
-        QtCore.QObject.connect(self.ui.btnILL, QtCore.SIGNAL("clicked()"), self.ill)
-        QtCore.QObject.connect(self.ui.btnOI, QtCore.SIGNAL("clicked()"), self.oi)
-        QtCore.QObject.connect(self.ui.btnP, QtCore.SIGNAL("clicked()"), self.p)
-        QtCore.QObject.connect(self.ui.btnB, QtCore.SIGNAL("clicked()"), self.b)
-        QtCore.QObject.connect(self.ui.btnF, QtCore.SIGNAL("clicked()"), self.f)
-        QtCore.QObject.connect(self.ui.btnV, QtCore.SIGNAL("clicked()"), self.v)
-        QtCore.QObject.connect(self.ui.btnM, QtCore.SIGNAL("clicked()"), self.m)
-        QtCore.QObject.connect(self.ui.btnR, QtCore.SIGNAL("clicked()"), self.r)
-        QtCore.QObject.connect(self.ui.btnT, QtCore.SIGNAL("clicked()"), self.t)
-        QtCore.QObject.connect(self.ui.btnD, QtCore.SIGNAL("clicked()"), self.d)
-        QtCore.QObject.connect(self.ui.btnS, QtCore.SIGNAL("clicked()"), self.s)
-        QtCore.QObject.connect(self.ui.btnZ, QtCore.SIGNAL("clicked()"), self.z)
-        QtCore.QObject.connect(self.ui.btnN, QtCore.SIGNAL("clicked()"), self.n)
-        QtCore.QObject.connect(self.ui.btnL, QtCore.SIGNAL("clicked()"), self.l)
-        QtCore.QObject.connect(self.ui.btnK, QtCore.SIGNAL("clicked()"), self.k)
-        QtCore.QObject.connect(self.ui.btnG, QtCore.SIGNAL("clicked()"), self.g)
-        QtCore.QObject.connect(self.ui.btnCH, QtCore.SIGNAL("clicked()"), self.ch)
-        QtCore.QObject.connect(self.ui.btnJ, QtCore.SIGNAL("clicked()"), self.j)
-        QtCore.QObject.connect(self.ui.btnGN, QtCore.SIGNAL("clicked()"), self.gn)
-
-        ## Line Edits
-        
-        # Add Phoneme Text
+        ## Others
         QtCore.QObject.connect(self.ui.txtNewPhoneme,
                                QtCore.SIGNAL("textChanged(const QString&)"),
                                self.check_new_phoneme)
-
-        # Map enter key to button press
         QtCore.QObject.connect(self.ui.txtNewPhoneme,
                                QtCore.SIGNAL("returnPressed()"),
                                self.press_enter)
-
-        ## Level Slider
         QtCore.QObject.connect(self.ui.verticalSlider,
                                QtCore.SIGNAL("valueChanged(int)"),
                                self.change_level)
@@ -270,6 +225,8 @@ class StartQT4(QtGui.QMainWindow):
         # Enable phoneme sounds and load image button
         self.ui.soundsGroup.setEnabled(True)
         self.ui.btnLoadImage.setEnabled(True)
+
+        self.ui.lblSoundPath.clear()
 
         # Update interface with phoneme information
         p = self.get_phoneme()
@@ -505,6 +462,18 @@ class StartQT4(QtGui.QMainWindow):
         except:
             self.msg("Settings could not be loaded.")
 
+    # Installs the game with the current configuration to the Sifteos
+    def install(self):
+        pass
+
+    # Allows the user to define a custom sound file
+    def custom_sound(self):
+        phoneme = self.get_phoneme()
+        path = str(QtGui.QFileDialog.getOpenFileName())
+        if path != "":
+            phoneme.sound_path = path
+            phoneme.text = "custom"
+            self.lblSoundPath.setText(basename(path))
         
 
     # Individual phoneme sound button functions
@@ -648,6 +617,7 @@ class StartQT4(QtGui.QMainWindow):
             phoneme = self.get_phoneme()
             phoneme.text = s
             self.update_sound_paths()
+            self.ui.lblSoundPath.setText(basename(phoneme.sound_path))
 
     # Deselects all sound buttons in the phoneme sounds section
     def deselect_all(self):

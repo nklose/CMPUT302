@@ -1519,6 +1519,19 @@
         <string>Modify Sound Files</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="btnCustom">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>190</y>
+         <width>91</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Custom</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QGroupBox" name="imageGroup">
       <property name="enabled">
@@ -1730,7 +1743,7 @@
   <widget class="QPushButton" name="btnSave">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>10</x>
      <y>700</y>
      <width>211</width>
      <height>51</height>
@@ -1748,7 +1761,7 @@
   <widget class="QPushButton" name="btnLoad">
    <property name="geometry">
     <rect>
-     <x>640</x>
+     <x>240</x>
      <y>700</y>
      <width>211</width>
      <height>51</height>
@@ -1761,6 +1774,24 @@
    </property>
    <property name="text">
     <string>Load Settings File</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btnInstall">
+   <property name="geometry">
+    <rect>
+     <x>800</x>
+     <y>700</y>
+     <width>211</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Install on Sifteos</string>
    </property>
   </widget>
  </widget>
