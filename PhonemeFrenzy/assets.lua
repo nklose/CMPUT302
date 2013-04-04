@@ -7,26 +7,8 @@ BootAssets = group{quality=8.90}
 LoadingBg = image{"assets/loading.png"}
 Bravo = image{"assets/bravo.png"}
 Title = image{"assets/title.png"}
-Grid = image{"assets/playfield.png", pinned=1}
+Grid = image{"assets/playfield.png"}
 Speaker = image{"assets/speaker.png"}
-
--- Menu Assets
-MenuAssetGrp = group{quality=9.05}
---SampleSound = sound{"assets/test.wav", encode="pcm" }
-
-BgTile = image{ "assets/Menu/bg.png", pinned=1 }
-Grid = image{"assets/playfield.png", pinned=1}
-
---IconSandwich = image{ "assets/Menu/IconSandwich.png" }
---IconChroma = image{ "assets/Menu/IconChroma.png" }
---Tip0 = image{ "assets/Menu/Tip0.png" }
---Tip1 = image{ "assets/Menu/Tip1.png" }
---Footer = image{ "assets/Menu/Footer.png" }
---LabelEmpty = image{ "assets/Menu/LabelEmpty.png" }
---LabelUser1 = image{"assets/Menu/LabelAdrian.png"}
---LabelUser2 = image{"assets/Menu/LabelMatthew.png"}
---LabelSandwich = image{ "assets/Menu/LabelSandwich.png" }.
-
 
 --TODO: Change sounds!
 --TODO: Change sounds!
@@ -49,6 +31,7 @@ L1Sound1 = sound{"assets/Level1/bain.wav", encode="pcm" }
 L1Sound2 = sound{"assets/Level1/beau.wav", encode="pcm" }
 
 L1Sound3 = sound{"assets/Level1/but.wav", encode="pcm" }
+Title = image{"assets/title.png"}
 
 
 -- Level2
