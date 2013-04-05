@@ -1,9 +1,11 @@
 #include "GameData.h"
+#include "LevelData.h"
 
 GameData::GameData(){
-	currentLevel = 0;
-	//currentLevel = levelDataArray[currentLevelCounter];
-	LOG("***Starting Level: %d ***\n", getCurrentLevel()); //commented out because of structure change
+    static int NumLevels;
+    int CurrentLevelCounter = 0;
+    LevelData LevelsArray[10];
+    //LevelData currentLevel = LevelsArray[CurrentLevelCounter];
 }
 
 void GameData :: saveGameData(){
@@ -13,7 +15,7 @@ void GameData :: saveGameData(){
 
 }
 
-void GameData :: incrementSet(){
+void GameData :: incrementPlay(){
 
 	//so, this needs some logic to determine if I've reached the end of the level
 	/*if (levelDataArray[currentLevel].getNumSets() == levelDataArray[currentLevel].getCurrentSet()){
@@ -32,43 +34,36 @@ void GameData :: incrementSet(){
 }
 
 void GameData :: incrementLevel(){
-	currentLevel++;
-	//currentLevel = levelDataArray[currentLevelCounter];
-	LOG("***Starting Level: %d ***\n", getCurrentLevel()); //commented out because of structure change
+	CurrentLevelCounter++;
 }
 
 int GameData :: getCurrentLevel(){
-	return currentLevel;
+	return CurrentLevelCounter;
 }
 
-void GameData :: setHints(int hints){
-	levelDataArray[currentLevel].setHints(hints);
+// getters and setters for play data for the current level's current play
+unsigned GameData :: getHints(){
+	return LevelsArray[CurrentLevelCounter].getHints();
 }
 
-void GameData :: setAttempts(int attempts){
-	levelDataArray[currentLevel].setAttempts(attempts);
+unsigned GameData :: getAttempts(){
+	return LevelsArray[CurrentLevelCounter].getAttempts();
 }
 
-void GameData :: setSeconds(int seconds){
-	levelDataArray[currentLevel].setSeconds(seconds);
+float GameData :: getTime(){
+	return LevelsArray[CurrentLevelCounter].getTime();
 }
 
-int GameData :: getNumHints(){
-	return levelDataArray[currentLevel].getNumHints();
+void GameData :: setTime(float seconds){
+	LevelsArray[CurrentLevelCounter].setTime(seconds);
 }
 
-int GameData :: getNumAttempts(){
-	return levelDataArray[currentLevel].getNumAttempts();
-}
 
-int GameData :: getNumSeconds(){
-	return levelDataArray[currentLevel].getNumSeconds();
-}
-
+// increment hints or attempts in the current level's current play
 void GameData :: incrementHints(){
-	levelDataArray[currentLevel].incrementHints();
+	LevelsArray[CurrentLevelCounter].incrementHints();
 }
 
 void GameData :: incrementAttempts(){
-	levelDataArray[currentLevel].incrementAttempts();
+	LevelsArray[CurrentLevelCounter].incrementAttempts();
 }

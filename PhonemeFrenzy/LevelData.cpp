@@ -1,50 +1,51 @@
 #include "LevelData.h"
+#include "PlayData.h"
 
 LevelData::LevelData(){
-	currentSet = 0;
-	//currentSet = setDataArray[currentSetCounter];
-	LOG("***Starting Set: %d ***\n", getCurrentSet()); //commented out because of structure change
+    static int NumPlays;
+    int CurrentPlayCounter = 0;
+    // hardcoded 5 plays per level
+    PlayData DataArray[5];
 }
 
-//getters and setters for LevelData Properties
-int LevelData :: getNumSets(){
-	return NumSets;
+// getters and setters for LevelData Properties
+int LevelData :: getNumPlays(){
+    return NumPlays;
 }
 
-void LevelData :: incrementSet(){
-	currentSet++;
-	//currentSet = setDataArray[currentSetCounter];
-	LOG("***Starting Set: %d ***\n", getCurrentSet()); //commented out because of structure change
+PlayData LevelData :: getCurrentPlay(){
+    return DataArray[CurrentPlayCounter];
 }
 
-int LevelData :: getCurrentSet(){
-	return currentSet;
+// getters and setters for specific play data for the current play
+unsigned LevelData :: getHints(){
+    return DataArray[CurrentPlayCounter].getHints();
 }
 
-void LevelData :: setHints(int hints){
-	setDataArray[currentSet].setHints(hints);
+unsigned LevelData :: getAttempts(){
+    return DataArray[CurrentPlayCounter].getAttempts();
 }
 
-void LevelData :: setAttempts(int attempts){
-	setDataArray[currentSet].setAttempts(attempts);
+float LevelData :: getTime(){
+    return DataArray[CurrentPlayCounter].getTime();
 }
 
-int LevelData :: getNumHints(){
-	return setDataArray[currentSet].getNumHints();
+void LevelData :: setTime(float seconds){
+    DataArray[CurrentPlayCounter].setTime(seconds);
 }
 
-int LevelData :: getNumAttempts(){
-	return setDataArray[currentSet].getNumAttempts();
-}
-
-int LevelData :: getNumSeconds(){
-	return setDataArray[currentSet].getNumSeconds();
-}
-
+// Increment number of hints or attempts in the specficied play number 
+// of this level
 void LevelData :: incrementHints(){
-	setDataArray[currentSet].incrementHints();
+    DataArray[CurrentPlayCounter].incrementHints();
 }
 
 void LevelData :: incrementAttempts(){
-	setDataArray[currentSet].incrementAttempts();
+    DataArray[CurrentPlayCounter].incrementAttempts();
+}
+
+// Increment the current play in the DataArray of this level
+// TODO: Better not fail an infinite number of times.
+void LevelData :: incrementPlay(){
+    CurrentPlayCounter++;
 }

@@ -9,7 +9,7 @@ public:
 	unsigned getHints();
 	unsigned getAttempts();
 	float getTime();
-	void setTime(unsigned numSeconds);
+	void setTime(float Seconds);
 	void incrementHints();
 	void incrementAttempts();
 private:

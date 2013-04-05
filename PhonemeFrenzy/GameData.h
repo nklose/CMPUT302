@@ -8,23 +8,25 @@
 class GameData {
 public:
 	GameData();
-	void saveGameData();//below here performed in GameData
+	//below here performed in GameData
+	void saveGameData();
 	int getCurrentLevel();
-	void incrementSet();// below here called from LevelData
-	void setHints(int hints);
-	void setAttempts(int hints);
-	void setSeconds(int hints);
-	int getNumHints();
-	int getNumAttempts();
-	int getNumSeconds();
+	void incrementPlay();
+
+	// below here called from LevelData
+	unsigned getHints();
+	unsigned getAttempts();
+	float getTime();
+	void setTime(float seconds);
 	void incrementHints();
 	void incrementAttempts();
 private:
 	static int NumLevels;
-	int currentLevel;
-	void incrementLevel();
-	LevelData levelDataArray[MAX_LEVELS];// set to max possible number of levels to avoid "cannot init non-POD" jazz
+	int CurrentLevelCounter;
 	//LevelData currentLevel;
+	
+	void incrementLevel();
+	LevelData LevelsArray[10];
 };
 
 #endif

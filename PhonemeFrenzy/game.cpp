@@ -12,7 +12,7 @@
 #include "GameData.h" //if you add this, add the following to the MakeFile:
 /*	GameData.o \
 	LevelData.o \
-	lvlData.o \
+	PlayData.o \
 	*/
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
@@ -138,7 +138,6 @@ void Game::onTouch(unsigned id)
 			if (id == NUM_CUBES-1)
 			{
 				audio.play(set->goalsound);
-				set->numHints++;
 				gameData.incrementHints();
 			} 
 					else
@@ -147,12 +146,11 @@ void Game::onTouch(unsigned id)
 				{
 					LOG(" was goal\n");
 					running = false;
-					gameData.incrementSet();
+					gameData.incrementPlay();
 				}
 				else
 				{
 					vid[id].bg0.image(vec(0,0), Grid);
-					set->numAttempts++;
 					audio.play(set->goalsound);
 					LOG(" was not goal\n");
 					gameData.incrementAttempts();
@@ -258,10 +256,6 @@ void Game::run()
 
     	// TODO: write all info that need be recorded
     	bool advance = evaluateResults();
-    	//TODO: Find a better way to do this!
-    	//and Move this to a function.
-    	set->numAttempts = 0;
-    	set->numHints = 0;
     	if(!advance) {
     		i--;
     	}
@@ -327,8 +321,8 @@ void shuffleLoad()
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     float playTime = (finalTime.uptime() - initTime.uptime());
-    set->time = playTime;
-    LOG("\n---Time %f---\n\n", set->time);
+    LOG("\n---Time %f---\n\n", playTime);
+    // Still needs to put the time required to complete the level somewhere
 }
 
 // evaluate the results of the level
@@ -343,11 +337,13 @@ bool evaluateResults(){
 	unsigned finalResult;
 	//TODO: Change to a better threshold (user study)
 	unsigned threshold = 12000;
-
-	finalResult = (hintsWeight * set->numHints)
+	finalResult = 0;
+	/* TODO: Implement GameData functions.
+	  finalResult = (hintsWeight * set->numHints)
 				+ (attemptsWeight * set->numAttempts)
 				+ (timesWeight * set->time);
-
+				
+	*/
 	//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
 	//			hintsWeight*set->numHints, attemptsWeight*set->numAttempts,
 	//			timesWeight*set->time, finalResult);
@@ -365,15 +361,24 @@ void saveAll(){
     void *dataPointer;
     unsigned dataSize;
     float allResults[numLevels][3];
+    /* NOPE NOT IMPLEMENTED YET
     for (int i = 0; i < numLevels; i++){
 		allResults[i][0] = set->numHints;
 		allResults[i][1] = set->numAttempts;
 		allResults[i][2] = set->time;
     }
+    */
     dataPointer = &allResults;
     dataSize = sizeof(float)*numLevels*3;
-    LOG("\nSAVING---Size %i------Pointer %p---\n\n", dataSize, dataPointer);
     lvlData.write(dataPointer, dataSize);
+    
+    LOG("\nSaved Values:\n");
+    for (int i = 0; i < numLevels; i++){
+	for (int j = 0; j < 3; j++){
+	    LOG("%f ", allResults[i][j]);
+	}
+	LOG("\n");
+    }
 }
 
 // Reads the storedObject from the current volume into the dataBuffer array
@@ -384,8 +389,7 @@ void loadAll(){
     unsigned dataSize = 36;
     int temp = lvlData.read(&dataBuffer, dataSize);
 
-    LOG("\nLOADING---Pointer %p------Temp %i---\n\n", &dataBuffer, temp);
-    LOG("Loaded Values:\n");
+    LOG("\nLoaded Values:\n");
     for (int i = 0; i < numLevels; i++){
 	for (int j = 0; j < 3; j++){
 	    LOG("%f ", dataBuffer[i][j]);
