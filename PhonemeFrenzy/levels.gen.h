@@ -20,12 +20,6 @@ struct LevelSet {
 	Sifteo::AssetAudio sounds[NUM_PHONEMES];			// Sound corresponding to cubes
 	unsigned indexes[NUM_PHONEMES];					// index in vid[] that each image was placed
 	Sifteo::AssetAudio goalsound;
-	//TODO: float is smaller than double.
-	double time;
-	//TODO: unsigned short is smaller than unsigned
-	// unsigned short: 0 to 65535
-	unsigned numHints;
-	unsigned numAttempts;
 };
 
 struct Group {
