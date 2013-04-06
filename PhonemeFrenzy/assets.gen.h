@@ -6,6 +6,13 @@
 
 #pragma once
 
+extern Sifteo::AssetGroup BootAssets;
+extern const Sifteo::AssetImage LoadingBg;
+extern const Sifteo::AssetImage Bravo;
+extern const Sifteo::AssetImage Grid;
+extern const Sifteo::AssetImage Speaker;
+extern Sifteo::AssetGroup IconAssets;
+extern const Sifteo::AssetImage Icon;
 extern Sifteo::AssetGroup Level2Assets;
 extern const Sifteo::AssetImage L2Phoneme3;
 extern const Sifteo::AssetImage L2Phoneme1;
@@ -27,13 +34,6 @@ extern Sifteo::AssetGroup Level3Assets;
 extern const Sifteo::AssetImage L3Phoneme1;
 extern const Sifteo::AssetImage L3Phoneme2;
 extern const Sifteo::AssetImage L3Phoneme3;
-extern Sifteo::AssetGroup BootAssets;
-extern const Sifteo::AssetImage LoadingBg;
-extern const Sifteo::AssetImage Bravo;
-extern const Sifteo::AssetImage Grid;
-extern const Sifteo::AssetImage Speaker;
-extern Sifteo::AssetGroup IconAssets;
-extern const Sifteo::AssetImage Icon;
 extern Sifteo::AssetGroup Level4Assets;
 extern const Sifteo::AssetImage L4Phoneme1;
 extern const Sifteo::AssetImage L4Phoneme2;

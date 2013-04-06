@@ -47,6 +47,10 @@ void Game::init()
         motion[i].attach(i);
     }
 
+    /* ensure on repeat-loops that the boot assets are in memory */
+    MainSlot.erase();
+    loader.load(BootAssets, MainSlot);
+
 	Events::cubeAccelChange.set(&Game::onAccelChange, this);
 }
 
@@ -86,9 +90,6 @@ void Game::onAccelChange(unsigned id)
 void Game::onShake(unsigned id)
 {
 	LOG("Cube shaken: %02x\n", id);
-
-	if (id == NUM_CUBES-1)
-				return;
 
 	// Basic protection against multiple-plays of the audio clip
 	static SystemTime start = SystemTime::now();

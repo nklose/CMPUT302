@@ -207,7 +207,7 @@ def create_level_line(num):
 	line += '}, '
 
 	# add the initializers for indexes, goalsound, time, numHints, and numAttempts
-	line += '{0}, ' + "L" + str(num) + 'GoalSound, 0, 0, 0};\n'
+	line += '{0}, ' + "L" + str(num) + 'GoalSound};\n'
 
 	return line
 
