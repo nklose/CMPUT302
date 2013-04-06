@@ -33,4 +33,10 @@ void PlayData :: incrementHints(){
 void PlayData :: incrementAttempts(){
     Attempts++;
     LOG("***Attempts made: %d ***\n", Attempts);
- } 
+}
+
+// reset hints and attempts to zero
+void PlayData :: reset(){
+    Hints = 0;
+    Attempts = 0;
+}

@@ -10,7 +10,7 @@ public:
 	GameData();
 	//below here performed in GameData
 	void saveGameData();
-	int getCurrentLevel();
+	PlayData* getCurrentLevel();
 	void incrementPlay();
 
 	// below here called from LevelData
@@ -20,10 +20,11 @@ public:
 	void setTime(float seconds);
 	void incrementHints();
 	void incrementAttempts();
+	void reset();
 private:
-	static int NumLevels;
+	//static int NumLevels;
 	int CurrentLevelCounter;
-	//LevelData currentLevel;
+	LevelData currentLevel;
 	
 	void incrementLevel();
 	LevelData LevelsArray[10];

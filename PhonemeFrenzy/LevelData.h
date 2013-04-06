@@ -11,6 +11,7 @@ public:
 	//below here performed in LevelData
 	int getNumPlays();
 	PlayData getCurrentPlay();
+	PlayData* getCurrentLevel();
 
 	//below here called from PlayData
 	unsigned getHints();
@@ -20,6 +21,7 @@ public:
 	void incrementHints();
 	void incrementAttempts();
 	void incrementPlay();
+	void reset();
 
 private:
 	static int NumPlays;

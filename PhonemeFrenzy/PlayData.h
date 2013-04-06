@@ -12,6 +12,7 @@ public:
 	void setTime(float Seconds);
 	void incrementHints();
 	void incrementAttempts();
+	void reset();
 private:
 	//String Goal;
 	unsigned Hints;

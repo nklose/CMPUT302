@@ -8,13 +8,17 @@ LevelData::LevelData(){
     PlayData DataArray[5];
 }
 
-// getters and setters for LevelData Properties
+// getters LevelData Properties
 int LevelData :: getNumPlays(){
     return NumPlays;
 }
 
 PlayData LevelData :: getCurrentPlay(){
     return DataArray[CurrentPlayCounter];
+}
+
+PlayData* LevelData :: getCurrentLevel(){
+    return &DataArray[CurrentPlayCounter];
 }
 
 // getters and setters for specific play data for the current play
@@ -48,4 +52,9 @@ void LevelData :: incrementAttempts(){
 // TODO: Better not fail an infinite number of times.
 void LevelData :: incrementPlay(){
     CurrentPlayCounter++;
+}
+
+// reset hints and attempts of the current level's current play to zero
+void LevelData :: reset(){
+    DataArray[CurrentPlayCounter].reset();
 }

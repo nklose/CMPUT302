@@ -29,9 +29,8 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct LevelSet *set;
 int playthrough;
-//Volume storage = Volume::previous();
 StoredObject lvlData = StoredObject::allocate();
-//GameData gameData;
+GameData gameData;
 
 void Game::init()
 {
@@ -140,6 +139,7 @@ void Game::onTouch(unsigned id)
 			{
 				audio.play(set->goalsound);
 				gameData.incrementHints();
+				LOG("\n---incremented hints---\n");
 			} 
 					else
 			{
@@ -148,6 +148,7 @@ void Game::onTouch(unsigned id)
 					LOG(" was goal\n");
 					running = false;
 					gameData.incrementPlay();
+					LOG("\n---incremented play to ---\n");
 				}
 				else
 				{
@@ -155,6 +156,7 @@ void Game::onTouch(unsigned id)
 					audio.play(set->goalsound);
 					LOG(" was not goal\n");
 					gameData.incrementAttempts();
+					LOG("\n---incremented attempts to %u---\n", gameData.getAttempts());
 				}
 			}
 		}
@@ -242,7 +244,7 @@ void Game::run()
     	audio.play(set->goalsound);
 
     	// Level loop
-		SystemTime initTime = SystemTime::now();
+	SystemTime initTime = SystemTime::now();
     	Events::cubeTouch.set(&Game::onTouch, this);
     	while(running)	// wait for events to be handled
     		System::paint();
@@ -322,8 +324,8 @@ void shuffleLoad()
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     float playTime = (finalTime.uptime() - initTime.uptime());
-    LOG("\n---Time %f---\n\n", playTime);
-    // Still needs to put the time required to complete the level somewhere
+    gameData.setTime(playTime);
+    LOG("\n---setTime---\n");
 }
 
 // evaluate the results of the level
@@ -361,9 +363,9 @@ bool evaluateResults(){
 void saveAll(){
     void *dataPointer;
     unsigned dataSize;
-    float allResults[numLevels][3];
+    float allResults[10][3];
     /* NOPE NOT IMPLEMENTED YET
-    for (int i = 0; i < numLevels; i++){
+    for (int i = 0; i < 10; i++){
 		allResults[i][0] = set->numHints;
 		allResults[i][1] = set->numAttempts;
 		allResults[i][2] = set->time;
@@ -372,7 +374,7 @@ void saveAll(){
     dataPointer = &allResults;
     dataSize = sizeof(float)*numLevels*3;
     lvlData.write(dataPointer, dataSize);
-    
+    /* For debugging data array
     LOG("\nSaved Values:\n");
     for (int i = 0; i < numLevels; i++){
 	for (int j = 0; j < 3; j++){
@@ -380,16 +382,15 @@ void saveAll(){
 	}
 	LOG("\n");
     }
+    */
 }
 
 // Reads the storedObject from the current volume into the dataBuffer array
-// TODO: Still not saving/loading all the data, also saveAll and loadALL
-// need to be repositioned.
 void loadAll(){
     float dataBuffer[numLevels][3];
     unsigned dataSize = 36;
     int temp = lvlData.read(&dataBuffer, dataSize);
-
+    /* For debugging data array
     LOG("\nLoaded Values:\n");
     for (int i = 0; i < numLevels; i++){
 	for (int j = 0; j < 3; j++){
@@ -397,5 +398,6 @@ void loadAll(){
 	}
 	LOG("\n");
     }
+    */
 }
 
