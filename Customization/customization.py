@@ -627,6 +627,8 @@ class StartQT4(QtGui.QMainWindow):
             phoneme.text = s
             self.update_sound_paths()
             self.ui.lblSoundPath.setText(basename(phoneme.sound_path))
+            sound = QtGui.QSound(phoneme.sound_path)
+            sound.play()
 
     # Deselects all sound buttons in the phoneme sounds section
     def deselect_all(self):

@@ -40,6 +40,9 @@ class Sounds(QtGui.QMainWindow):
 
         # Track currently selected sound
         self.sound = None
+		
+		# Track currently selected sound path
+        self.soundPath = None
 
         # deselect any currently selected phonemes
         self.deselect_all()
@@ -112,7 +115,11 @@ class Sounds(QtGui.QMainWindow):
                                self.cancel)
 
     def play_sound(self):
-        print('play sound')
+        try:
+            sound = QtGui.QSound(self.soundPath)
+            sound.play()
+        except:
+            print("Sound file " + self.soundPath + " could not be played.")
 
     # Modifies the sound file path for the selected phoneme
     def change_file(self):
@@ -126,6 +133,9 @@ class Sounds(QtGui.QMainWindow):
     
         # save the path to the current phoneme sound
         self.add_path(path)
+        
+        # save the path in case the user wants to preview it
+        self.soundPath = path
 
     # Saves the collection into a file and closes the dialog
     def save(self):
@@ -160,6 +170,7 @@ class Sounds(QtGui.QMainWindow):
         for phoneme in self.collection:
             if phoneme.text == self.sound:
                 self.ui.lblPath.setText(phoneme.path)
+                self.soundPath = phoneme.path
 
     # Initializes the collection of phonemes
     def init_collection(self):
