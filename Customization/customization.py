@@ -21,6 +21,7 @@ from sounds import Phoneme_Sound
 from sounds import Sounds
 from sounds import Ui_Dialog
 from datetime import datetime
+import file_customizer
 
 # Constant globals
 NUM_LEVELS = 10

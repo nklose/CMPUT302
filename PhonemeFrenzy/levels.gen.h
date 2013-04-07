@@ -39,4 +39,4 @@ extern unsigned attemptSliderWeight;
 
 extern unsigned timeSliderWeight;
 
-extern const int numLevels;
+extern const unsigned numLevels;
