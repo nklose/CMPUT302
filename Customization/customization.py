@@ -465,16 +465,27 @@ class StartQT4(QtGui.QMainWindow):
 
     # Installs the game with the current configuration to the Sifteos
     def install(self):
-         # construct the game object
-        game = Game()
-        game.levels = self.levels
-        game.failedAttemptsWeight = self.ui.sldrFailedAttempts.value()
-        game.hintsRequestedWeight = self.ui.sldrHintsRequested.value()
-        game.timeWeight = self.ui.sldrTime.value()
-
-        generate_files(game, '..\PhonemeFrenzy')
-        compile_elf()
-
+        # construct the game object
+        QtGui.QMessageBox.information(self,
+                                      "Starting Installation",
+                                      "This will begin installing the game to the Sifteo cubes.\n\nYou will be notified when the installation is complete.")
+        try:
+            game = Game()
+            game.levels = self.levels
+            game.failedAttemptsWeight = self.ui.sldrFailedAttempts.value()
+            game.hintsRequestedWeight = self.ui.sldrHintsRequested.value()
+            game.timeWeight = self.ui.sldrTime.value()
+        
+            generate_files(game, '..\PhonemeFrenzy')
+            compile_elf()
+            QtGui.QMessageBox.information(self,
+                                          "Installation Complete"
+                                          "The installation is complete.")
+        except Exception as e:
+            QtGui.QMessageBox.warning(self,
+                                "Installation Error",
+                                "An error occurred. The following exception was given:\n\n" + str(e))
+    
     # Allows the user to define a custom sound file
     def custom_sound(self):
         phoneme = self.get_phoneme()
