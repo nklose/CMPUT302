@@ -26,6 +26,8 @@ from file_customizer import compile_elf, generate_files
 # Constant globals
 NUM_LEVELS = 10
 DEBUG = False # print debug info to console
+MAX_PHONEMES = 30
+
 if len(sys.argv) > 1:
     if sys.argv[1] == "debug": # check for command-line argument
         DEBUG = False
@@ -336,21 +338,26 @@ class StartQT4(QtGui.QMainWindow):
 
     # Adds a phoneme to the currently selected set
     def add_phoneme(self):
-        # build phoneme
-        phoneme = Phoneme()
-        phoneme.name = str(self.ui.txtNewPhoneme.text())
+        if self.get_num_phonemes() <= MAX_PHONEMES:
+            # build phoneme
+            phoneme = Phoneme()
+            phoneme.name = str(self.ui.txtNewPhoneme.text())
 
-        # clear input text
-        self.ui.txtNewPhoneme.clear()
+            # clear input text
+            self.ui.txtNewPhoneme.clear()
 
-        # add phoneme to set
-        currentSet = self.get_set()
-        self.msg("Adding phoneme " + phoneme.name)
-        currentSet.add_phoneme(phoneme)
-        self.msg("Current set: " + currentSet.toString())
+            # add phoneme to set
+            currentSet = self.get_set()
+            self.msg("Adding phoneme " + phoneme.name)
+            currentSet.add_phoneme(phoneme)
+            self.msg("Current set: " + currentSet.toString())
 
-        # update phoneme list
-        self.update_phonemes()
+            # update phoneme list
+            self.update_phonemes()
+        else:
+            QtGui.QMessageBox.warning(self,
+                                   "Phoneme Limit Reached",
+                                   "You have reached the limit of " + str(MAX_PHONEMES) + " phonemes.\nPlease remove some existing phonemes to add new ones.")
 
     # Removes a phoneme from the currently selected set
     def remove_phoneme(self):
@@ -361,6 +368,16 @@ class StartQT4(QtGui.QMainWindow):
             self.reset_phoneme_ui()
             self.update_phonemes()
 
+    # Returns the number of phonemes currently in the game.
+    def get_num_phonemes(self):
+        n = 0
+        for level in self.levels:
+            for set in level.sets:
+                for phoneme in set.phonemes:
+                    n += 1
+        return n
+                    
+            
     # Sets the currently selected phoneme as the goal for the set
     def set_goal(self):
         if self.phonemeIndex != None:
