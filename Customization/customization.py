@@ -11,7 +11,7 @@ Copyright (c) 2013 Jake Brand, Nick Klose, Richard Leung,
 Andrew Neufeld, and Anthony Sopkow.
 """
 
-import sys
+import sys, os
 import pickle
 from PyQt4 import QtCore, QtGui
 from gui import Ui_mainWindow
@@ -21,7 +21,7 @@ from sounds import Phoneme_Sound
 from sounds import Sounds
 from sounds import Ui_Dialog
 from datetime import datetime
-import file_customizer
+from file_customizer import compile_elf, generate_files
 
 # Constant globals
 NUM_LEVELS = 10
@@ -276,7 +276,7 @@ class StartQT4(QtGui.QMainWindow):
         phoneme.image_file = basename(phoneme.image_path)
 
         self.ui.imgPhoneme.setPixmap(QtGui.QPixmap(phoneme.image_path))
-        self.ui.lblImagePath.setText(phoneme.image_file)
+        self.ui.lblImagePath = phoneme.image_file
 
     # Returns the currently selected level
     def get_level(self):
@@ -465,7 +465,15 @@ class StartQT4(QtGui.QMainWindow):
 
     # Installs the game with the current configuration to the Sifteos
     def install(self):
-        pass
+         # construct the game object
+        game = Game()
+        game.levels = self.levels
+        game.failedAttemptsWeight = self.ui.sldrFailedAttempts.value()
+        game.hintsRequestedWeight = self.ui.sldrHintsRequested.value()
+        game.timeWeight = self.ui.sldrTime.value()
+
+        generate_files(game, '..\PhonemeFrenzy')
+        compile_elf()
 
     # Allows the user to define a custom sound file
     def custom_sound(self):

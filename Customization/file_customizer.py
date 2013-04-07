@@ -16,7 +16,7 @@ ASSETS_LUA_TOP = (
 		'-- Metadata\nIconAssets = group{quality=9.95}\nIcon = image{"assets/icon.png"}\n\n'
 		'-- Asset Group loaded initially to all cubes\nBootAssets = group{quality=8.90}\n'
 		'LoadingBg = image{"assets/loading.png"}\nBravo = image{"assets/bravo.png"}\n'
-		'Title = image{"assets/welcomeTitle.png"}\nGrid = image{"assets/playfield.png"}\n'
+		'Title = image{"assets/title.png"}\nGrid = image{"assets/playfield.png"}\n'
 		'Speaker = image{"assets/speaker.png"}\n\n'
 	)
 # Number of image + phoneme per set
@@ -81,22 +81,23 @@ def generate_assetsLua(levels, path):
 	# keep track of the overall LevelSet num
 	levelNum = 0
 
-	assetsLua = open(path + 'assets.lua', mode='w')		# write mode will replace any existing file
+	assetsLua = open(os.path.join(path, 'assets.lua'), mode='w')		# write mode will replace any existing file
 	assetsLua.write(ASSETS_LUA_TOP)
 
 	# write levels
-	for i in range(0, numLevels):
-		level = levels[x]
-		for j in range(0, len(level.sets)):
-			levelNum += 1
-			set = level.sets[j]
-			generate_levelAssets(assetsLua, set, levelNum)	
+	for level in levels:
+		numSets = len(level.sets)
+		if numSets > 0:
+			for set in level.sets:
+				levelNum += 1
+				generate_levelAssets(assetsLua, set, levelNum)
 
 	# and remember to close the file
 	assetsLua.close()
 
 def generate_levelAssets(assetfile, set, num):
 	# write intro comment and lua group descriptor
+
 	assetfile.write('\n-- Level' + str(num) + ' asset group\n')
 	assetfile.write('Level' + str(num) + 'Assets = group{quality=10}\n')
 
@@ -133,14 +134,17 @@ def generate_levelAssets(assetfile, set, num):
 def generate_levelGenCpp(game, path):
 	levels = game.levels
 	# get the overall number of LevelSets
-	numLevels = len(levels)
+	numLevels = 0
+	for level in levels:
+		if len(level.sets) > 0:
+			numLevels += 1
 	totalNumSets = 0
 	for x in range(0, len(levels)):
 		level = levels[x]
 		totalNumSets += len(level.sets)
 
 	# open the file!
-	levelsGenCpp = open(path + 'levels.gen.cpp', mode='w') 	# write mode will replace entire file each time
+	levelsGenCpp = open(os.path.join(path, 'levels.gen.cpp'), mode='w') 	# write mode will replace entire file each time
 
 	# Write the begining, constant portion with includes to the file
 	levelsGenCpp.write(LEVELS_GEN_CPP_TOP + '\n')
@@ -154,7 +158,7 @@ def generate_levelGenCpp(game, path):
 		levelsGenCpp.write(create_level_line(x) + '\n')
 
 	# write out the LevelSet Levels array var and it's initializer
-	levelsGenCpp.write('struct LevelSet Levels[numLevels] = {')
+	levelsGenCpp.write('struct LevelSet Levels[numSets] = {')
 	for x in range(1,totalNumSets+1):
 		levelsGenCpp.write('Level' + str(x))	
 		# write the commas only for non-last items
@@ -163,7 +167,7 @@ def generate_levelGenCpp(game, path):
 	levelsGenCpp.write('};\n\n')
 
 	# write out the struct Group for level assets
-	levelsGenCpp.write('struct Group LevelAssets[numLevels] = {')
+	levelsGenCpp.write('struct Group LevelAssets[numSets] = {')
 	for x in range(1, totalNumSets+1):
 		levelsGenCpp.write('{Level' + str(x) + 'Assets}')
 		if x < totalNumSets:
