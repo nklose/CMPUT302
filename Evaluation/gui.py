@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'evaluation.ui'
 #
-# Created: Mon Apr  8 01:13:58 2013
+# Created: Mon Apr  8 01:56:40 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,7 +56,7 @@ class Ui_EvaluationWindow(object):
         self.txtNewUser.setGeometry(QtCore.QRect(10, 20, 171, 27))
         self.txtNewUser.setObjectName(_fromUtf8("txtNewUser"))
         self.btnAddUser = QtGui.QPushButton(self.groupUserSelection)
-        self.btnAddUser.setEnabled(False)
+        self.btnAddUser.setEnabled(True)
         self.btnAddUser.setGeometry(QtCore.QRect(190, 20, 31, 31))
         self.btnAddUser.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
@@ -619,6 +619,12 @@ class Ui_EvaluationWindow(object):
         self.label_90.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.label_90.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_90.setObjectName(_fromUtf8("label_90"))
+        self.lblMessage = QtGui.QLabel(self.groupLevelSpecificData)
+        self.lblMessage.setGeometry(QtCore.QRect(250, 430, 421, 101))
+        self.lblMessage.setFrameShape(QtGui.QFrame.Panel)
+        self.lblMessage.setFrameShadow(QtGui.QFrame.Sunken)
+        self.lblMessage.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblMessage.setObjectName(_fromUtf8("lblMessage"))
         self.btnClearData = QtGui.QPushButton(self.groupEvaluationData)
         self.btnClearData.setGeometry(QtCore.QRect(10, 110, 221, 51))
         font = QtGui.QFont()
@@ -691,6 +697,7 @@ class Ui_EvaluationWindow(object):
         self.label_86.setText(_translate("EvaluationWindow", "Attempts:", None))
         self.label_89.setText(_translate("EvaluationWindow", "Hints:", None))
         self.label_90.setText(_translate("EvaluationWindow", "Time:", None))
+        self.lblMessage.setText(_translate("EvaluationWindow", "Ready.", None))
         self.btnClearData.setText(_translate("EvaluationWindow", "Clear User Data", None))
         self.btnSave.setText(_translate("EvaluationWindow", "Save All", None))
 
