@@ -33,6 +33,13 @@ class Sounds(QtGui.QMainWindow):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
+        # Force consistent theme and font size
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
+        self.setStyleSheet("font-size: 11pt")
+
+        # Disable resizing
+        self.setFixedSize(self.size())
+
         # create a collection of Phoneme_Sound objects either by
         # loading an existing file or creating a new collection
         self.collection = None

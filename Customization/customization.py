@@ -38,6 +38,13 @@ class StartQT4(QtGui.QMainWindow):
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
 
+        # Force consistent theme and font size
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
+        self.setStyleSheet("font-size: 11pt")
+
+        # Disable resizing
+        self.setFixedSize(self.size())
+
         # Disable settings frame until a set is selected
         self.ui.frame.setEnabled(False)
         self.msg("Enabling frame.")

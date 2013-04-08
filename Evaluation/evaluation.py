@@ -24,6 +24,13 @@ class Evaluation(QtGui.QMainWindow):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_EvaluationWindow()
         self.ui.setupUi(self)
+
+        # Force consistent theme and font size
+        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
+        self.setStyleSheet("font-size: 11pt")
+
+        # Disable resizing
+        self.setFixedSize(self.size())
         
         # Non-graphical interface objects
         self.users = []    # list of users
@@ -60,11 +67,20 @@ class Evaluation(QtGui.QMainWindow):
 
     # Adds a user to the interface.
     def add_user(self):
-        pass
+        if self.ui.btnAddUser.isEnabled():
+            user = User(str(self.ui.txtNewUser.text()))
+            self.ui.txtNewUser.clear()
+            self.users.append(user)
+            self.msg("Added new user: " + user.name)
+            self.ui.btnAddUser.setEnabled(False)
+            self.refresh()
 
     # Removes a user from the interface.
     def remove_user(self):
-        pass
+        if self.userIndex != None:
+            del self.users[self.userIndex]
+            self.ui.btnRemoveUser.setEnabled(False)
+            self.refresh()
 
     # Saves the current interface state.
     def save(self):
@@ -92,11 +108,24 @@ class Evaluation(QtGui.QMainWindow):
 
     # Checks to see whether the currently entered string for a new user matches
     #  any existing users, and temporarily disables adding until it's made unique
-    def check_new_user(self):
-        pass
+    def check_new_user(self, text):
+        if str(text) != "":
+            unique = True
+            if self.users != None:
+                for u in range(0, len(self.users)):
+                    user = self.users[u]
+                    if user.name == str(text):
+                        unique = False
+            if unique:
+                self.ui.btnAddUser.setEnabled(True)
+            else:
+                self.ui.btnAddUser.setEnabled(False)
+        else:
+            self.ui.btnAddUser.setEnabled(False)
 
     # Refreshes the interface to show the current program state.
     def refresh(self):
+        self.ui.listUsers.clear()
         for user in self.users:
             self.ui.listUsers.addItem(user.name)
 

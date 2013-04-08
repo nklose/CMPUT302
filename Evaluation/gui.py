@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'evaluation.ui'
 #
-# Created: Mon Apr  8 01:56:40 2013
+# Created: Mon Apr  8 09:58:13 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,7 +56,7 @@ class Ui_EvaluationWindow(object):
         self.txtNewUser.setGeometry(QtCore.QRect(10, 20, 171, 27))
         self.txtNewUser.setObjectName(_fromUtf8("txtNewUser"))
         self.btnAddUser = QtGui.QPushButton(self.groupUserSelection)
-        self.btnAddUser.setEnabled(True)
+        self.btnAddUser.setEnabled(False)
         self.btnAddUser.setGeometry(QtCore.QRect(190, 20, 31, 31))
         self.btnAddUser.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
