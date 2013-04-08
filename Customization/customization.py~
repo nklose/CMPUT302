@@ -38,7 +38,7 @@ class StartQT4(QtGui.QMainWindow):
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
 
-        # Disable settings frame until a set is selected
+        # Make settings frame invisible until a set is selected
         self.ui.frame.setEnabled(False)
         self.msg("Enabling frame.")
 
