@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Sifteo Game Customization</string>
+   <string>Customization - Sifteos for Dyslexia</string>
   </property>
   <widget class="QTabWidget" name="gameSelector">
    <property name="geometry">
@@ -1728,16 +1728,6 @@
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="dividedWordTab">
-    <attribute name="title">
-     <string>Divided Words</string>
-    </attribute>
-   </widget>
-   <widget class="QWidget" name="workingMemoryTab">
-    <attribute name="title">
-     <string>Working Memory</string>
-    </attribute>
    </widget>
   </widget>
   <widget class="QPushButton" name="btnSave">
