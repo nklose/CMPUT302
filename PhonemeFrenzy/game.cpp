@@ -9,11 +9,7 @@
 #include "game.h"
 #include "assets.gen.h"
 #include "levels.gen.h"
-#include "GameData.h" //if you add this, add the following to the MakeFile:
-/*	GameData.o \
-	LevelData.o \
-	PlayData.o \
-	*/
+#include "GameData.h"
 #include <sifteo/time.h>
 #include <sifteo/menu.h>
 #include <sifteo/filesystem.h>
@@ -34,7 +30,6 @@ GameData gameData;
 
 void Game::init()
 {
-	//GameData gameData;
 
 	// initialize playthrough counter to 0
     playthrough = -1;
@@ -139,7 +134,7 @@ void Game::onTouch(unsigned id)
 			{
 				audio.play(set->goalsound);
 				gameData.incrementHints();
-				LOG("\n---incremented hints---\n");
+				LOG("\n---incremented hints to %u---\n", gameData.getHints());
 			} 
 					else
 			{
@@ -147,8 +142,6 @@ void Game::onTouch(unsigned id)
 				{
 					LOG(" was goal\n");
 					running = false;
-					gameData.incrementPlay();
-					LOG("\n---incremented play to ---\n");
 				}
 				else
 				{
@@ -204,9 +197,10 @@ int getSetIndex(int level, int set)
 /* Main game loop over defined levels */
 void Game::run()
 {
+    loadFromStoredObject();
 	/*
 	 * HUGE NOTE: If you want the current level number below, use i. If you want the current /set/ index within LevelAssets and Levels
-	 * 				then use the setIndex value. set has been changed to "set" to reflect this change in wording, but works the same as
+	 * then use the setIndex value. set has been changed to "set" to reflect this change in wording, but works the same as
 	 * 				before. Any questions about this change, direct them to Andrew.
 	 */
     for (unsigned i = 0; i < numLevels; i++)
@@ -232,8 +226,7 @@ void Game::run()
         }
         //
     	set = &Levels[setIndex];
-		// TESTING
-		loadAll();
+	//loadFromStoredObject();
     	running = true;
 
 		// load images onto cubes
@@ -250,6 +243,7 @@ void Game::run()
     		System::paint();
 
     	// if here level was completed!
+	// Compute and update gameData's current level with that play's time
         SystemTime finalTime = SystemTime::now();
         updateTime(initTime, finalTime);
     	for (unsigned k = 0; k < NUM_CUBES; k++)
@@ -260,17 +254,22 @@ void Game::run()
     	// TODO: write all info that need be recorded
     	bool advance = evaluateResults();
     	if(!advance) {
-    		i--;
-    	}
-		if (i == numLevels-1) {
-			saveAll();
-		}
+	    gameData.incrementPlay();
+	    LOG("---incrementedPlay to %i---\n", gameData.getCurrentLevel()->getPlayCounter());
+	    i--;
+    	} else {
+	    gameData.incrementLevel();
+	    LOG("---incrementedLevel to %i---\n", gameData.getLevelCounter());
+	}
+	if (i == 9) {
+	    saveToStoredObject();
+	}
 
     	Events::cubeTouch.unset();	// disable touch while showing "bravo"
     	wait(2);	// show the "bravo" for 2 second before next level
     }
-    // TODO: Doesn't get called yet
     playthrough++;
+    LOG("---playthrough=%i---", playthrough);
 }
 
 /* 	pause for roughly n seconds */
@@ -325,7 +324,7 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     float playTime = (finalTime.uptime() - initTime.uptime());
     gameData.setTime(playTime);
-    LOG("\n---setTime---\n");
+    LOG("---setTime to %f---\n", playTime);
 }
 
 // evaluate the results of the level
@@ -360,44 +359,36 @@ bool evaluateResults(){
 
 // Creates a 2D array to hold the 3 result parameters and a pointer to it
 // uses write() to the global StoredObject to overwrite it with all new data
-void saveAll(){
-    void *dataPointer;
+void saveToStoredObject(){
+    void *dataPointer = &gameData;
     unsigned dataSize;
-    float allResults[10][3];
-    /* NOPE NOT IMPLEMENTED YET
+    //float allResults[10][10][3];
+    /*
+    gameData.setLevelCounter(0);
     for (int i = 0; i < 10; i++){
-		allResults[i][0] = set->numHints;
-		allResults[i][1] = set->numAttempts;
-		allResults[i][2] = set->time;
-    }
-    */
-    dataPointer = &allResults;
-    dataSize = sizeof(float)*numLevels*3;
-    lvlData.write(dataPointer, dataSize);
-    /* For debugging data array
-    LOG("\nSaved Values:\n");
-    for (int i = 0; i < numLevels; i++){
-	for (int j = 0; j < 3; j++){
-	    LOG("%f ", allResults[i][j]);
+	gameData.getCurrentLevel().setPlayCounter(0);
+	LOG("---numPlays for level %i is %i---\n", gameData.getLevelCounter(), gameData.getCurrentLevel().getNumPlays());
+	for (int j = 0; j < gameData.getCurrentLevel().getNumPlays(); j++){
+	    allResults[i][j][0] = gameData.getCurrentLevel().getAttempts();
+	    allResults[i][j][1] = gameData.getCurrentLevel().getHints();
+	    allResults[i][j][2] = gameData.getCurrentLevel().getTime();
+	    gameData.getCurrentLevel().incrementPlay();
 	}
-	LOG("\n");
+	gameData.incrementLevel();
     }
     */
+    //dataPointer = &allResults;
+    dataSize = (sizeof(int)*3*10)+(sizeof(unsigned)*10*2)+(sizeof(float)*10*10);
+    lvlData.write(dataPointer, dataSize);
+    LOG("---savedToStoredObject---\n");
 }
 
 // Reads the storedObject from the current volume into the dataBuffer array
-void loadAll(){
-    float dataBuffer[numLevels][3];
-    unsigned dataSize = 36;
-    int temp = lvlData.read(&dataBuffer, dataSize);
-    /* For debugging data array
-    LOG("\nLoaded Values:\n");
-    for (int i = 0; i < numLevels; i++){
-	for (int j = 0; j < 3; j++){
-	    LOG("%f ", dataBuffer[i][j]);
-	}
-	LOG("\n");
-    }
-    */
+// TODO: This will only be used for implementing multiple playthroughs of all levels, saving comes first.
+void loadFromStoredObject(){
+    //unsigned dataSize = sizeof(float)*numLevels*3;
+    unsigned dataSize = sizeof(gameData);
+    LOG("\n    GAMEDATA SIZEOF = %u    \n", dataSize);
+    int temp = lvlData.read(&gameData, dataSize);
 }
 

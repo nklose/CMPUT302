@@ -2,41 +2,41 @@
 
 
 PlayData::PlayData(){
-	Hints = 0;
-	Attempts = 0;
-	Time = 0;
+    unsigned hints = 0;
+    unsigned attempts = 0;
+    float time = 0;
 }
 
 // getters and setters for object variables
 unsigned PlayData :: getHints(){
-    return Hints;
+    return hints;
 }
 
 unsigned PlayData :: getAttempts(){
-    return Attempts;
+    return attempts;
 }
 
 float PlayData :: getTime(){
-    return Time;
+    return time;
 }
 
 void PlayData :: setTime(float seconds){
-    Time = seconds;
+    time = seconds;
 }
 
 // increment number of hints or attempts for one play
 void PlayData :: incrementHints(){
-    Hints++;
-    LOG("***Hints Given: %d ***\n", Hints);
+    hints++;
+    LOG("***Hints Given: %d ***\n", hints);
 }
 
 void PlayData :: incrementAttempts(){
-    Attempts++;
-    LOG("***Attempts made: %d ***\n", Attempts);
+    attempts++;
+    LOG("***Attempts made: %d ***\n", attempts);
 }
 
 // reset hints and attempts to zero
 void PlayData :: reset(){
-    Hints = 0;
-    Attempts = 0;
+    hints = 0;
+    attempts = 0;
 }

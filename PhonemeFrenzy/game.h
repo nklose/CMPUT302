@@ -52,7 +52,7 @@ void incrementAttempts();
 void incrementHints();
 void updateTime(SystemTime initTime, SystemTime finalTime);
 bool evaluateResults();
-void saveAll();
-void loadAll();
+void saveToStoredObject();
+void loadFromStoredObject();
 
 #endif

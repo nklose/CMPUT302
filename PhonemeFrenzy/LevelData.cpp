@@ -2,59 +2,70 @@
 #include "PlayData.h"
 
 LevelData::LevelData(){
-    static int NumPlays;
-    int CurrentPlayCounter = 0;
-    // hardcoded 5 plays per level
-    PlayData DataArray[5];
+    int numPlays = 1;
+    int currentPlayCounter = 0;
+    PlayData* dataArray = new PlayData[1];
 }
 
 // getters LevelData Properties
+int LevelData :: getPlayCounter(){
+    return currentPlayCounter;
+}
+
+void LevelData :: setPlayCounter(int i){
+    currentPlayCounter = i;
+}
+
 int LevelData :: getNumPlays(){
-    return NumPlays;
+    return numPlays;
 }
 
 PlayData LevelData :: getCurrentPlay(){
-    return DataArray[CurrentPlayCounter];
-}
-
-PlayData* LevelData :: getCurrentLevel(){
-    return &DataArray[CurrentPlayCounter];
+    return dataArray[currentPlayCounter];
 }
 
 // getters and setters for specific play data for the current play
 unsigned LevelData :: getHints(){
-    return DataArray[CurrentPlayCounter].getHints();
+    return dataArray[currentPlayCounter].getHints();
 }
 
 unsigned LevelData :: getAttempts(){
-    return DataArray[CurrentPlayCounter].getAttempts();
+    return dataArray[currentPlayCounter].getAttempts();
 }
 
 float LevelData :: getTime(){
-    return DataArray[CurrentPlayCounter].getTime();
+    return dataArray[currentPlayCounter].getTime();
 }
 
 void LevelData :: setTime(float seconds){
-    DataArray[CurrentPlayCounter].setTime(seconds);
+    dataArray[currentPlayCounter].setTime(seconds);
 }
 
-// Increment number of hints or attempts in the specficied play number 
+// Increment number of hints or attempts in the current play number 
 // of this level
 void LevelData :: incrementHints(){
-    DataArray[CurrentPlayCounter].incrementHints();
+    dataArray[currentPlayCounter].incrementHints();
 }
 
 void LevelData :: incrementAttempts(){
-    DataArray[CurrentPlayCounter].incrementAttempts();
+    dataArray[currentPlayCounter].incrementAttempts();
 }
 
-// Increment the current play in the DataArray of this level
-// TODO: Better not fail an infinite number of times.
+// Increments the currentPlayCounter and the numPlays.
+// Then it moves the dataArray data to a tempArray, reallocates dataArray
+// as a bigger array, and transfers all original data back from tempArray.
 void LevelData :: incrementPlay(){
-    CurrentPlayCounter++;
+    currentPlayCounter++;
+    numPlays++;
+    PlayData* tempArray = dataArray;
+    dataArray = new PlayData[numPlays];
+    for (int i = 0; i < numPlays; i++){
+	dataArray[i] = tempArray[i];
+    }
+    delete [] tempArray;
 }
 
 // reset hints and attempts of the current level's current play to zero
 void LevelData :: reset(){
-    DataArray[CurrentPlayCounter].reset();
+    dataArray[currentPlayCounter].reset();
 }

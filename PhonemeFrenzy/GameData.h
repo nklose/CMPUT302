@@ -9,9 +9,10 @@ class GameData {
 public:
 	GameData();
 	//below here performed in GameData
-	void saveGameData();
-	PlayData* getCurrentLevel();
+	LevelData* getCurrentLevel();
 	void incrementPlay();
+	int getLevelCounter();
+	void setLevelCounter(int i);
 
 	// below here called from LevelData
 	unsigned getHints();
@@ -20,14 +21,11 @@ public:
 	void setTime(float seconds);
 	void incrementHints();
 	void incrementAttempts();
+	void incrementLevel();
 	void reset();
 private:
-	//static int NumLevels;
-	int CurrentLevelCounter;
-	LevelData currentLevel;
-	
-	void incrementLevel();
-	LevelData LevelsArray[10];
+	int currentLevelCounter;
+	LevelData levelsArray[10];
 };
 
 #endif

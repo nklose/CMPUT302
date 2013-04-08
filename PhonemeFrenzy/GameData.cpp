@@ -9,74 +9,59 @@
  * as well as the saving of results into PlayData objects.
  */
 GameData::GameData(){
-    // static int NumLevels;
-    int CurrentLevelCounter = 0;
-    LevelData LevelsArray[10];
-    LevelData currentLevel = LevelsArray[CurrentLevelCounter];
-}
-
-void GameData :: saveGameData(){
-
-    //todo: figure out how other games are storing their top scores
-    //and implement the same thing for ours.
-
+    int currentLevelCounter = 0;
+    LevelData levelsArray[10];
 }
 
 void GameData :: incrementPlay(){
+    levelsArray[currentLevelCounter].incrementPlay();
+}
 
-    //so, this needs some logic to determine if I've reached the end of the level
-    /*if (levelDataArray[currentLevel].getNumSets() == levelDataArray[currentLevel].getCurrentSet()){
-          incrementLevel();
-      }else{
-          if (){
-              levelDataArray[currentLevel].incrementSet();
-          }
-      }*/
-    //int numberOfSets = levelDataArray[currentLevel].getNumSets();
-    //int myCurrentSet = levelDataArray[currentLevel].getCurrentSet();
-    //if(numberOfSets != myCurrentSet){
-    //    levelDataArray[currentLevel].incrementSet();
-    //}
-    //levelDataArray[currentLevel].incrementSet();
+int GameData :: getLevelCounter(){
+    return currentLevelCounter;
+}
+
+void GameData :: setLevelCounter(int i){
+    currentLevelCounter = i;
 }
 
 void GameData :: incrementLevel(){
-    CurrentLevelCounter++;
+    currentLevelCounter++;
 }
 
-PlayData* GameData :: getCurrentLevel(){
-    return LevelsArray[CurrentLevelCounter].getCurrentLevel();
+LevelData* GameData :: getCurrentLevel(){
+    return &levelsArray[currentLevelCounter];
 }
 
 // getters and setters for play data for the current level's current play
 unsigned GameData :: getHints(){
-    return LevelsArray[CurrentLevelCounter].getHints();
+    return levelsArray[currentLevelCounter].getHints();
 }
 
 unsigned GameData :: getAttempts(){
-    return LevelsArray[CurrentLevelCounter].getAttempts();
+    return levelsArray[currentLevelCounter].getAttempts();
 }
 
 float GameData :: getTime(){
-    return LevelsArray[CurrentLevelCounter].getTime();
+    return levelsArray[currentLevelCounter].getTime();
 }
 
 void GameData :: setTime(float seconds){
-    LevelsArray[CurrentLevelCounter].setTime(seconds);
+    levelsArray[currentLevelCounter].setTime(seconds);
 }
 
 
 // increment hints or attempts in the current level's current play
 void GameData :: incrementHints(){
-    LevelsArray[CurrentLevelCounter].incrementHints();
+    levelsArray[currentLevelCounter].incrementHints();
 }
 
 void GameData :: incrementAttempts(){
-    LevelsArray[CurrentLevelCounter].incrementAttempts();
+    levelsArray[currentLevelCounter].incrementAttempts();
 }
 
 
 // reset hints and attempts in the current level's current play
 void GameData :: reset(){
-    LevelsArray[CurrentLevelCounter].reset();
+    levelsArray[currentLevelCounter].reset();
 }

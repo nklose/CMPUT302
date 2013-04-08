@@ -11,7 +11,8 @@ public:
 	//below here performed in LevelData
 	int getNumPlays();
 	PlayData getCurrentPlay();
-	PlayData* getCurrentLevel();
+	int getPlayCounter();
+	void setPlayCounter(int i);
 
 	//below here called from PlayData
 	unsigned getHints();
@@ -24,9 +25,9 @@ public:
 	void reset();
 
 private:
-	static int NumPlays;
-	int CurrentPlayCounter;
-	PlayData DataArray[5];//cannot have variable length of non-POD element type
+	static int numPlays;
+	int currentPlayCounter;
+	PlayData *dataArray = new PlayData[1];
 };
 
 

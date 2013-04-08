@@ -14,10 +14,9 @@ public:
 	void incrementAttempts();
 	void reset();
 private:
-	//String Goal;
-	unsigned Hints;
-	unsigned Attempts;
-	float Time;
+	unsigned hints;
+	unsigned attempts;
+	float time;
 };
 
 
