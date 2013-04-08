@@ -19,3 +19,7 @@
 
 # Temporary files
 *~
+
+# Generate Files
+levels.gen.cpp
+assets.lua
