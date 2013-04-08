@@ -3,6 +3,7 @@
 *.lo
 *.o
 *.d
+*.pyc
 
 # Compiled Dynamic libraries
 *.so
@@ -15,3 +16,6 @@
 
 # Compiled Executable File
 *.elf
+
+# Temporary files
+*~
