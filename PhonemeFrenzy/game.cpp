@@ -203,7 +203,6 @@ int getSetIndex(int level, int set)
 /* Main game loop over defined levels */
 void Game::run()
 {
-    loadFromStoredObject();
 	/*
 	 * HUGE NOTE: If you want the current level number below, use i. If you want the current /set/ index within LevelAssets and Levels
 	 * then use the setIndex value. set has been changed to "set" to reflect this change in wording, but works the same as
@@ -339,14 +338,14 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
     gameData.setTime(playTime);
-    LOG("---setTime to %f---\n", playTime);
+    LOG("---setTime to %u---\n", playTime);
 }
 
 /* Evaluate results of the level
  * Return true iff player did well enough to advance to next level */
 bool evaluateResults(){
 
-	unsigned hintsWeight = hintRequestedWeight;
+	unsigned hintsWeight = hintsRequestedWeight;
 	unsigned attemptsWeight= failedAttemptsWeight;
 	unsigned timesWeight = timeWeight;
 
