@@ -1,10 +1,8 @@
 #include "LevelData.h"
-#include "PlayData.h"
 
 LevelData::LevelData(){
-    int numPlays = 1;
-    int currentPlayCounter = 0;
-    PlayData* dataArray = new PlayData[1];
+    numPlays = 1;
+    currentPlayCounter = 0;
 }
 
 // getters LevelData Properties
@@ -57,12 +55,13 @@ void LevelData :: incrementAttempts(){
 void LevelData :: incrementPlay(){
     currentPlayCounter++;
     numPlays++;
-    PlayData* tempArray = dataArray;
+    /*PlayData* tempArray = dataArray;
     dataArray = new PlayData[numPlays];
     for (int i = 0; i < numPlays; i++){
 	dataArray[i] = tempArray[i];
     }
     delete [] tempArray;
+    */
 }
 
 // reset hints and attempts of the current level's current play to zero

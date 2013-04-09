@@ -2,7 +2,6 @@
 #define GAMEDATA_H_
 
 #include "LevelData.h"
-#include "levels.gen.h"
 #include <sifteo.h>
 
 class GameData {

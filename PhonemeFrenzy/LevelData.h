@@ -1,7 +1,6 @@
 #ifndef LEVELDATA_H_
 #define LEVELDATA_H_
 
-#include "LevelData.h"
 #include "PlayData.h"
 #include <sifteo.h>
 
@@ -25,9 +24,9 @@ public:
 	void reset();
 
 private:
-	static int numPlays;
+	int numPlays;
 	int currentPlayCounter;
-	PlayData *dataArray = new PlayData[1];
+	PlayData dataArray[1];
 };
 
 

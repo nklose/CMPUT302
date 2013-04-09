@@ -2,9 +2,9 @@
 
 
 PlayData::PlayData(){
-    unsigned hints = 0;
-    unsigned attempts = 0;
-    float time = 0;
+    hints = 0;
+    attempts = 0;
+    time = 0;
 }
 
 // getters and setters for object variables

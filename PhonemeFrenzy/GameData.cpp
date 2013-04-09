@@ -1,5 +1,4 @@
 #include "GameData.h"
-#include "LevelData.h"
 
 /*
  * GameData holds functions that call LevelData, which in turn calls PlayData.
@@ -9,7 +8,7 @@
  * as well as the saving of results into PlayData objects.
  */
 GameData::GameData(){
-    int currentLevelCounter = 0;
+    currentLevelCounter = 0;
     LevelData levelsArray[10];
 }
 
