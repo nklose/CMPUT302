@@ -22,6 +22,4 @@
 
 # Generate Files
 levels.gen.cpp
-assets.lua
-assets.gen.h
-assets.gen.cpp
+assets.*

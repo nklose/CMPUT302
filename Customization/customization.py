@@ -21,7 +21,7 @@ from sounds import Phoneme_Sound
 from sounds import Sounds
 from sounds import Ui_Dialog
 from datetime import datetime
-from file_customizer import compile_elf, generate_files
+from file_customizer import compile_elf, generate_files, install_elf
 
 # Constant globals
 NUM_LEVELS = 10
@@ -502,8 +502,9 @@ class StartQT4(QtGui.QMainWindow):
         
             generate_files(game, '..\PhonemeFrenzy')
             compile_elf()
+            install_elf()
             QtGui.QMessageBox.information(self,
-                                          "Installation Complete"
+                                          "Installation Complete",
                                           "The installation is complete.")
         except Exception as e:
             QtGui.QMessageBox.warning(self,

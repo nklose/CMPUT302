@@ -33,6 +33,27 @@ winshellpath = os.path.join(winbinpath, 'sifteo-sdk-shell.cmd')
 linuxshellpath = os.path.join(linuxbinpath, 'sifteo-sdk-shell.sh')
 macshellpath = os.path.join(macbinpath, 'sifteo-sdk-shell.command')
 
+def install_elf():
+	# detect which OS to determine which executables to use
+	ostype = platform.system()
+	binpath = ""
+	shellpath = ""
+
+	if (ostype == 'Windows'):
+		binpath = winbinpath
+		shellpath = winshellpath
+	elif (ostype == 'Linux'):
+		binpath = linuxbinpath
+		shellpath = linuxshellpath
+	elif (ostype == 'Darwin'):	# This is Mac OSX
+		binpath = macbinpath
+		shellpath = macshellpath
+
+	# open a subprocess to call swiss install on the freshly compiled game
+	swisspath = os.path.join(binpath, "swiss")
+	elfpath = os.path.join('..', 'PhonemeFrenzy', 'phonemefrenzy.elf')
+	subprocess.call(swisspath + " install " + elfpath)
+
 """
 	compile_elf(): based upon OS, runs the appropriate executables to compile the 
 						PhonemeFrenzy game from source. To be called after
@@ -54,7 +75,7 @@ def compile_elf():
 		binpath = macbinpath
 		shellpath = macshellpath
 
-	# somewhat magic function that will call make on the appropriate source folder
+	# open a subprocess to call make on the game source code
 	makepath = os.path.join(binpath, "make")
 	shell = subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
 
@@ -218,7 +239,7 @@ def create_level_line(num):
 def create_asset_token(levelNum, phonemeNum, assetType):
 	return "L" + str(levelNum) + assetType + str(phonemeNum)
 
-def generate_game():
+def generate_test_game():
 	game = Game()
 	levels = []
 
@@ -246,6 +267,7 @@ def generate_game():
 
 # if run directly, this will generate test files to show it works
 if __name__ == "__main__":	
-	game = generate_game()
-	generate_files(game, "")
-	#compile_elf()
+	game = generate_test_game()
+	enerate_files(game, "")
+	compile_elf()
+	install_elf()
