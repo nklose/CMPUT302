@@ -1238,7 +1238,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QLabel" name="lblAttemptsLabel2">
+      <widget class="QLabel" name="lblAttemptsLevel2">
        <property name="geometry">
         <rect>
          <x>90</x>

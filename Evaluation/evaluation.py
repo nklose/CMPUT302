@@ -160,12 +160,39 @@ class Evaluation(QtGui.QMainWindow):
         
         # Update the UI based on selected user's attributes
         u = self.get_user()
+        
         self.ui.lblHintsTotal.setText(str(u.total.hints))
         self.ui.lblAttemptsTotal.setText(str(u.total.attempts))
         self.ui.lblTimeTotal.setText(str(u.total.time))
         self.ui.lblHintsAverage.setText(str(u.average.hints))
         self.ui.lblAttemptsAverage.setText(str(u.average.attempts))
         self.ui.lblTimeAverage.setText(str(u.average.time))
+        
+        # Make lists for every level-specific UI element
+        hints = [self.ui.lblHintsLevel1, self.ui.lblHintsLevel2,
+                 self.ui.lblHintsLevel3, self.ui.lblHintsLevel4,
+                 self.ui.lblHintsLevel5, self.ui.lblHintsLevel6,
+                 self.ui.lblHintsLevel7, self.ui.lblHintsLevel8,
+                 self.ui.lblHintsLevel9, self.ui.lblHintsLevel10]
+        attempts = [self.ui.lblAttemptsLevel1, self.ui.lblAttemptsLevel2,
+                    self.ui.lblAttemptsLevel3, self.ui.lblAttemptsLevel4,
+                    self.ui.lblAttemptsLevel5, self.ui.lblAttemptsLevel6,
+                    self.ui.lblAttemptsLevel7, self.ui.lblAttemptsLevel8,
+                    self.ui.lblAttemptsLevel9, self.ui.lblAttemptsLevel10]
+        times = [self.ui.lblTimeLevel1, self.ui.lblTimeLevel2,
+                 self.ui.lblTimeLevel3, self.ui.lblTimeLevel4,
+                 self.ui.lblTimeLevel5, self.ui.lblTimeLevel6,
+                 self.ui.lblTimeLevel7, self.ui.lblTimeLevel8,
+                 self.ui.lblTimeLevel9, self.ui.lblTimeLevel10]
+        
+        for i in range(0, 10):
+            hint = hints[i]
+            attempt = attempts[i]
+            time = times[i]
+            
+            hint.setText(str(u.level[i].hints))
+            attempt.setText(str(u.level[i].attempts))
+            time.setText(str(u.level[i].time))
 
 # Start up the interface
 if __name__ == "__main__":
