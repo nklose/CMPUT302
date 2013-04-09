@@ -77,10 +77,14 @@ class Evaluation(QtGui.QMainWindow):
 
     # Removes a user from the interface.
     def remove_user(self):
-        if self.userIndex != None:
-            del self.users[self.userIndex]
-            self.ui.btnRemoveUser.setEnabled(False)
-            self.refresh()
+        title = "Remove User"
+        text = "This will permanently remove all data from this user. Continue?"
+        type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
+            if self.userIndex != None:  
+                del self.users[self.userIndex]
+                self.ui.btnRemoveUser.setEnabled(False)
+                self.refresh()
 
     # Saves the current interface state.
     def save(self):
