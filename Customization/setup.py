@@ -7,12 +7,13 @@ from distutils.core import setup
 import py2exe, os, sys
 
 root_dir = os.path.dirname(os.path.realpath(__file__))
-main_file = os.path.join(ROOT, "customization.py")
+main_file = os.path.join(root_dir, "customization.py")
 exe_name = "Customization"
-incl_files = [os.path.join(ROOT_PATH, "plus.png"), os.path.join(ROOT_PATH, "minus.png")]
-excl_files = ["_gtkagg", "_tkagg"]
+images = [os.path.join(root_dir, "minus.png"),
+                os.path.join(root_dir, "plus.png")]
+incl_files = images
 excl_dlls = ["libiomp5md.dll", "MSVCP60.DLL", "MSVCP90.DLL", "MSVCP100.DLL"]
-windowsSettings = [{"dest_base": EXE_FILE, "script": MAIN_FILE}]
+windowsSettings = [{"dest_base": exe_name, "script": main_file}]
 incl_packages = ["sip"]
 
 
@@ -20,7 +21,6 @@ options = {
     'py2exe': {
         "dist_dir": "bin",
         "includes": incl_packages,
-        "excludes": excl_files,
         "dll_excludes": excl_dlls,
         'bundle_files': 1,
         'compressed': 2,
