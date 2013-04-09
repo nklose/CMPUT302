@@ -19,6 +19,16 @@ Semester:	Winter 2013
 Institution: 	University of Alberta
 Instructor:	Walter Bischof
 
+Installing on Windows
+=====================
+To run the customization interface, double-click on Customization.exe.
+
+To run the evaluation interface, double-click on Evaluation.exe.
+
+Visual C++ 2008 Redistributable must be installed to use either. The installer
+for this is provided as vcredist_x86.exe or can be downloaded from Microsoft at
+http://www.microsoft.com/en-us/download/confirmation.aspx?id=5582
+
 Running on Linux
 ================
 To run the customization interface on Linux, use the following command:
