@@ -1,4 +1,5 @@
 #include "GameData.h"
+#include "levels.gen.h"
 
 /*
  * GameData holds functions that call LevelData, which in turn calls PlayData.
@@ -25,7 +26,9 @@ void GameData :: setLevelCounter(int i){
 }
 
 void GameData :: incrementLevel(){
-    currentLevelCounter++;
+    if (currentLevelCounter < numLevels){
+	currentLevelCounter++;
+    }
 }
 
 LevelData* GameData :: getCurrentLevel(){
@@ -49,7 +52,6 @@ void GameData :: setTime(float seconds){
     levelsArray[currentLevelCounter].setTime(seconds);
 }
 
-
 // increment hints or attempts in the current level's current play
 void GameData :: incrementHints(){
     levelsArray[currentLevelCounter].incrementHints();
@@ -59,8 +61,12 @@ void GameData :: incrementAttempts(){
     levelsArray[currentLevelCounter].incrementAttempts();
 }
 
-
 // reset hints and attempts in the current level's current play
-void GameData :: reset(){
+void GameData :: resetCurrentLevel(){
     levelsArray[currentLevelCounter].reset();
+}
+
+// reset the level counter at the end of a playthrough
+void GameData :: resetLevelCounter(){
+    currentLevelCounter = 0;
 }

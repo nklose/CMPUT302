@@ -2,6 +2,7 @@
 #define GAMEDATA_H_
 
 #include "LevelData.h"
+#include "levels.gen.h"
 #include <sifteo.h>
 
 class GameData {
@@ -21,7 +22,8 @@ public:
 	void incrementHints();
 	void incrementAttempts();
 	void incrementLevel();
-	void reset();
+	void resetCurrentLevel();
+	void resetLevelCounter();
 private:
 	int currentLevelCounter;
 	LevelData levelsArray[10];

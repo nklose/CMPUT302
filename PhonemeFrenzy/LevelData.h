@@ -2,6 +2,7 @@
 #define LEVELDATA_H_
 
 #include "PlayData.h"
+#include "levels.gen.h"
 #include <sifteo.h>
 
 class LevelData {
@@ -26,7 +27,7 @@ public:
 private:
 	int numPlays;
 	int currentPlayCounter;
-	PlayData dataArray[1];
+	PlayData dataArray[10];
 };
 
 

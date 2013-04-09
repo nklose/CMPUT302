@@ -352,13 +352,9 @@ bool evaluateResults(){
 	unsigned finalResult;
 	//TODO: Change to a better threshold (may have to be done by client)
 	unsigned threshold = 12000;
-	finalResult = 0;
-	/* TODO: Implement GameData functions.
-	  finalResult = (hintsWeight * set->numHints)
-				+ (attemptsWeight * set->numAttempts)
-				+ (timesWeight * set->time);
-				
-	*/
+	finalResult = (hintsWeight * gameData.getCurrentLevel()->getHints())
+	    + (attemptsWeight * gameData.getCurrentLevel()->getAttempts())
+	    + (timesWeight * gameData.getCurrentLevel()->getTime());
 	//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
 	//			hintsWeight*set->numHints, attemptsWeight*set->numAttempts,
 	//			timesWeight*set->time, finalResult);
@@ -366,7 +362,6 @@ bool evaluateResults(){
 	if(finalResult > threshold){
 		return false;
 	}
-
 	return true;
 }
 

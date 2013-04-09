@@ -1,8 +1,11 @@
 #include "LevelData.h"
+#include "levels.gen.h"
 
 LevelData::LevelData(){
     numPlays = 1;
     currentPlayCounter = 0;
+    // this is the array of 10 possible plays per level
+    PlayData dataArray[10];
 }
 
 // getters LevelData Properties
@@ -50,18 +53,13 @@ void LevelData :: incrementAttempts(){
 }
 
 // Increments the currentPlayCounter and the numPlays.
-// Then it moves the dataArray data to a tempArray, reallocates dataArray
-// as a bigger array, and transfers all original data back from tempArray.
 void LevelData :: incrementPlay(){
-    currentPlayCounter++;
-    numPlays++;
-    /*PlayData* tempArray = dataArray;
-    dataArray = new PlayData[numPlays];
-    for (int i = 0; i < numPlays; i++){
-	dataArray[i] = tempArray[i];
+    if (currentPlayCounter < 10){
+	currentPlayCounter++;
+	numPlays++;
+    } else {
+	LOG("---Play Overflow [you fail]---\n");
     }
-    delete [] tempArray;
-    */
 }
 
 // reset hints and attempts of the current level's current play to zero
