@@ -33,10 +33,10 @@ extern struct Group LevelAssets[];
 // setsInLevel[0] will give the number of sets that the level 1 has, and so on for setsInLevel[1] for level2, etc.
 extern int setsInLevel[];
 
-extern unsigned hintSliderWeight;
+extern unsigned hintRequestedWeight;
 
-extern unsigned attemptSliderWeight;
+extern unsigned failedAttemptsWeight;
 
-extern unsigned timeSliderWeight;
+extern unsigned timeWeight;
 
 extern const unsigned numLevels;

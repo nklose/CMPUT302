@@ -346,7 +346,7 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
  * Return true iff player did well enough to advance to next level */
 bool evaluateResults(){
 
-	unsigned hintsWeight = hintsRequestedWeight;
+	unsigned hintsWeight = hintRequestedWeight;
 	unsigned attemptsWeight= failedAttemptsWeight;
 	unsigned timesWeight = timeWeight;
 
@@ -385,17 +385,19 @@ void saveToStoredObject(){
 
     gameData.setLevelCounter(0);
     for (int i = 0; i < 10; i++){
-	gameData.getCurrentLevel().setPlayCounter(0);
-	LOG("---numPlays for level %i is %i---\n", gameData.getLevelCounter(), gameData.getCurrentLevel().getNumPlays());
+	gameData.getCurrentLevel()->setPlayCounter(0);
+	LOG("---numPlays for level %i is %i---\n", gameData.getLevelCounter(), gameData.getCurrentLevel()->getNumPlays());
+	/*
 	for (int j = 0; j < gameData.getCurrentLevel().getNumPlays(); j++){
 	    allResults[i][j][0] = gameData.getCurrentLevel().getAttempts();
 	    allResults[i][j][1] = gameData.getCurrentLevel().getHints();
 	    allResults[i][j][2] = gameData.getCurrentLevel().getTime();
 	    gameData.getCurrentLevel().incrementPlay();
 	}
+	*/
 	gameData.incrementLevel();
     }
-    dataSize = (sizeof(int)*3*10)+(sizeof(unsigned)*10*2)+(sizeof(float)*10*10);
-    lvlData.write(dataPointer, dataSize);
+    unsigned dataSize = (sizeof(int)*3*10)+(sizeof(unsigned)*10*2)+(sizeof(float)*10*10);
+    //lvlData.write(dataPointer, dataSize);
     LOG("---savedToStoredObject---\n");
 }
