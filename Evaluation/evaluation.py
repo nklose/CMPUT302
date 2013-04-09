@@ -61,7 +61,7 @@ class Evaluation(QtGui.QMainWindow):
         try:
             open(DATA_FILE)
         except:
-            self.msg("Data file not found; creating a new one.")
+            self.msg("Data file not found; starting fresh.")
             self.users.append(User())
             self.refresh()
 
@@ -88,7 +88,12 @@ class Evaluation(QtGui.QMainWindow):
 
     # Saves the current interface state.
     def save(self):
-        pass
+        self.msg("Saving everything...")
+        try:
+            with open(DATA_FILE, "wb") as output:
+                pickle.dump(self.users, pickle.HIGHEST_PROTOCOL)
+            self.msg("Save successful.")
+        self.msg("Error: couldn't save the data file.")
 
     # Adds data from an evaluation file to the current user's statistics.
     def add_data(self):
