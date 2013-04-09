@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'evaluation.ui'
 #
-# Created: Mon Apr  8 19:47:04 2013
+# Created: Mon Apr  8 23:13:40 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -48,7 +48,7 @@ class Ui_EvaluationWindow(object):
         self.btnRemoveUser.setGeometry(QtCore.QRect(230, 20, 31, 31))
         self.btnRemoveUser.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../Customization/minus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../Customization/images/minus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnRemoveUser.setIcon(icon)
         self.btnRemoveUser.setIconSize(QtCore.QSize(24, 24))
         self.btnRemoveUser.setObjectName(_fromUtf8("btnRemoveUser"))
@@ -60,7 +60,7 @@ class Ui_EvaluationWindow(object):
         self.btnAddUser.setGeometry(QtCore.QRect(190, 20, 31, 31))
         self.btnAddUser.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("../Customization/plus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("../Customization/images/plus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAddUser.setIcon(icon1)
         self.btnAddUser.setIconSize(QtCore.QSize(24, 24))
         self.btnAddUser.setObjectName(_fromUtf8("btnAddUser"))

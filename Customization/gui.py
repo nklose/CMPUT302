@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Sun Apr  7 18:48:37 2013
+# Created: Mon Apr  8 23:13:21 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -104,7 +104,7 @@ class Ui_mainWindow(object):
         self.btnAddSet.setGeometry(QtCore.QRect(310, 320, 41, 41))
         self.btnAddSet.setText(_fromUtf8(""))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("plus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("images/plus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAddSet.setIcon(icon)
         self.btnAddSet.setIconSize(QtCore.QSize(32, 32))
         self.btnAddSet.setObjectName(_fromUtf8("btnAddSet"))
@@ -112,7 +112,7 @@ class Ui_mainWindow(object):
         self.btnRemoveSet.setGeometry(QtCore.QRect(260, 320, 41, 41))
         self.btnRemoveSet.setText(_fromUtf8(""))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("minus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("images/minus.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnRemoveSet.setIcon(icon1)
         self.btnRemoveSet.setIconSize(QtCore.QSize(32, 32))
         self.btnRemoveSet.setObjectName(_fromUtf8("btnRemoveSet"))
