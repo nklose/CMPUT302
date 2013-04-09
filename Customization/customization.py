@@ -502,6 +502,7 @@ class StartQT4(QtGui.QMainWindow):
         
             generate_files(game, '..\PhonemeFrenzy')
             compile_elf()
+            install_elf()
             QtGui.QMessageBox.information(self,
                                           "Installation Complete"
                                           "The installation is complete.")
