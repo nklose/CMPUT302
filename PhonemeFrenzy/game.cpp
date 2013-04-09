@@ -113,7 +113,8 @@ void Game::onTilt(unsigned id, Byte3 tiltInfo)
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
-	if(playthrough == -1){//this would be the menu screen
+	/* If still on main menu playthrough hasn't started yet */
+	if(playthrough == -1){
 		running = false;
 	}else{
 		/*
@@ -121,10 +122,6 @@ void Game::onTouch(unsigned id)
 		 * 	the cube screen. The touched array ensure that only one of these 2 events calls this func fully
 		 */
 		static bool touched[NUM_CUBES] = {false, false, false};
-
-		// TODO?: Highlight cube and display/speak "Are you sure" <- or equivalent
-		// ->On clicking a confirmed cube continue else repeat above
-
 		touched[id] = !touched[id];
 
 		if (touched[id])
@@ -138,13 +135,16 @@ void Game::onTouch(unsigned id)
 			} 
 					else
 			{
+				// if cube is the goal cube (index 0)
 				if (id == set->indexes[0])
 				{
 					LOG(" was goal\n");
 					running = false;
 				}
+				// if cube was incorrect guess
 				else
 				{
+					// Darken cube, replay goal sound and increment attempts
 					vid[id].bg0.image(vec(0,0), Grid);
 					audio.play(set->goalsound);
 					LOG(" was not goal\n");
@@ -156,28 +156,33 @@ void Game::onTouch(unsigned id)
 	}
 }
 
-
+/* Start running the game after levels are initialized */
 void Game::startRun(){
+	//TODO: Should we move this to init for consistency sake?
+	// or move shake event down here for ocnsistency sake?
 		Events::cubeTouch.set(&Game::onTouch, this);
 
     	loader.load(LevelAssets[0].grp, MainSlot);
     	running = true;
 
-		// load start image on cubes
+		// load title image on cubes
 		for (unsigned i = 0; i < NUM_CUBES; i++){
 			vid[i].bg0.image(vec(0,0), Title);
 		}
 			wait(0.5);
 
-    	while(running)	// wait for events to be handled
+		// wait for cube to be touched
+    	while(running)
     		System::paint();
+    	// continue running and start playthrough
 		running = true;
 		playthrough = 0;
-		Events::cubeTouch.unset();	// disable touch temporarily (clears touch)
+		// disable touch temporarily (clears touch)
+		Events::cubeTouch.unset();
     	wait(.5);
-
 }
 
+//TODO: Fill in what this does
 int getSetIndex(int level, int set)
 {
 	int index = 0;
@@ -236,38 +241,47 @@ void Game::run()
     	// play goal sound once
     	audio.play(set->goalsound);
 
-    	// Level loop
-	SystemTime initTime = SystemTime::now();
+    	// prepare level to be played
+    	SystemTime initTime = SystemTime::now();
     	Events::cubeTouch.set(&Game::onTouch, this);
-    	while(running)	// wait for events to be handled
+    	// wait for events to be handled
+    	while(running)
     		System::paint();
 
     	// if here level was completed!
-	// Compute and update gameData's current level with that play's time
+    	// Compute and update gameData's current level with that play's time
         SystemTime finalTime = SystemTime::now();
         updateTime(initTime, finalTime);
-    	for (unsigned k = 0; k < NUM_CUBES; k++)
+        // display BRAVO on all cubes
+    	for (unsigned k = 0; k < NUM_CUBES; k++){
     		vid[k].bg0.image(vec(0,0), Bravo);
-
+    		//TODO: add BRAVO sound
+    	}
     	System::paint();
 
     	// TODO: write all info that need be recorded
     	bool advance = evaluateResults();
+    	// Didn't perform well enough to start new level
     	if(!advance) {
 	    gameData.incrementPlay();
 	    LOG("---incrementedPlay to %i---\n", gameData.getCurrentLevel()->getPlayCounter());
 	    i--;
-    	} else {
+    	}
+    	// Did perform well enough to start new level
+    	else {
 	    gameData.incrementLevel();
 	    LOG("---incrementedLevel to %i---\n", gameData.getLevelCounter());
 	}
+    // TODO: Is this the last level? Should it be hardcoded?
 	if (i == 9) {
 	    saveToStoredObject();
 	}
-
-    	Events::cubeTouch.unset();	// disable touch while showing "bravo"
-    	wait(2);	// show the "bravo" for 2 second before next level
+		// disable touch while showing "bravo"
+    	Events::cubeTouch.unset();
+    	// show the "bravo" for 2 second before next level
+    	wait(2);
     }
+    // increment playthrough
     playthrough++;
     LOG("---playthrough=%i---", playthrough);
 }
@@ -327,17 +341,16 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
     LOG("---setTime to %f---\n", playTime);
 }
 
-// evaluate the results of the level
-// return true iff player did well enough to advance to next level
+/* Evaluate results of the level
+ * Return true iff player did well enough to advance to next level */
 bool evaluateResults(){
-	//TODO: Tweak, and or change to sliders (Waiting on client)
 
 	unsigned hintsWeight = hintSliderWeight;
 	unsigned attemptsWeight= attemptSliderWeight;
 	unsigned timesWeight = timeSliderWeight;
 
 	unsigned finalResult;
-	//TODO: Change to a better threshold (user study)
+	//TODO: Change to a better threshold (may have to be done by client)
 	unsigned threshold = 12000;
 	finalResult = 0;
 	/* TODO: Implement GameData functions.
