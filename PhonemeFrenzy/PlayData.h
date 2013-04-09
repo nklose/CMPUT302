@@ -8,7 +8,7 @@ public:
 	PlayData();
 	unsigned getHints();
 	unsigned getAttempts();
-	float getTime();
+	unsigned getTime();
 	void setTime(float Seconds);
 	void incrementHints();
 	void incrementAttempts();
@@ -16,7 +16,7 @@ public:
 private:
 	unsigned hints;
 	unsigned attempts;
-	float time;
+	unsigned time;
 };
 
 
