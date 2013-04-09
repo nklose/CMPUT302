@@ -69,7 +69,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../Customization/minus.png</normaloff>../Customization/minus.png</iconset>
+       <normaloff>../Customization/images/minus.png</normaloff>../Customization/images/minus.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -105,7 +105,7 @@
      </property>
      <property name="icon">
       <iconset>
-       <normaloff>../Customization/plus.png</normaloff>../Customization/plus.png</iconset>
+       <normaloff>../Customization/images/plus.png</normaloff>../Customization/images/plus.png</iconset>
      </property>
      <property name="iconSize">
       <size>
