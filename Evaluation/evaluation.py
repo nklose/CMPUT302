@@ -47,7 +47,6 @@ class Evaluation(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.ui.btnAddUser, clicked, self.add_user)
         QtCore.QObject.connect(self.ui.btnRemoveUser, clicked, self.remove_user)
-        QtCore.QObject.connect(self.ui.btnSave, clicked, self.save)
         QtCore.QObject.connect(self.ui.btnAddData, clicked, self.add_data)
         QtCore.QObject.connect(self.ui.btnClearData, clicked, self.clear_data)
 
@@ -59,7 +58,10 @@ class Evaluation(QtGui.QMainWindow):
     #  the absense of a data file
     def initialize(self):
         try:
-            open(DATA_FILE)
+            with open(DATA_FILE, "rb") as input:
+                self.users = pickle.load(input)
+                self.refresh()
+                self.msg("Data loaded successfully.")
         except:
             self.msg("Data file not found; starting fresh.")
             self.users.append(User())
@@ -74,6 +76,7 @@ class Evaluation(QtGui.QMainWindow):
             self.msg("Added new user: " + user.name)
             self.ui.btnAddUser.setEnabled(False)
             self.refresh()
+            self.save()
 
     # Removes a user from the interface.
     def remove_user(self):
@@ -85,15 +88,15 @@ class Evaluation(QtGui.QMainWindow):
                 del self.users[self.userIndex]
                 self.ui.btnRemoveUser.setEnabled(False)
                 self.refresh()
+                self.save()
 
     # Saves the current interface state.
     def save(self):
-        self.msg("Saving everything...")
         try:
             with open(DATA_FILE, "wb") as output:
-                pickle.dump(self.users, pickle.HIGHEST_PROTOCOL)
-            self.msg("Save successful.")
-        self.msg("Error: couldn't save the data file.")
+                pickle.dump(self.users, output, pickle.HIGHEST_PROTOCOL)
+        except:
+            self.msg("Error: couldn't save the data file.")
 
     # Adds data from an evaluation file to the current user's statistics.
     def add_data(self):
