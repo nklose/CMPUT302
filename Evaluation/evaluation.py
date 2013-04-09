@@ -104,7 +104,14 @@ class Evaluation(QtGui.QMainWindow):
     
     # Clears all data from the current user and refreshes the interface.
     def clear_data(self):
-        pass
+        title = "Clear User Data"
+        text = "This will permanently remove all data from this user. Continue?"
+        type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
+            user = self.get_user()
+            user = User(user.name)
+            self.refresh()
+            self.msg("All data was cleared from this user.")
 
     # Returns the index of a given user as an integer.
     def user_index(self, item):
