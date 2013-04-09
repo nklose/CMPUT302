@@ -2,9 +2,9 @@
 
 
 PlayData::PlayData(){
-    hints = 0;
-    attempts = 0;
-    time = 0;
+    unsigned hints = 0;
+    unsigned attempts = 0;
+    unsigned time = 0;
 }
 
 // getters and setters for object variables
@@ -16,11 +16,11 @@ unsigned PlayData :: getAttempts(){
     return attempts;
 }
 
-float PlayData :: getTime(){
+unsigned PlayData :: getTime(){
     return time;
 }
 
-void PlayData :: setTime(float seconds){
+void PlayData :: setTime(unsigned seconds){
     time = seconds;
 }
 

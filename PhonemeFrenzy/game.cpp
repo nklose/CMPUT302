@@ -25,7 +25,6 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct LevelSet *set;
 int playthrough;
-StoredObject lvlData = StoredObject::allocate();
 GameData gameData;
 
 void Game::init()
@@ -99,8 +98,9 @@ void Game::onShake(unsigned id)
 			if (set->indexes[i] == id)
 				ind = i;
 		}
-
 		audio.play(set->sounds[ind]);
+		gameData.incrementHints();
+		LOG("\n---incremented hints to %u---\n", gameData.getHints());
 	}
 }
 
@@ -182,7 +182,8 @@ void Game::startRun(){
     	wait(.5);
 }
 
-//TODO: Fill in what this does
+// Returns an index to the specified set for the specified level;
+// for use in the array of sets.
 int getSetIndex(int level, int set)
 {
 	int index = 0;
@@ -336,7 +337,7 @@ void shuffleLoad()
 
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
-    float playTime = (finalTime.uptime() - initTime.uptime());
+    unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
     gameData.setTime(playTime);
     LOG("---setTime to %f---\n", playTime);
 }
@@ -345,9 +346,9 @@ void updateTime(SystemTime initTime, SystemTime finalTime)
  * Return true iff player did well enough to advance to next level */
 bool evaluateResults(){
 
-	unsigned hintsWeight = hintSliderWeight;
-	unsigned attemptsWeight= attemptSliderWeight;
-	unsigned timesWeight = timeSliderWeight;
+	unsigned hintsWeight = hintsRequestedWeight;
+	unsigned attemptsWeight= failedAttemptsWeight;
+	unsigned timesWeight = timeWeight;
 
 	unsigned finalResult;
 	//TODO: Change to a better threshold (may have to be done by client)
@@ -368,10 +369,20 @@ bool evaluateResults(){
 // Creates a 2D array to hold the 3 result parameters and a pointer to it
 // uses write() to the global StoredObject to overwrite it with all new data
 void saveToStoredObject(){
-    void *dataPointer = &gameData;
-    unsigned dataSize;
-    //float allResults[10][10][3];
-    /*
+    // initialize all 10 stored objects
+    StoredObject lvlData1 = StoredObject::allocate();
+    StoredObject lvlData2 = StoredObject::allocate();
+    StoredObject lvlData3 = StoredObject::allocate();
+    StoredObject lvlData4 = StoredObject::allocate();
+    StoredObject lvlData5 = StoredObject::allocate();
+    StoredObject lvlData6 = StoredObject::allocate();
+    StoredObject lvlData7 = StoredObject::allocate();
+    StoredObject lvlData8 = StoredObject::allocate();
+    StoredObject lvlData9 = StoredObject::allocate();
+    StoredObject lvlData10 = StoredObject::allocate();
+
+    float allResults[10][10][3];
+
     gameData.setLevelCounter(0);
     for (int i = 0; i < 10; i++){
 	gameData.getCurrentLevel().setPlayCounter(0);
@@ -384,19 +395,7 @@ void saveToStoredObject(){
 	}
 	gameData.incrementLevel();
     }
-    */
-    //dataPointer = &allResults;
     dataSize = (sizeof(int)*3*10)+(sizeof(unsigned)*10*2)+(sizeof(float)*10*10);
     lvlData.write(dataPointer, dataSize);
     LOG("---savedToStoredObject---\n");
 }
-
-// Reads the storedObject from the current volume into the dataBuffer array
-// TODO: This will only be used for implementing multiple playthroughs of all levels, saving comes first.
-void loadFromStoredObject(){
-    //unsigned dataSize = sizeof(float)*numLevels*3;
-    unsigned dataSize = sizeof(gameData);
-    LOG("\n    GAMEDATA SIZEOF = %u    \n", dataSize);
-    int temp = lvlData.read(&gameData, dataSize);
-}
-
