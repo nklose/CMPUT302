@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'evaluation.ui'
 #
-# Created: Mon Apr  8 09:58:13 2013
+# Created: Mon Apr  8 19:47:04 2013
 #      by: PyQt4 UI code generator 4.10
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,10 +33,10 @@ class Ui_EvaluationWindow(object):
         self.centralwidget = QtGui.QWidget(EvaluationWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.groupUserSelection = QtGui.QGroupBox(self.centralwidget)
-        self.groupUserSelection.setGeometry(QtCore.QRect(10, 10, 271, 671))
+        self.groupUserSelection.setGeometry(QtCore.QRect(10, 10, 271, 741))
         self.groupUserSelection.setObjectName(_fromUtf8("groupUserSelection"))
         self.listUsers = QtGui.QListWidget(self.groupUserSelection)
-        self.listUsers.setGeometry(QtCore.QRect(10, 60, 251, 601))
+        self.listUsers.setGeometry(QtCore.QRect(10, 60, 251, 671))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.listUsers.setFont(font)
@@ -417,12 +417,12 @@ class Ui_EvaluationWindow(object):
         self.lblTimeLevel2.setFrameShadow(QtGui.QFrame.Raised)
         self.lblTimeLevel2.setText(_fromUtf8(""))
         self.lblTimeLevel2.setObjectName(_fromUtf8("lblTimeLevel2"))
-        self.lblAttemptsLabel2 = QtGui.QLabel(self.groupLevel2)
-        self.lblAttemptsLabel2.setGeometry(QtCore.QRect(90, 55, 111, 31))
-        self.lblAttemptsLabel2.setFrameShape(QtGui.QFrame.Panel)
-        self.lblAttemptsLabel2.setFrameShadow(QtGui.QFrame.Raised)
-        self.lblAttemptsLabel2.setText(_fromUtf8(""))
-        self.lblAttemptsLabel2.setObjectName(_fromUtf8("lblAttemptsLabel2"))
+        self.lblAttemptsLevel2 = QtGui.QLabel(self.groupLevel2)
+        self.lblAttemptsLevel2.setGeometry(QtCore.QRect(90, 55, 111, 31))
+        self.lblAttemptsLevel2.setFrameShape(QtGui.QFrame.Panel)
+        self.lblAttemptsLevel2.setFrameShadow(QtGui.QFrame.Raised)
+        self.lblAttemptsLevel2.setText(_fromUtf8(""))
+        self.lblAttemptsLevel2.setObjectName(_fromUtf8("lblAttemptsLevel2"))
         self.label_65 = QtGui.QLabel(self.groupLevel2)
         self.label_65.setGeometry(QtCore.QRect(10, 25, 71, 21))
         font = QtGui.QFont()
@@ -631,12 +631,6 @@ class Ui_EvaluationWindow(object):
         font.setPointSize(14)
         self.btnClearData.setFont(font)
         self.btnClearData.setObjectName(_fromUtf8("btnClearData"))
-        self.btnSave = QtGui.QPushButton(self.centralwidget)
-        self.btnSave.setGeometry(QtCore.QRect(10, 700, 271, 51))
-        font = QtGui.QFont()
-        font.setPointSize(14)
-        self.btnSave.setFont(font)
-        self.btnSave.setObjectName(_fromUtf8("btnSave"))
         EvaluationWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(EvaluationWindow)
@@ -699,5 +693,4 @@ class Ui_EvaluationWindow(object):
         self.label_90.setText(_translate("EvaluationWindow", "Time:", None))
         self.lblMessage.setText(_translate("EvaluationWindow", "Ready.", None))
         self.btnClearData.setText(_translate("EvaluationWindow", "Clear User Data", None))
-        self.btnSave.setText(_translate("EvaluationWindow", "Save All", None))
 
