@@ -25,7 +25,7 @@
       <x>10</x>
       <y>10</y>
       <width>271</width>
-      <height>671</height>
+      <height>741</height>
      </rect>
     </property>
     <property name="title">
@@ -37,7 +37,7 @@
        <x>10</x>
        <y>60</y>
        <width>251</width>
-       <height>601</height>
+       <height>671</height>
       </rect>
      </property>
      <property name="font">
@@ -1238,7 +1238,7 @@
         <string/>
        </property>
       </widget>
-      <widget class="QLabel" name="lblAttemptsLabel2">
+      <widget class="QLabel" name="lblAttemptsLevel2">
        <property name="geometry">
         <rect>
          <x>90</x>
@@ -1915,24 +1915,6 @@
       <string>Clear User Data</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QPushButton" name="btnSave">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>700</y>
-      <width>271</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>14</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Save All</string>
-    </property>
    </widget>
   </widget>
  </widget>

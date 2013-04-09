@@ -47,7 +47,6 @@ class Evaluation(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.ui.btnAddUser, clicked, self.add_user)
         QtCore.QObject.connect(self.ui.btnRemoveUser, clicked, self.remove_user)
-        QtCore.QObject.connect(self.ui.btnSave, clicked, self.save)
         QtCore.QObject.connect(self.ui.btnAddData, clicked, self.add_data)
         QtCore.QObject.connect(self.ui.btnClearData, clicked, self.clear_data)
 
@@ -59,9 +58,12 @@ class Evaluation(QtGui.QMainWindow):
     #  the absense of a data file
     def initialize(self):
         try:
-            open(DATA_FILE)
+            with open(DATA_FILE, "rb") as input:
+                self.users = pickle.load(input)
+                self.refresh()
+                self.msg("Data loaded successfully.")
         except:
-            self.msg("Data file not found; creating a new one.")
+            self.msg("Data file not found; starting fresh.")
             self.users.append(User())
             self.refresh()
 
@@ -74,17 +76,27 @@ class Evaluation(QtGui.QMainWindow):
             self.msg("Added new user: " + user.name)
             self.ui.btnAddUser.setEnabled(False)
             self.refresh()
+            self.save()
 
     # Removes a user from the interface.
     def remove_user(self):
-        if self.userIndex != None:
-            del self.users[self.userIndex]
-            self.ui.btnRemoveUser.setEnabled(False)
-            self.refresh()
+        title = "Remove User"
+        text = "This will permanently remove all data from this user. Continue?"
+        type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
+            if self.userIndex != None:  
+                del self.users[self.userIndex]
+                self.ui.btnRemoveUser.setEnabled(False)
+                self.refresh()
+                self.save()
 
     # Saves the current interface state.
     def save(self):
-        pass
+        try:
+            with open(DATA_FILE, "wb") as output:
+                pickle.dump(self.users, output, pickle.HIGHEST_PROTOCOL)
+        except:
+            self.msg("Error: couldn't save the data file.")
 
     # Adds data from an evaluation file to the current user's statistics.
     def add_data(self):
@@ -92,7 +104,14 @@ class Evaluation(QtGui.QMainWindow):
     
     # Clears all data from the current user and refreshes the interface.
     def clear_data(self):
-        pass
+        title = "Clear User Data"
+        text = "This will permanently remove all data from this user. Continue?"
+        type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
+        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
+            user = self.get_user()
+            user = User(user.name)
+            self.refresh()
+            self.msg("All data was cleared from this user.")
 
     # Returns the index of a given user as an integer.
     def user_index(self, item):
@@ -141,12 +160,39 @@ class Evaluation(QtGui.QMainWindow):
         
         # Update the UI based on selected user's attributes
         u = self.get_user()
+        
         self.ui.lblHintsTotal.setText(str(u.total.hints))
         self.ui.lblAttemptsTotal.setText(str(u.total.attempts))
         self.ui.lblTimeTotal.setText(str(u.total.time))
         self.ui.lblHintsAverage.setText(str(u.average.hints))
         self.ui.lblAttemptsAverage.setText(str(u.average.attempts))
         self.ui.lblTimeAverage.setText(str(u.average.time))
+        
+        # Make lists for every level-specific UI element
+        hints = [self.ui.lblHintsLevel1, self.ui.lblHintsLevel2,
+                 self.ui.lblHintsLevel3, self.ui.lblHintsLevel4,
+                 self.ui.lblHintsLevel5, self.ui.lblHintsLevel6,
+                 self.ui.lblHintsLevel7, self.ui.lblHintsLevel8,
+                 self.ui.lblHintsLevel9, self.ui.lblHintsLevel10]
+        attempts = [self.ui.lblAttemptsLevel1, self.ui.lblAttemptsLevel2,
+                    self.ui.lblAttemptsLevel3, self.ui.lblAttemptsLevel4,
+                    self.ui.lblAttemptsLevel5, self.ui.lblAttemptsLevel6,
+                    self.ui.lblAttemptsLevel7, self.ui.lblAttemptsLevel8,
+                    self.ui.lblAttemptsLevel9, self.ui.lblAttemptsLevel10]
+        times = [self.ui.lblTimeLevel1, self.ui.lblTimeLevel2,
+                 self.ui.lblTimeLevel3, self.ui.lblTimeLevel4,
+                 self.ui.lblTimeLevel5, self.ui.lblTimeLevel6,
+                 self.ui.lblTimeLevel7, self.ui.lblTimeLevel8,
+                 self.ui.lblTimeLevel9, self.ui.lblTimeLevel10]
+        
+        for i in range(0, 10):
+            hint = hints[i]
+            attempt = attempts[i]
+            time = times[i]
+            
+            hint.setText(str(u.level[i].hints))
+            attempt.setText(str(u.level[i].attempts))
+            time.setText(str(u.level[i].time))
 
 # Start up the interface
 if __name__ == "__main__":
