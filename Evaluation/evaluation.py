@@ -12,12 +12,17 @@ Andrew Neufeld, and Anthony Sopkow.
 """
 import sys, os
 import pickle
+import platform
 from PyQt4 import QtCore, QtGui
 from gui import Ui_EvaluationWindow
 from user import *
 
 # Global constants
 DATA_FILE = os.path.join(".", "data.pk")
+winbinpath = os.path.join('..', 'bins', 'windowsbin')
+linuxbinpath = os.path.join('..', 'bins', 'linuxbin')
+macbinpath = os.path.join('..', 'bins', 'macbin')
+
 
 class Evaluation(QtGui.QMainWindow):
     def __init__(self, parent = None):
@@ -100,7 +105,27 @@ class Evaluation(QtGui.QMainWindow):
 
     # Adds data from an evaluation file to the current user's statistics.
     def add_data(self):
-        pass
+        # notify the user
+        QtGui.QMessageBox.information(self,
+                                      "Data Extraction",
+                                      "Please ensure that the Sifteo Cubes are plugged into the computer using the USB cable.\n\nUser data will then be extracted from the cubes.\n\nYou will be notified when the data extraction is complete.")
+        
+        # extract the data from the sifteo cubes
+        try:
+            datafilename = "savedata.bin"
+            binpath = getOSBinpath()
+            swisspath = os.path.join(binpath, "swiss")
+            print(swisspath + " savedata extract com.sifteo.sdk.phonemefrenzy " + datafilename)
+            # use the "swiss savedata extract com.sifteo.sdk [file]" command to get the data
+            #subprocess.call(swisspath + " savedata extract com.sifteo.sdk.phonemefrenzy " + datafilename)
+        except:
+            QtGui.QMessageBox.information(self,
+                                      "Data Extraction Error",
+                                      "An error has occured while attempting to extract data from the cubes.\n\nPlease make sure the Sifteo Cubes were plugged in correctly and attempt extraction again.\n")
+        
+        # update visible data, and then save it to the file
+        self.refresh()
+        self.save()
     
     # Clears all data from the current user and refreshes the interface.
     def clear_data(self):
@@ -193,6 +218,17 @@ class Evaluation(QtGui.QMainWindow):
             hint.setText(str(u.level[i].hints))
             attempt.setText(str(u.level[i].attempts))
             time.setText(str(u.level[i].time))
+
+def getOSBinpath():
+    # detect which OS to determine which executables to use
+    ostype = platform.system()
+
+    if (ostype == 'Windows'):
+            return winbinpath
+    elif (ostype == 'Linux'):
+            return linuxbinpath
+    elif (ostype == 'Darwin'):	# This is Mac OSX
+            return macbinpath
 
 # Start up the interface
 if __name__ == "__main__":

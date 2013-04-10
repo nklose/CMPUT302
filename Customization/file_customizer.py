@@ -28,27 +28,9 @@ linuxbinpath = os.path.join('..', 'bins', 'linuxbin')
 macbinpath = os.path.join('..', 'bins', 'macbin')
 gamesourcepath = os.path.join('..', 'PhonemeFrenzy')
 
-# direct filepaths to command shells for OS types
-winshellpath = os.path.join(winbinpath, 'sifteo-sdk-shell.cmd')
-linuxshellpath = os.path.join(linuxbinpath, 'sifteo-sdk-shell.sh')
-macshellpath = os.path.join(macbinpath, 'sifteo-sdk-shell.command')
-
 def install_elf():
 	# detect which OS to determine which executables to use
-	ostype = platform.system()
-	binpath = ""
-	shellpath = ""
-
-	if (ostype == 'Windows'):
-		binpath = winbinpath
-		shellpath = winshellpath
-	elif (ostype == 'Linux'):
-		binpath = linuxbinpath
-		shellpath = linuxshellpath
-	elif (ostype == 'Darwin'):	# This is Mac OSX
-		binpath = macbinpath
-		shellpath = macshellpath
-
+	binpath = getOSbinpath()
 	# open a subprocess to call swiss install on the freshly compiled game
 	swisspath = os.path.join(binpath, "swiss")
 	elfpath = os.path.join('..', 'PhonemeFrenzy', 'phonemefrenzy.elf')
@@ -60,24 +42,25 @@ def install_elf():
 						generate_files.
 """
 def compile_elf():
+	binpath = getOSbinpath()
+	
+	# open a subprocess to call make on the game source code
+	makepath = os.path.join(binpath, "make")
+	subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
+
+def getOSBinpath():
 	# detect which OS to determine which executables to use
 	ostype = platform.system()
 	binpath = ""
-	shellpath = ""
 
 	if (ostype == 'Windows'):
 		binpath = winbinpath
-		shellpath = winshellpath
 	elif (ostype == 'Linux'):
 		binpath = linuxbinpath
-		shellpath = linuxshellpath
 	elif (ostype == 'Darwin'):	# This is Mac OSX
 		binpath = macbinpath
-		shellpath = macshellpath
-
-	# open a subprocess to call make on the game source code
-	makepath = os.path.join(binpath, "make")
-	shell = subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
+	
+	return binpath
 
 """
 	generate_files(levels, path): 	- levels is a list of Level() objects containing game data
