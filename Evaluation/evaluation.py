@@ -94,6 +94,7 @@ class Evaluation(QtGui.QMainWindow):
             if self.userIndex != None:  
                 del self.users[self.userIndex]
                 self.ui.btnRemoveUser.setEnabled(False)
+                self.userIndex = None
                 self.refresh()
                 self.save()
 
@@ -131,11 +132,16 @@ class Evaluation(QtGui.QMainWindow):
     
     # Removes a specific playthrough from the selected user.
     def remove_data(self):
-        pass
+        self.ui.btnRemoveData.setEnabled(False)
+        u = self.get_user()
+        del u.playthroughs[self.playthroughIndex]
+        self.playthroughIndex = None
+        self.refresh()
+        self.save()
 
     # Returns the index of a given user as an integer.
     def user_index(self, item):
-        for i in range(0, len(self.users)):
+        for i in range(1, len(self.users)):
             user = self.users[i]
             if user.name == str(item.text()):
                 return i
