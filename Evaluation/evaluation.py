@@ -39,7 +39,8 @@ class Evaluation(QtGui.QMainWindow):
         
         # Non-graphical interface objects
         self.users = []    # list of users
-        self.userIndex = 0 # currently selected user
+        self.userIndex = None # currently selected user
+        self.playthroughIndex = None # index of selected playthrough
 
         # Initialize the interface
         self.initialize()
@@ -53,9 +54,10 @@ class Evaluation(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.btnAddUser, clicked, self.add_user)
         QtCore.QObject.connect(self.ui.btnRemoveUser, clicked, self.remove_user)
         QtCore.QObject.connect(self.ui.btnAddData, clicked, self.add_data)
-        QtCore.QObject.connect(self.ui.btnClearData, clicked, self.clear_data)
+        QtCore.QObject.connect(self.ui.btnRemoveData, clicked, self.remove_data)
 
         QtCore.QObject.connect(self.ui.listUsers, itemClicked, self.select_user)
+        QtCore.QObject.connect(self.ui.listPlaythroughs, itemClicked, self.select_playthrough)
         QtCore.QObject.connect(self.ui.txtNewUser, textChanged, self.check_new_user)
         QtCore.QObject.connect(self.ui.txtNewUser, returnPressed, self.add_user)
 
@@ -103,7 +105,7 @@ class Evaluation(QtGui.QMainWindow):
         except:
             self.msg("Error: couldn't save the data file.")
 
-    # Adds data from an evaluation file to the current user's statistics.
+    # Adds one or more playthroughs from an evaluation data file.
     def add_data(self):
         # notify the user
         QtGui.QMessageBox.information(self,
@@ -127,16 +129,9 @@ class Evaluation(QtGui.QMainWindow):
         self.refresh()
         self.save()
     
-    # Clears all data from the current user and refreshes the interface.
-    def clear_data(self):
-        title = "Clear User Data"
-        text = "This will permanently remove all data from this user. Continue?"
-        type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
-        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
-            user = self.get_user()
-            user = User(user.name)
-            self.refresh()
-            self.msg("All data was cleared from this user.")
+    # Removes a specific playthrough from the selected user.
+    def remove_data(self):
+        pass
 
     # Returns the index of a given user as an integer.
     def user_index(self, item):
@@ -148,7 +143,15 @@ class Evaluation(QtGui.QMainWindow):
 
     # Returns the currently selected user object.
     def get_user(self):
-        return self.users[self.userIndex]
+        if self.userIndex != None:
+            return self.users[self.userIndex]
+        else:
+            return None
+
+    # Returns the currently selected playthrough object.
+    def get_playthrough(self):
+        u = self.get_user()
+        return u.playthroughs[self.playthroughIndex]
 
     # Checks to see whether the currently entered string for a new user matches
     #  any existing users, and temporarily disables adding until it's made unique
@@ -173,6 +176,15 @@ class Evaluation(QtGui.QMainWindow):
         for user in self.users:
             self.ui.listUsers.addItem(user.name)
 
+        self.ui.listPlaythroughs.clear()
+        u = self.get_user()
+        if u != None:
+            i = 0
+            for p in u.playthroughs:
+                self.ui.listPlaythroughs.addItem("Play " + str(i+1))
+                i += 1
+            self.ui.listUsers.item(self.userIndex).setSelected(True)
+
     # Displays a message to the user via the message box
     def msg(self, text):
         self.ui.lblMessage.setText(str(text))
@@ -182,16 +194,16 @@ class Evaluation(QtGui.QMainWindow):
         self.ui.btnRemoveUser.setEnabled(True)
         index = self.user_index(user)
         self.userIndex = index
+        self.refresh()
+
+    # Selects a specific playthrough from the list of playthroughs.
+    # Update the UI based on selected user's attributes
+    def select_playthrough(self, playthrough):
+        self.ui.btnRemoveData.setEnabled(True)
+        index = int(playthrough.text()[5:])-1
+        self.playthroughIndex = index
         
-        # Update the UI based on selected user's attributes
-        u = self.get_user()
-        
-        self.ui.lblHintsTotal.setText(str(u.total.hints))
-        self.ui.lblAttemptsTotal.setText(str(u.total.attempts))
-        self.ui.lblTimeTotal.setText(str(u.total.time))
-        self.ui.lblHintsAverage.setText(str(u.average.hints))
-        self.ui.lblAttemptsAverage.setText(str(u.average.attempts))
-        self.ui.lblTimeAverage.setText(str(u.average.time))
+        p = self.get_playthrough()
         
         # Make lists for every level-specific UI element
         hints = [self.ui.lblHintsLevel1, self.ui.lblHintsLevel2,
@@ -210,14 +222,33 @@ class Evaluation(QtGui.QMainWindow):
                  self.ui.lblTimeLevel7, self.ui.lblTimeLevel8,
                  self.ui.lblTimeLevel9, self.ui.lblTimeLevel10]
         
+        hintTotal = 0
+        attemptTotal = 0
+        timeTotal = 0
+
         for i in range(0, 10):
             hint = hints[i]
             attempt = attempts[i]
             time = times[i]
-            
-            hint.setText(str(u.level[i].hints))
-            attempt.setText(str(u.level[i].attempts))
-            time.setText(str(u.level[i].time))
+
+            hint.setText(str(p.level[i].hints))
+            attempt.setText(str(p.level[i].attempts))
+            time.setText(str(p.level[i].time))
+
+            hintTotal += p.level[i].hints
+            attemptTotal += p.level[i].attempts
+            timeTotal += p.level[i].time
+
+        hintAverage = float(hintTotal / 10)
+        attemptAverage = float(attemptTotal / 10)
+        timeAverage = float(timeTotal / 10)
+
+        self.ui.lblHintsTotal.setText(str(hintTotal))
+        self.ui.lblAttemptsTotal.setText(str(attemptTotal))
+        self.ui.lblTimeTotal.setText(str(timeTotal))
+        self.ui.lblHintsAverage.setText(str(hintAverage))
+        self.ui.lblAttemptsAverage.setText(str(attemptAverage))
+        self.ui.lblTimeAverage.setText(str(timeAverage))
 
 def getOSBinpath():
     # detect which OS to determine which executables to use

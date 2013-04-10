@@ -1,9 +1,6 @@
 """
 This file defines classes needed for evaluation.py.
 
-Code for the basic framework was borrowed from:
-http://www.rkblog.rk.edu.pl/w/p/simple-text-editor-pyqt4/
-
 Code for using PyQt4 functions is from PyQt Class Reference:
 http://pyqt.sourceforge.net/Docs/PyQt4/classes.html
 
@@ -20,11 +17,7 @@ class User():
             self.name = "Default"
         else:
             self.name = name
-        self.total = ResultGroup()
-        self.average = ResultGroup()
-        self.level = []
-        for i in range(0, 10):
-            self.level.append(ResultGroup())
+        self.playthroughs = []
 
 # A ResultGroup is a group of evaluation results containing the number of 
 # hints, attempts, and seconds (time) for a particular game component.
@@ -33,3 +26,12 @@ class ResultGroup():
         self.hints = 0
         self.attempts = 0
         self.time = 0
+
+# A playthrough represents a single run of the game.
+class Playthrough():
+    def __init__(self):
+        self.total = ResultGroup()
+        self.average = ResultGroup()
+        self.level = []
+        for i in range(0, 10):
+            self.level.append(ResultGroup())
