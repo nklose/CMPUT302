@@ -144,11 +144,6 @@ def extractPilLibrary():
     else:
         print("PIL 1.1.7 library already exists")
 
-def removeTransparency(image):
-    background = Image.new("RGB", image.size, (255, 255, 255))
-    #background.paste(image, mask=image.split()[3])
-    return background
-
 def processImageForSifte(rootPath, folderName, imageTitle, extension):
     if not imageTitle == '':
         completeImageName = os.path.join(os.path.join(rootPath, folderName), imageTitle)
@@ -160,29 +155,22 @@ def processImageForSifte(rootPath, folderName, imageTitle, extension):
         newImageWidth = int(imageWidth*ratio)
         size = newImageWidth, newImageHeight
         image = image.resize(size)
-        #image2 = image.thumbnail(size, Image.ANTIALIAS)
         #add white bar to bottom for text
-        #image = ImageOps.fit(image, (128, 128), Image.NEAREST, 0, (1.0, 0.0))
         horizontalImageSpacing = int((128-newImageWidth)/2)
         image = image.crop(( -1*horizontalImageSpacing,0,newImageWidth+horizontalImageSpacing,128))
         draw = ImageDraw.Draw(image)
-        myFont = ImageFont.truetype("Arial.ttf", 20, encoding="unic")
-        textWidth, textHeight = myFont.getsize(imageTitle)
-        textHorizontalPosition = 64 - (textWidth/2)
-        textVerticalPosition = 98 + (15 - (textHeight/2))
-        #myFont = ImageFont.load("timR14.pil")
-        #border
-        #draw.text((textHorizontalPosition-1, textVerticalPosition), imageTitle, fill='white', font=myFont)
-        #draw.text((textHorizontalPosition+1, textVerticalPosition), imageTitle, fill='white', font=myFont)
-        #draw.text((textHorizontalPosition, textVerticalPosition-1), imageTitle, fill='white', font=myFont)
-        #draw.text((textHorizontalPosition, textVerticalPosition+1), imageTitle, fill='white', font=myFont)
-        draw.text((textHorizontalPosition, textVerticalPosition), imageTitle, fill='white', font=myFont)
-        #draw.text((10, 103), )
-        #convert to png
-        #image = removeTransparency(image)
+        if not extension == ".gif":
+            try:
+                myFont = ImageFont.truetype("Arial.ttf", 20, encoding="unic")
+                textWidth, textHeight = myFont.getsize(imageTitle)
+                textHorizontalPosition = 64 - (textWidth/2)
+                textVerticalPosition = 98 + (15 - (textHeight/2))
+                draw.text((textHorizontalPosition, textVerticalPosition), imageTitle, fill="white", font=myFont)
+            except TypeError:
+                print("Failed image drawing. I don't know why. I'm really sorry.")
         image = image.convert("RGB")
+        #convert to png
         image.save(completeImageName + ".png", quality=100)
-        #image2.save(completeImageName + "2.png", quality=100)
         #remove old image
         if not extension == ".png":
             os.remove(completeImageName + extension)
