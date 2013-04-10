@@ -510,6 +510,7 @@ class StartQT4(QtGui.QMainWindow):
             QtGui.QMessageBox.warning(self,
                                 "Installation Error",
                                 "An error occurred. The following exception was given:\n\n" + str(e))
+
     
     # Allows the user to define a custom sound file
     def custom_sound(self):

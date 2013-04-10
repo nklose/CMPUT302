@@ -28,13 +28,28 @@ linuxbinpath = os.path.join('..', 'bins', 'linuxbin')
 macbinpath = os.path.join('..', 'bins', 'macbin')
 gamesourcepath = os.path.join('..', 'PhonemeFrenzy')
 
+
+def getOSBinpath():
+    # detect which OS to determine which executables to use
+    ostype = platform.system()
+
+    if (ostype == 'Windows'):
+            return winbinpath
+    elif (ostype == 'Linux'):
+            return linuxbinpath
+    elif (ostype == 'Darwin'):	# This is Mac OSX
+            return macbinpath
+
+
 def install_elf():
 	# detect which OS to determine which executables to use
-	binpath = getOSbinpath()
+	binpath = getOSBinpath()
 	# open a subprocess to call swiss install on the freshly compiled game
 	swisspath = os.path.join(binpath, "swiss")
 	elfpath = os.path.join('..', 'PhonemeFrenzy', 'phonemefrenzy.elf')
-	subprocess.call(swisspath + " install " + elfpath)
+	proc = subprocess.call(swisspath + " install " + elfpath)
+	if proc != 0:
+		raise Exception("Installation of game onto cubes failed.")
 
 """
 	compile_elf(): based upon OS, runs the appropriate executables to compile the 
@@ -42,25 +57,13 @@ def install_elf():
 						generate_files.
 """
 def compile_elf():
-	binpath = getOSbinpath()
+	binpath = getOSBinpath()
 	
 	# open a subprocess to call make on the game source code
 	makepath = os.path.join(binpath, "make")
-	subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
-
-def getOSBinpath():
-	# detect which OS to determine which executables to use
-	ostype = platform.system()
-	binpath = ""
-
-	if (ostype == 'Windows'):
-		binpath = winbinpath
-	elif (ostype == 'Linux'):
-		binpath = linuxbinpath
-	elif (ostype == 'Darwin'):	# This is Mac OSX
-		binpath = macbinpath
-	
-	return binpath
+	proc = subprocess.call(makepath + " -C "+ gamesourcepath, stdin=subprocess.PIPE, shell=True)
+	if proc != 0:
+		raise Exception("Game compilation failed.")
 
 """
 	generate_files(levels, path): 	- levels is a list of Level() objects containing game data
