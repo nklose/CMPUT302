@@ -4,8 +4,9 @@
 LevelData::LevelData(){
     numPlays = 1;
     currentPlayCounter = 0;
-    // this is the array of 10 possible plays per level
-    PlayData dataArray[10];
+    unsigned totalAttempts = 0;
+    unsigned totalHints = 0;
+    unsigned totalTime = 0;
 }
 
 // getters LevelData Properties
@@ -21,48 +22,27 @@ int LevelData :: getNumPlays(){
     return numPlays;
 }
 
-PlayData LevelData :: getCurrentPlay(){
-    return dataArray[currentPlayCounter];
-}
-
 // getters and setters for specific play data for the current play
 unsigned LevelData :: getHints(){
-    return dataArray[currentPlayCounter].getHints();
+    return totalHints;
 }
 
 unsigned LevelData :: getAttempts(){
-    return dataArray[currentPlayCounter].getAttempts();
+    return totalAttempts;
 }
 
-float LevelData :: getTime(){
-    return dataArray[currentPlayCounter].getTime();
+unsigned LevelData :: getTime(){
+    return totalTime;
 }
 
-void LevelData :: setTime(unsigned seconds){
-    dataArray[currentPlayCounter].setTime(seconds);
+void LevelData :: addTime(unsigned seconds){
+    totalTime = totalTime + seconds;
 }
 
-// Increment number of hints or attempts in the current play number 
-// of this level
 void LevelData :: incrementHints(){
-    dataArray[currentPlayCounter].incrementHints();
+    totalHints++;
 }
 
 void LevelData :: incrementAttempts(){
-    dataArray[currentPlayCounter].incrementAttempts();
-}
-
-// Increments the currentPlayCounter and the numPlays.
-void LevelData :: incrementPlay(){
-    if (currentPlayCounter < 10){
-	currentPlayCounter++;
-	numPlays++;
-    } else {
-	LOG("---Play Overflow [you fail]---\n");
-    }
-}
-
-// reset hints and attempts of the current level's current play to zero
-void LevelData :: reset(){
-    dataArray[currentPlayCounter].reset();
+    totalAttempts++;
 }

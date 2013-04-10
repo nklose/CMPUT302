@@ -258,7 +258,7 @@ void Game::run()
     		System::paint();
 
     	// if here level was completed!
-    	// Compute and update gameData's current level with that play's time
+    	// Compute and add the time of that play to the current level
         SystemTime finalTime = SystemTime::now();
         updateTime(initTime, finalTime);
         // display BRAVO on all cubes
@@ -272,8 +272,6 @@ void Game::run()
     	bool advance = evaluateResults();
     	// Didn't perform well enough to start new level
     	if(!advance) {
-	    gameData.incrementPlay();
-	    LOG("---incrementedPlay to %i---\n", gameData.getCurrentLevel()->getPlayCounter());
 	    i--;
     	}
     	// Did perform well enough to start new level
@@ -347,8 +345,8 @@ void shuffleLoad()
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
-    gameData.setTime(playTime);
-    LOG("---setTime to %u---\n", playTime);
+    gameData.addTime(playTime);
+    LOG("---Added %u to Time---\n", playTime);
 }
 
 /* Evaluate results of the level
@@ -398,18 +396,15 @@ void saveToStoredObject(){
     gameData.setLevelCounter(0);
 
     for (int i = 0; i < numLevels; i++){
-	gameData.getCurrentLevel()->setPlayCounter(0);
-
 	allResults[i][offset] = gameData.getCurrentLevel()->getAttempts();
 	offset++;
 	allResults[i][offset] = gameData.getCurrentLevel()->getHints();
 	offset++;
 	allResults[i][offset] = gameData.getCurrentLevel()->getTime();
 	offset++;
-
-	gameData.getCurrentLevel()->incrementPlay();
+	gameData.incrementLevel();
     }
-    gameData.incrementLevel();
+
     for (int j = 0; j < 30; j++){
 	LOG("%u ", allResults[1][j]);
     }

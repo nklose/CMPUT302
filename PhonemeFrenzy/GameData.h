@@ -18,11 +18,10 @@ public:
 	unsigned getHints();
 	unsigned getAttempts();
 	unsigned getTime();
-	void setTime(unsigned seconds);
+	void addTime(unsigned seconds);
 	void incrementHints();
 	void incrementAttempts();
 	void incrementLevel();
-	void resetCurrentLevel();
 	void resetLevelCounter();
 private:
 	int currentLevelCounter;

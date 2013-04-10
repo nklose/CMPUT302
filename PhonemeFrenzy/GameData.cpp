@@ -13,10 +13,6 @@ GameData::GameData(){
     LevelData levelsArray[10];
 }
 
-void GameData :: incrementPlay(){
-    levelsArray[currentLevelCounter].incrementPlay();
-}
-
 int GameData :: getLevelCounter(){
     return currentLevelCounter;
 }
@@ -48,8 +44,8 @@ unsigned GameData :: getTime(){
     return levelsArray[currentLevelCounter].getTime();
 }
 
-void GameData :: setTime(unsigned seconds){
-    levelsArray[currentLevelCounter].setTime(seconds);
+void GameData :: addTime(unsigned seconds){
+    levelsArray[currentLevelCounter].addTime(seconds);
 }
 
 // increment hints or attempts in the current level's current play
@@ -59,11 +55,6 @@ void GameData :: incrementHints(){
 
 void GameData :: incrementAttempts(){
     levelsArray[currentLevelCounter].incrementAttempts();
-}
-
-// reset hints and attempts in the current level's current play
-void GameData :: resetCurrentLevel(){
-    levelsArray[currentLevelCounter].reset();
 }
 
 // reset the level counter at the end of a playthrough
