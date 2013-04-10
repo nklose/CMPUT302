@@ -24,7 +24,7 @@ CubeSet allCubes(0,NUM_CUBES);	// all non-speaker cubes
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct LevelSet *set;
-int playthrough;
+int playthrough = 1;
 bool title;
 GameData gameData;
 StoredObject playthroughNumber = StoredObject::allocate();
@@ -36,16 +36,20 @@ void Game::init()
     title = true;
 
     // read the previous playthrough number from the StoredObjects
-    int* tempPointer;
-    int temp = playthroughNumber.read(&tempPointer, sizeof(int));
-    LOG("\n%i\n\n", temp);
-    if (temp != 0){
-	playthrough = 0;
-	//playthrough = *tempPointer;
-    } else {
-	playthrough = 0;
+    int tempbuf[1];
+    int temp = playthroughNumber.read(&tempbuf, sizeof(int));
+    LOG("\nnum bytes loaded from playthrough obj: %i\n\n", temp);
+    if (temp != 0)
+    {
+	//	playthrough = 1;
+		playthrough = tempbuf[0];
+		LOG("tempbuf: %i\n", tempbuf[0]);
     }
-
+    else
+    {
+    	playthrough = 1;
+    }
+    LOG("\nPLAYTHROUGH NUMBER: %i\n", playthrough);
     // set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
@@ -232,7 +236,7 @@ void Game::run()
         	loader.load(LevelAssets[setIndex].grp, MainSlot);
         else
         {
-        	LOG("\n\nWASNT ENOUGH ROOM\n\n\n");
+        	LOG("\n\nNot enough memory on cubes for images, reloading\n\n\n");
         	// if there is not enough room to load next level, erase, load BootAssets, then load it
         	MainSlot.erase();
         	loader.load(BootAssets, MainSlot);
@@ -278,18 +282,18 @@ void Game::run()
     	else {
 	    gameData.incrementLevel();
 	    LOG("---incrementedLevel to %i---\n", gameData.getLevelCounter());
-	}
+		}
 
-	if (i == numLevels-1) {
-	    saveToStoredObject();
-	}
+		if (i == numLevels-1) {
+		    playthrough++;
+			saveToStoredObject();
+		}
 		// disable touch while showing "bravo"
     	Events::cubeTouch.unset();
     	// show the "bravo" for 2 second before next level
     	wait(2);
     }
     // increment playthrough
-    playthrough++;
     gameData.resetLevelCounter();
     LOG("---playthrough=%i--\n", playthrough);
 }
@@ -422,7 +426,9 @@ void Game::saveToStoredObject(){
     lvlData8.write(allResults[7], dataSize);
     lvlData9.write(allResults[8], dataSize);
     lvlData10.write(allResults[9], dataSize);
-    playthroughNumber.write(&playthrough, sizeof(int));
+    int playbuf[1];
+    playbuf[0] = playthrough;
+    playthroughNumber.write(&playbuf, sizeof(int));
     
     LOG("---savedToStoredObject---\n");
 }
