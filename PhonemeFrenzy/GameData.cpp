@@ -44,11 +44,11 @@ unsigned GameData :: getAttempts(){
     return levelsArray[currentLevelCounter].getAttempts();
 }
 
-float GameData :: getTime(){
+unsigned GameData :: getTime(){
     return levelsArray[currentLevelCounter].getTime();
 }
 
-void GameData :: setTime(float seconds){
+void GameData :: setTime(unsigned seconds){
     levelsArray[currentLevelCounter].setTime(seconds);
 }
 

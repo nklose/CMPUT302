@@ -17,8 +17,8 @@ public:
 	// below here called from LevelData
 	unsigned getHints();
 	unsigned getAttempts();
-	float getTime();
-	void setTime(float seconds);
+	unsigned getTime();
+	void setTime(unsigned seconds);
 	void incrementHints();
 	void incrementAttempts();
 	void incrementLevel();

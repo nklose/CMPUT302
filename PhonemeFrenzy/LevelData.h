@@ -18,7 +18,7 @@ public:
 	unsigned getHints();
 	unsigned getAttempts();
 	float getTime();
-	void setTime(float seconds);
+	void setTime(unsigned seconds);
 	void incrementHints();
 	void incrementAttempts();
 	void incrementPlay();

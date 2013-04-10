@@ -38,7 +38,7 @@ float LevelData :: getTime(){
     return dataArray[currentPlayCounter].getTime();
 }
 
-void LevelData :: setTime(float seconds){
+void LevelData :: setTime(unsigned seconds){
     dataArray[currentPlayCounter].setTime(seconds);
 }
 
