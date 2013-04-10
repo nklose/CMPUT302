@@ -30,6 +30,8 @@ public:
 	void startRun();
     void run();
     void cleanup();
+    void saveToStoredObject();
+    void updateTime(SystemTime initTime, SystemTime finalTime);
 
 private:
     bool running;
@@ -48,11 +50,6 @@ private:
 void wait(float n);
 void shuffleLoad();
 void getSetIndex();
-void incrementAttempts();
-void incrementHints();
-void updateTime(SystemTime initTime, SystemTime finalTime);
 bool evaluateResults();
-void saveToStoredObject();
-void loadFromStoredObject();
 
 #endif

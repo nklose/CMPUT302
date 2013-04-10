@@ -342,7 +342,7 @@ void shuffleLoad()
 
 //TODO: Only allow increments once per level-try per cube?
 
-void updateTime(SystemTime initTime, SystemTime finalTime)
+void Game::updateTime(SystemTime initTime, SystemTime finalTime)
 {
     unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
     gameData.addTime(playTime);
@@ -375,8 +375,9 @@ bool evaluateResults(){
 
 // Creates a 2D array to hold the 3 result parameters and a pointer to it
 // uses write() to the global StoredObject to overwrite it with all new data
-void saveToStoredObject(){
+void Game::saveToStoredObject(){
     LOG("---SAVING---\n");
+
     // initialize all 10 stored objects
     StoredObject lvlData1 = StoredObject::allocate();
     StoredObject lvlData2 = StoredObject::allocate();
@@ -392,21 +393,23 @@ void saveToStoredObject(){
     unsigned dataSize = (sizeof(unsigned)*30);
     unsigned allResults[10][30];
 
-    int offset = 0;
-    gameData.setLevelCounter(0);
+    int offset;
+    gameData.resetLevelCounter();;
 
     for (int i = 0; i < numLevels; i++){
-	allResults[i][offset] = gameData.getCurrentLevel()->getAttempts();
+	offset = 0;
+	allResults[i][offset] = gameData.getAttempts();
+	LOG("----------------------------------------------------------attempts=%u\n",gameData.getAttempts());
 	offset++;
-	allResults[i][offset] = gameData.getCurrentLevel()->getHints();
+	allResults[i][offset] = gameData.getHints();
 	offset++;
-	allResults[i][offset] = gameData.getCurrentLevel()->getTime();
+	allResults[i][offset] = gameData.getTime();
 	offset++;
 	gameData.incrementLevel();
     }
 
-    for (int j = 0; j < 30; j++){
-	LOG("%u ", allResults[1][j]);
+    for (int j = 0; j < 10; j++){
+	LOG("%u %u %u\n", allResults[j][0], allResults[j][1], allResults[j][2]);
     }
     
     lvlData1.write(allResults[0], dataSize);
