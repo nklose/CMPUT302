@@ -144,6 +144,11 @@ def extractPilLibrary():
     else:
         print("PIL 1.1.7 library already exists")
 
+def removeTransparency(image):
+    background = Image.new("RGB", image.size, (255, 255, 255))
+    #background.paste(image, mask=image.split()[3])
+    return background
+
 def processImageForSifte(rootPath, folderName, imageTitle, extension):
     if not imageTitle == '':
         completeImageName = os.path.join(os.path.join(rootPath, folderName), imageTitle)
@@ -159,21 +164,23 @@ def processImageForSifte(rootPath, folderName, imageTitle, extension):
         #add white bar to bottom for text
         #image = ImageOps.fit(image, (128, 128), Image.NEAREST, 0, (1.0, 0.0))
         horizontalImageSpacing = int((128-newImageWidth)/2)
-        image = image.crop(( -1*horizontalImageSpacing,0,horizontalImageSpacing,128))
+        image = image.crop(( -1*horizontalImageSpacing,0,newImageWidth+horizontalImageSpacing,128))
         draw = ImageDraw.Draw(image)
-        myFont = ImageFont.truetype("Arial.ttf", 18, encoding="unic")
+        myFont = ImageFont.truetype("Arial.ttf", 20, encoding="unic")
         textWidth, textHeight = myFont.getsize(imageTitle)
-        textHorizontalPosition = (newImageWidth/2) - (textWidth/2)
+        textHorizontalPosition = 64 - (textWidth/2)
         textVerticalPosition = 98 + (15 - (textHeight/2))
         #myFont = ImageFont.load("timR14.pil")
         #border
-        draw.text((textHorizontalPosition-1, textVerticalPosition), imageTitle, fill='white', font=myFont)
-        draw.text((textHorizontalPosition+1, textVerticalPosition), imageTitle, fill='white', font=myFont)
-        draw.text((textHorizontalPosition, textVerticalPosition-1), imageTitle, fill='white', font=myFont)
-        draw.text((textHorizontalPosition, textVerticalPosition+1), imageTitle, fill='white', font=myFont)
-        draw.text((textHorizontalPosition, textVerticalPosition), imageTitle, fill='black', font=myFont)
+        #draw.text((textHorizontalPosition-1, textVerticalPosition), imageTitle, fill='white', font=myFont)
+        #draw.text((textHorizontalPosition+1, textVerticalPosition), imageTitle, fill='white', font=myFont)
+        #draw.text((textHorizontalPosition, textVerticalPosition-1), imageTitle, fill='white', font=myFont)
+        #draw.text((textHorizontalPosition, textVerticalPosition+1), imageTitle, fill='white', font=myFont)
+        draw.text((textHorizontalPosition, textVerticalPosition), imageTitle, fill='white', font=myFont)
         #draw.text((10, 103), )
         #convert to png
+        #image = removeTransparency(image)
+        image = image.convert("RGB")
         image.save(completeImageName + ".png", quality=100)
         #image2.save(completeImageName + "2.png", quality=100)
         #remove old image
