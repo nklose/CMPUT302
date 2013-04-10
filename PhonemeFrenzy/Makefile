@@ -11,7 +11,6 @@ OBJS = \
 	levels.gen.o \
 	GameData.o \
 	LevelData.o \
-	PlayData.o \
 	main.o
 	
 ASSETDEPS += assets/*.png $(ASSETS).lua

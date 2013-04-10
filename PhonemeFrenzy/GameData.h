@@ -17,12 +17,11 @@ public:
 	// below here called from LevelData
 	unsigned getHints();
 	unsigned getAttempts();
-	float getTime();
-	void setTime(float seconds);
+	unsigned getTime();
+	void addTime(unsigned seconds);
 	void incrementHints();
 	void incrementAttempts();
 	void incrementLevel();
-	void resetCurrentLevel();
 	void resetLevelCounter();
 private:
 	int currentLevelCounter;

@@ -25,14 +25,28 @@ MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct LevelSet *set;
 int playthrough;
+bool title;
 GameData gameData;
+StoredObject playthroughNumber = StoredObject::allocate();
 
 void Game::init()
 {
 
-	// initialize playthrough counter to 0
-    playthrough = -1;
-	// set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
+    // initialize title to 1, which will be changed to 0 once the title is passed
+    title = true;
+
+    // read the previous playthrough number from the StoredObjects
+    int* tempPointer;
+    int temp = playthroughNumber.read(&tempPointer, sizeof(int));
+    LOG("\n%i\n\n", temp);
+    if (temp != 0){
+	playthrough = 0;
+	//playthrough = *tempPointer;
+    } else {
+	playthrough = 0;
+    }
+
+    // set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
     for (unsigned i = 0; i < NUM_CUBES; i++)
     {
         vid[i].initMode(BG0);
@@ -62,12 +76,9 @@ void Game::onAccelChange(unsigned id)
 		// Tilt/shake changed
 		static Byte3 prevTilt = {0, 0, 0};
 
-		LOG("onAccelChange and ");
 		Byte3 tilt = motion[id].tilt;
 		if (tilt.x != prevTilt.x || tilt.y != prevTilt.y || tilt.z != prevTilt.z){
 			onTilt(id, tilt);
-		} else{
-			LOG("No tilt");
 		}
 
 		bool shake = motion[id].shake;
@@ -89,7 +100,7 @@ void Game::onShake(unsigned id)
 	float delay = 0.5f;
 	if(!(SystemTime::now() - start < delay)){
 		start = SystemTime::now();
-		LOG("Playing sound on cube %i", id);
+		LOG("Playing sound on cube %i\n", id);
 
 		// figure out which sound is for this cube id
 		unsigned ind = 0;	// index within sounds array for appropriate sound
@@ -100,21 +111,21 @@ void Game::onShake(unsigned id)
 		}
 		audio.play(set->sounds[ind]);
 		gameData.incrementHints();
-		LOG("\n---incremented hints to %u---\n", gameData.getHints());
+		LOG("---incremented hints to %u---\n", gameData.getHints());
 	}
 }
 
 /* Called upon the event of a cube being tilted. This is a sub-call of onAccelChange. */
 void Game::onTilt(unsigned id, Byte3 tiltInfo)
 {
-	LOG("Cube %02X tilted: x = %02x, y = %02x, z = %02x\n", id, tiltInfo.x, tiltInfo.y, tiltInfo.z);
+    //LOG("Cube %02X tilted: x = %02x, y = %02x, z = %02x\n", id, tiltInfo.x, tiltInfo.y, tiltInfo.z);
 }
 
 /* Called upon the event of a cube being touched */
 void Game::onTouch(unsigned id)
 {
 	/* If still on main menu playthrough hasn't started yet */
-	if(playthrough == -1){
+	if(title){
 		running = false;
 	}else{
 		/*
@@ -131,14 +142,13 @@ void Game::onTouch(unsigned id)
 			{
 				audio.play(set->goalsound);
 				gameData.incrementHints();
-				LOG("\n---incremented hints to %u---\n", gameData.getHints());
+				LOG("---incremented hints to %u---\n", gameData.getHints());
 			} 
 					else
 			{
 				// if cube is the goal cube (index 0)
 				if (id == set->indexes[0])
 				{
-					LOG(" was goal\n");
 					running = false;
 				}
 				// if cube was incorrect guess
@@ -147,9 +157,8 @@ void Game::onTouch(unsigned id)
 					// Darken cube, replay goal sound and increment attempts
 					vid[id].bg0.image(vec(0,0), Grid);
 					audio.play(set->goalsound);
-					LOG(" was not goal\n");
 					gameData.incrementAttempts();
-					LOG("\n---incremented attempts to %u---\n", gameData.getAttempts());
+					LOG("---incremented attempts to %u---\n", gameData.getAttempts());
 				}
 			}
 		}
@@ -159,7 +168,7 @@ void Game::onTouch(unsigned id)
 /* Start running the game after levels are initialized */
 void Game::startRun(){
 	//TODO: Should we move this to init for consistency sake?
-	// or move shake event down here for ocnsistency sake?
+	// or move shake event down here for consistency sake?
 		Events::cubeTouch.set(&Game::onTouch, this);
 
     	loader.load(LevelAssets[0].grp, MainSlot);
@@ -176,7 +185,7 @@ void Game::startRun(){
     		System::paint();
     	// continue running and start playthrough
 		running = true;
-		playthrough = 0;
+		title = false;
 		// disable touch temporarily (clears touch)
 		Events::cubeTouch.unset();
     	wait(.5);
@@ -206,7 +215,7 @@ void Game::run()
 	/*
 	 * HUGE NOTE: If you want the current level number below, use i. If you want the current /set/ index within LevelAssets and Levels
 	 * then use the setIndex value. set has been changed to "set" to reflect this change in wording, but works the same as
-	 * 				before. Any questions about this change, direct them to Andrew.
+	 * before. Any questions about this change, direct them to Andrew.
 	 */
     for (unsigned i = 0; i < numLevels; i++)
     {
@@ -223,7 +232,7 @@ void Game::run()
         	loader.load(LevelAssets[setIndex].grp, MainSlot);
         else
         {
-        	LOG("WASNT ENOUGH ROOM");
+        	LOG("\n\nWASNT ENOUGH ROOM\n\n\n");
         	// if there is not enough room to load next level, erase, load BootAssets, then load it
         	MainSlot.erase();
         	loader.load(BootAssets, MainSlot);
@@ -249,7 +258,7 @@ void Game::run()
     		System::paint();
 
     	// if here level was completed!
-    	// Compute and update gameData's current level with that play's time
+    	// Compute and add the time of that play to the current level
         SystemTime finalTime = SystemTime::now();
         updateTime(initTime, finalTime);
         // display BRAVO on all cubes
@@ -263,8 +272,6 @@ void Game::run()
     	bool advance = evaluateResults();
     	// Didn't perform well enough to start new level
     	if(!advance) {
-	    gameData.incrementPlay();
-	    LOG("---incrementedPlay to %i---\n", gameData.getCurrentLevel()->getPlayCounter());
 	    i--;
     	}
     	// Did perform well enough to start new level
@@ -272,8 +279,8 @@ void Game::run()
 	    gameData.incrementLevel();
 	    LOG("---incrementedLevel to %i---\n", gameData.getLevelCounter());
 	}
-    // TODO: Is this the last level? Should it be hardcoded?
-	if (i == 9) {
+
+	if (i == numLevels-1) {
 	    saveToStoredObject();
 	}
 		// disable touch while showing "bravo"
@@ -283,7 +290,8 @@ void Game::run()
     }
     // increment playthrough
     playthrough++;
-    LOG("---playthrough=%i---", playthrough);
+    gameData.resetLevelCounter();
+    LOG("---playthrough=%i--\n", playthrough);
 }
 
 /* 	pause for roughly n seconds */
@@ -337,8 +345,8 @@ void shuffleLoad()
 void updateTime(SystemTime initTime, SystemTime finalTime)
 {
     unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
-    gameData.setTime(playTime);
-    LOG("---setTime to %u---\n", playTime);
+    gameData.addTime(playTime);
+    LOG("---Added %u to Time---\n", playTime);
 }
 
 /* Evaluate results of the level
@@ -368,6 +376,7 @@ bool evaluateResults(){
 // Creates a 2D array to hold the 3 result parameters and a pointer to it
 // uses write() to the global StoredObject to overwrite it with all new data
 void saveToStoredObject(){
+    LOG("---SAVING---\n");
     // initialize all 10 stored objects
     StoredObject lvlData1 = StoredObject::allocate();
     StoredObject lvlData2 = StoredObject::allocate();
@@ -380,23 +389,37 @@ void saveToStoredObject(){
     StoredObject lvlData9 = StoredObject::allocate();
     StoredObject lvlData10 = StoredObject::allocate();
 
-    float allResults[10][10][3];
+    unsigned dataSize = (sizeof(unsigned)*30);
+    unsigned allResults[10][30];
 
+    int offset = 0;
     gameData.setLevelCounter(0);
-    for (int i = 0; i < 10; i++){
-	gameData.getCurrentLevel()->setPlayCounter(0);
-	LOG("---numPlays for level %i is %i---\n", gameData.getLevelCounter(), gameData.getCurrentLevel()->getNumPlays());
-	/*
-	for (int j = 0; j < gameData.getCurrentLevel().getNumPlays(); j++){
-	    allResults[i][j][0] = gameData.getCurrentLevel().getAttempts();
-	    allResults[i][j][1] = gameData.getCurrentLevel().getHints();
-	    allResults[i][j][2] = gameData.getCurrentLevel().getTime();
-	    gameData.getCurrentLevel().incrementPlay();
-	}
-	*/
+
+    for (int i = 0; i < numLevels; i++){
+	allResults[i][offset] = gameData.getCurrentLevel()->getAttempts();
+	offset++;
+	allResults[i][offset] = gameData.getCurrentLevel()->getHints();
+	offset++;
+	allResults[i][offset] = gameData.getCurrentLevel()->getTime();
+	offset++;
 	gameData.incrementLevel();
     }
-    unsigned dataSize = (sizeof(int)*3*10)+(sizeof(unsigned)*10*2)+(sizeof(float)*10*10);
-    //lvlData.write(dataPointer, dataSize);
+
+    for (int j = 0; j < 30; j++){
+	LOG("%u ", allResults[1][j]);
+    }
+    
+    lvlData1.write(allResults[0], dataSize);
+    lvlData2.write(allResults[1], dataSize);
+    lvlData3.write(allResults[2], dataSize);
+    lvlData4.write(allResults[3], dataSize);
+    lvlData5.write(allResults[4], dataSize);
+    lvlData6.write(allResults[5], dataSize);
+    lvlData7.write(allResults[6], dataSize);
+    lvlData8.write(allResults[7], dataSize);
+    lvlData9.write(allResults[8], dataSize);
+    lvlData10.write(allResults[9], dataSize);
+    playthroughNumber.write(&playthrough, sizeof(int));
+    
     LOG("---savedToStoredObject---\n");
 }

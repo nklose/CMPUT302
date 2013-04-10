@@ -27,12 +27,10 @@ void PlayData :: setTime(unsigned seconds){
 // increment number of hints or attempts for one play
 void PlayData :: incrementHints(){
     hints++;
-    LOG("***Hints Given: %d ***\n", hints);
 }
 
 void PlayData :: incrementAttempts(){
     attempts++;
-    LOG("***Attempts made: %d ***\n", attempts);
 }
 
 // reset hints and attempts to zero
