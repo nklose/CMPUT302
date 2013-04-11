@@ -14,6 +14,7 @@ import sys, os
 import pickle
 import platform
 import subprocess
+from itertools import zip_longest
 from savedata import getStoredObjs
 from PyQt4 import QtCore, QtGui
 from gui import Ui_EvaluationWindow
@@ -146,14 +147,67 @@ class Evaluation(QtGui.QMainWindow):
         print(playthroughNum)
         
         user = self.get_user()
+        lvlObjs = []
+        for obj in levelObjects:
+            tempObj = list(grouper(3, obj))
+            lvlObjs.append(tempObj)
         
+        lvlObjs.reverse()
+        print(lvlObjs)
+        
+        levels = []
+        for x in range(0,10):
+            level = []
+            for y in range(0,playthroughNum):
+                level.append(lvlObjs[x][y])
+            levels.append(level)
+        
+        print(levels)
+        
+        # attempts hints time
         for x in range(0,playthroughNum):
-            pass
-        #print(storedObjs)
+            play = Playthrough()
+            lvls = play.level
+            for lvl in range(0, 10):
+                group = lvls[lvl]
+                group.hints = levels[lvl][x][1]
+                group.attempts = levels[lvl][x][0]
+                group.time = levels[lvl][x][2]
+            user.playthroughs.append(play)
         
         # update visible data, and then save it to the file
         self.refresh()
         self.save()
+    
+    '''
+    # A user has a group of statistics, which consists of various ResultGroups.
+# There is one for the totals, one for the averages, and ten for the levels.
+class User():
+    def __init__(self, name = None):
+        self.name = None
+        if name == None:
+            self.name = "Default"
+        else:
+            self.name = name
+        self.playthroughs = [Playthrough()]
+
+# A ResultGroup is a group of evaluation results containing the number of 
+# hints, attempts, and seconds (time) for a particular game component.
+class ResultGroup():
+    def __init__(self):
+        self.hints = 0
+        self.attempts = 0
+        self.time = 0
+
+# A playthrough represents a single run of the game.
+class Playthrough():
+    def __init__(self):
+        self.total = ResultGroup()
+        self.average = ResultGroup()
+        self.level = []
+        for i in range(0, 10):
+            self.level.append(ResultGroup())
+            '''
     
     # Removes a specific playthrough from the selected user.
     def remove_data(self):
@@ -291,6 +345,13 @@ def getOSBinpath():
             return linuxbinpath
     elif (ostype == 'Darwin'):	# This is Mac OSX
             return macbinpath
+
+
+def grouper(n, iterable, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=fillvalue)
 
 # Start up the interface
 if __name__ == "__main__":

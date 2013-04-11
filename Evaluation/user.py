@@ -17,7 +17,7 @@ class User():
             self.name = "Default"
         else:
             self.name = name
-        self.playthroughs = [Playthrough()]
+        self.playthroughs = []
 
 # A ResultGroup is a group of evaluation results containing the number of 
 # hints, attempts, and seconds (time) for a particular game component.
