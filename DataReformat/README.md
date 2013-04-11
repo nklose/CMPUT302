@@ -52,6 +52,13 @@ The evaluation interface can be run on Windows by opening `Evaluation/evaluation
 
 The customization interface can be run on Windows by opening `Customization/customization.exe`.
 
+Future Work
+===========
+The following future work is applicatble to this project.
+
+* Creation of other, similar games to help children with dyslexia.
+* Creating of an OSX and Linux executable for the evaluation and customization interfaces.
+
 License
 =======
 
