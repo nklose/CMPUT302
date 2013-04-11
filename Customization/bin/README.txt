@@ -1,0 +1,1 @@
+To make Customization.exe copy it from this directly, and paste it in the above directory. Then the relative paths to other portions of the projects that are used within will work properly.
