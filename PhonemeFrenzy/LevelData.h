@@ -19,7 +19,7 @@ public:
 	void addTime(unsigned seconds);
 	void incrementHints();
 	void incrementAttempts();
-
+	void clear();
 private:
 	int numPlays;
 	int currentPlayCounter;

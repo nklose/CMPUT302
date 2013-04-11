@@ -61,3 +61,15 @@ void GameData :: incrementAttempts(){
 void GameData :: resetLevelCounter(){
     currentLevelCounter = 0;
 }
+
+// completely clear the GameData object, and set to 0
+void GameData :: clear()
+{
+	// clear every level
+	for (int i = 0; i < numLevels; i++)
+	{
+		setLevelCounter(i);
+		getCurrentLevel()->clear();
+	}
+	resetLevelCounter();
+}

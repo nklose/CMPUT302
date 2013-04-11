@@ -24,10 +24,27 @@ CubeSet allCubes(0,NUM_CUBES);	// all non-speaker cubes
 MyLoader loader(allCubes, MainSlot, vid);
 AudioChannel audio(0);
 struct LevelSet *set;
-int playthrough = 1;
+int playthrough = 0;
 bool title;
 GameData gameData;
 StoredObject playthroughNumber = StoredObject::allocate();
+// numbers for saving and loading
+int numDataItems = 3;
+int maxNumLevels = 10;
+int maxNumPlaythroughs = 10;
+int totalNum = numDataItems*maxNumLevels*maxNumPlaythroughs;
+unsigned dataSize = (sizeof(unsigned)*totalNum);
+// initialize all 10 stored objects for level data
+StoredObject lvlData1 = StoredObject::allocate();
+StoredObject lvlData2 = StoredObject::allocate();
+StoredObject lvlData3 = StoredObject::allocate();
+StoredObject lvlData4 = StoredObject::allocate();
+StoredObject lvlData5 = StoredObject::allocate();
+StoredObject lvlData6 = StoredObject::allocate();
+StoredObject lvlData7 = StoredObject::allocate();
+StoredObject lvlData8 = StoredObject::allocate();
+StoredObject lvlData9 = StoredObject::allocate();
+StoredObject lvlData10 = StoredObject::allocate();
 
 void Game::init()
 {
@@ -41,13 +58,13 @@ void Game::init()
     LOG("\nnum bytes loaded from playthrough obj: %i\n\n", temp);
     if (temp != 0)
     {
-	//	playthrough = 1;
+	//	playthrough = 0;
 		playthrough = tempbuf[0];
 		LOG("tempbuf: %i\n", tempbuf[0]);
     }
     else
     {
-    	playthrough = 1;
+    	playthrough = 0;
     }
     LOG("\nPLAYTHROUGH NUMBER: %i\n", playthrough);
     // set up the mode as well as attach the TiltShakeRecognizer and VidBuffs
@@ -63,6 +80,11 @@ void Game::init()
     loader.load(BootAssets, MainSlot);
 
 	Events::cubeAccelChange.set(&Game::onAccelChange, this);
+}
+
+void loadStoredObject(StoredObject obj, void *buffer, unsigned bufsize)
+{
+
 }
 
 /* Unset some event handlers */
@@ -229,8 +251,6 @@ void Game::run()
     	int setNum = rand.randrange(numSets)+1;
     	int setIndex = getSetIndex(i, setNum);
 
-    	LOG("\n numSets: %i setNum: %i selected at index: %i\n\n", numSets, setNum, setIndex);
-
     	// if the memory slot has enough room, freely load it
         if (MainSlot.hasRoomFor(LevelAssets[setIndex].grp))
         	loader.load(LevelAssets[setIndex].grp, MainSlot);
@@ -244,7 +264,7 @@ void Game::run()
         }
         //
     	set = &Levels[setIndex];
-	//loadFromStoredObject();
+
     	running = true;
 
 		// load images onto cubes
@@ -285,6 +305,7 @@ void Game::run()
 		}
 
 		if (i == numLevels-1) {
+			// at the end of the game, so increment the playthrough number and save objects
 		    playthrough++;
 			saveToStoredObject();
 		}
@@ -293,8 +314,7 @@ void Game::run()
     	// show the "bravo" for 2 second before next level
     	wait(2);
     }
-    // increment playthrough
-    gameData.resetLevelCounter();
+    gameData.clear();
     LOG("---playthrough=%i--\n", playthrough);
 }
 
@@ -382,51 +402,61 @@ bool evaluateResults(){
 void Game::saveToStoredObject(){
     LOG("---SAVING---\n");
 
-    // initialize all 10 stored objects
-    StoredObject lvlData1 = StoredObject::allocate();
-    StoredObject lvlData2 = StoredObject::allocate();
-    StoredObject lvlData3 = StoredObject::allocate();
-    StoredObject lvlData4 = StoredObject::allocate();
-    StoredObject lvlData5 = StoredObject::allocate();
-    StoredObject lvlData6 = StoredObject::allocate();
-    StoredObject lvlData7 = StoredObject::allocate();
-    StoredObject lvlData8 = StoredObject::allocate();
-    StoredObject lvlData9 = StoredObject::allocate();
-    StoredObject lvlData10 = StoredObject::allocate();
+    int totalNum = numDataItems*maxNumLevels*maxNumPlaythroughs;
+    unsigned dataSize, allResults[maxNumLevels][totalNum];
 
-    unsigned dataSize = (sizeof(unsigned)*30);
-    unsigned allResults[10][30];
+    if (playthrough == 9)
+	{
+    	return;
+		LOG("\nMore than 10 playthroughs, not saving any more data.\n");
+	}
 
+    dataSize = (sizeof(unsigned)*totalNum);
+    allResults[maxNumLevels][totalNum];
+
+    // array of Stored Objects to ease loading and saving
+    StoredObject objs[10] = { lvlData1, lvlData2, lvlData3, lvlData4, lvlData5, lvlData6, lvlData7, lvlData8, lvlData9, lvlData10 };
+
+    // load any previous levels of data into allResults to keep all of it
+    // 		here we want maxNumLevels, but its non-POD so we have to hardcode it
+    for (int i = 0; i < maxNumLevels; i++)
+    	objs[i].read(allResults[i], dataSize);
+
+    // Save all new data into allResults
     int offset;
-    gameData.resetLevelCounter();;
+    gameData.resetLevelCounter();
+    for (int i = 0; i < numLevels; i++)
+    {
+    	// this offset will account for playthrough so that the level object will
+    	//		hold { p1attempt, p1hints, p1time, p2attempts, p2hints, ... }
+    	// It is playthrough-1 because playthrough is incremented right before this func call
+		offset = (playthrough-1)*3;
+		allResults[i][offset] = gameData.getAttempts();
+		LOG("----------------------------------------------------------attempts=%u\n",gameData.getAttempts());
+		offset++;
+		allResults[i][offset] = gameData.getHints();
+		offset++;
+		allResults[i][offset] = gameData.getTime();
+		offset++;
+		gameData.incrementLevel();
+	}
 
-    for (int i = 0; i < numLevels; i++){
-	offset = 0;
-	allResults[i][offset] = gameData.getAttempts();
-	LOG("----------------------------------------------------------attempts=%u\n",gameData.getAttempts());
-	offset++;
-	allResults[i][offset] = gameData.getHints();
-	offset++;
-	allResults[i][offset] = gameData.getTime();
-	offset++;
-	gameData.incrementLevel();
+    // Log the level play data to the screen for verification purposes
+    for (int j = 0; j < 10; j++)
+    {
+    	LOG("Level %i play data:\n", j);
+    	for(int i = 0; i < 10; i++)
+    	{
+    		LOG("%u %u %u\n", allResults[j][0+(3*i)], allResults[j][1+(3*i)], allResults[j][2+(3*i)]);
+    	}
     }
 
-    for (int j = 0; j < 10; j++){
-	LOG("%u %u %u\n", allResults[j][0], allResults[j][1], allResults[j][2]);
-    }
-    
-    lvlData1.write(allResults[0], dataSize);
-    lvlData2.write(allResults[1], dataSize);
-    lvlData3.write(allResults[2], dataSize);
-    lvlData4.write(allResults[3], dataSize);
-    lvlData5.write(allResults[4], dataSize);
-    lvlData6.write(allResults[5], dataSize);
-    lvlData7.write(allResults[6], dataSize);
-    lvlData8.write(allResults[7], dataSize);
-    lvlData9.write(allResults[8], dataSize);
-    lvlData10.write(allResults[9], dataSize);
-    int playbuf[1];
+    // Write the level play data to their StoredObjects
+	for (int i = 0; i < maxNumLevels; i++)
+		objs[i].write(allResults[i], dataSize);
+
+	// store the playthrough number in its StoredObject
+	int playbuf[1];
     playbuf[0] = playthrough;
     playthroughNumber.write(&playbuf, sizeof(int));
     

@@ -23,6 +23,7 @@ public:
 	void incrementAttempts();
 	void incrementLevel();
 	void resetLevelCounter();
+	void clear();
 private:
 	int currentLevelCounter;
 	LevelData levelsArray[10];

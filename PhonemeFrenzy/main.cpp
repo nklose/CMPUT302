@@ -12,7 +12,7 @@ AssetSlot MainSlot = AssetSlot::allocate()
 
 static Metadata M = Metadata()
     .title("Basic Game Framework")
-    .package("com.sifteo.sdk.phonemefrenzy", "0.8")
+    .package("com.sifteo.phonemefrenzy", "0.8")
     .icon(Icon)
     .cubeRange(NUM_CUBES);
 

@@ -51,5 +51,6 @@ void wait(float n);
 void shuffleLoad();
 void getSetIndex();
 bool evaluateResults();
+void loadStoredObject();
 
 #endif

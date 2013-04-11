@@ -46,3 +46,12 @@ void LevelData :: incrementHints(){
 void LevelData :: incrementAttempts(){
     totalAttempts++;
 }
+
+void LevelData :: clear()
+{
+	numPlays = 0;
+	currentPlayCounter = 0;
+	totalAttempts = 0;
+	totalHints = 0;
+	totalTime = 0;
+}

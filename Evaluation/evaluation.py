@@ -13,6 +13,8 @@ Andrew Neufeld, and Anthony Sopkow.
 import sys, os
 import pickle
 import platform
+import subprocess
+from savedata import getStoredObjs
 from PyQt4 import QtCore, QtGui
 from gui import Ui_EvaluationWindow
 from user import *
@@ -68,7 +70,7 @@ class Evaluation(QtGui.QMainWindow):
             with open(DATA_FILE, "rb") as input:
                 self.users = pickle.load(input)
                 self.refresh()
-                self.msg("Data loaded successfully.")
+                self.msg("Local data loaded successfully.")
         except:
             self.msg("Data file not found; starting fresh.")
             self.users.append(User())
@@ -113,18 +115,41 @@ class Evaluation(QtGui.QMainWindow):
                                       "Data Extraction",
                                       "Please ensure that the Sifteo Cubes are plugged into the computer using the USB cable.\n\nUser data will then be extracted from the cubes.\n\nYou will be notified when the data extraction is complete.")
         
+        datafilename = "savedata.bin"
+        
         # extract the data from the sifteo cubes
         try:
-            datafilename = "savedata.bin"
             binpath = getOSBinpath()
             swisspath = os.path.join(binpath, "swiss")
-            print(swisspath + " savedata extract com.sifteo.sdk.phonemefrenzy " + datafilename)
+            print(swisspath + " savedata extract com.sifteo.phonemefrenzy " + datafilename)
             # use the "swiss savedata extract com.sifteo.sdk [file]" command to get the data
-            #subprocess.call(swisspath + " savedata extract com.sifteo.sdk.phonemefrenzy " + datafilename)
-        except:
+            procret = subprocess.call(swisspath + " savedata extract com.sifteo.phonemefrenzy " + datafilename)
+            if procret != 0:
+                raise Exception("Data extraction failed.")
+        except: # if an exception occured report error to user
             QtGui.QMessageBox.information(self,
                                       "Data Extraction Error",
                                       "An error has occured while attempting to extract data from the cubes.\n\nPlease make sure the Sifteo Cubes were plugged in correctly and attempt extraction again.\n")
+        else:   # if no exception, report to user success
+            QtGui.QMessageBox.information(self,
+                                          "Data Extraction",
+                                          "Data extraction has completed successfully.")
+        
+        shortObjs = []
+        storedObjs = getStoredObjs(datafilename)
+        for lst in storedObjs:
+            shortObjs.append(lst[:30])
+        levelObjects = shortObjs[:10]
+        playthroughNum = shortObjs[-1][0]
+        print(levelObjects)
+        print("\n\n")
+        print(playthroughNum)
+        
+        user = self.get_user()
+        
+        for x in range(0,playthroughNum):
+            pass
+        #print(storedObjs)
         
         # update visible data, and then save it to the file
         self.refresh()
