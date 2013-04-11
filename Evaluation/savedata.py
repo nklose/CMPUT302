@@ -259,6 +259,18 @@ def getStoredObjs(fpath):
     
     # work through file
     with open(fpath, "rb") as f:
+        magic = struct.unpack("<Q", f.read(8))[0]
+        if magic != Magic:
+            raise ValueError("this is not a savedata file")
+
+        headers = readHeaders(f)
+        for h in headers:
+            print("header - key %d, val: %s" % (h, headers[h]))
+
+        # SysLFS data is system info (fault logs, etc)
+        # we can format these more helpfully
+        isSysLFS = headers[kPackageString] == "com.sifteo.syslfs"
+
         # iterate records
         records_type, records_length = getValidSectionHeader(f)
         records_end = f.tell() + records_length
