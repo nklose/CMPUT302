@@ -6,8 +6,8 @@ within word documents to a file system with folders and images
 Copyright (c) 2013 Jake Brand, Nick Klose, Richard Leung, 
 Andrew Neufeld, and Anthony Sopkow.
 """
-
-import sys, os, shutil, tarfile, ntpath, zipfile, re, codecs, xml.etree.ElementTree as ET
+#removed ntpath
+import sys, os, shutil, tarfile, zipfile, re, codecs, xml.etree.ElementTree as ET
 from msvcrt import getch
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 
@@ -116,11 +116,10 @@ def convertFilesRecursively():
                         #Done with the 'word' directory, remove it
                         shutil.rmtree(filename + "/word")
                 except UnicodeEncodeError:
-                    #will have to change this back to r
-                    print ("Error with converting file: " + files, file=logFile)
+                    print ("Error with converting file: " + os.path.join(r, files), file=logFile)
                 except OSError:
-                    #will have to change this back to r
-                    print ("Error with converting file: " + files, file=logFile)
+                    print ("Error with converting file: " + os.path.join(r, files), file=logFile)
+                
 
 def ExtractPhotos():
     print("PhotoExtractor should only be run once for each folder structure and can increase disk usage. Continue? (y/n)")
