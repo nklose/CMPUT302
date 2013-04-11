@@ -323,7 +323,7 @@ def grouper(n, iterable, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
     # grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
-    return zip_longest(*args, fillvalue=fillvalue)
+    return izip_longest(*args, fillvalue=fillvalue)
 
 # Start up the interface
 if __name__ == "__main__":
