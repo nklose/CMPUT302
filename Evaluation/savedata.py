@@ -12,7 +12,7 @@
 #
 
 import sys, struct, uuid, array
-from itertools import zip_longest
+from itertools import izip_longest
 from io import BytesIO
 from collections import namedtuple
 

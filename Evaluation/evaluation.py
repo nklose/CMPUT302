@@ -14,7 +14,7 @@ import sys, os
 import pickle
 import platform
 import subprocess
-from itertools import zip_longest
+from itertools import izip_longest
 from savedata import getStoredObjs
 from PyQt4 import QtCore, QtGui
 from gui import Ui_EvaluationWindow
@@ -65,7 +65,7 @@ class Evaluation(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.txtNewUser, returnPressed, self.add_user)
 
     # Initializes the GUI using the data file, or with default settings in
-    #  the absense of a data file
+    #  the absence of a data file
     def initialize(self):
         try:
             with open(DATA_FILE, "rb") as input:
@@ -93,7 +93,7 @@ class Evaluation(QtGui.QMainWindow):
         title = "Remove User"
         text = "This will permanently remove all data from this user. Continue?"
         type = QtGui.QMessageBox.Yes | QtGui.QMessageBox.No
-        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):
+        if QtGui.QMessageBox.Yes == QtGui.QMessageBox.question(self, title, text, type):    
             if self.userIndex != None:  
                 del self.users[self.userIndex]
                 self.ui.btnRemoveUser.setEnabled(False)
@@ -192,7 +192,7 @@ class Evaluation(QtGui.QMainWindow):
 
     # Returns the index of a given user as an integer.
     def user_index(self, item):
-        for i in range(1, len(self.users)):
+        for i in range(0, len(self.users)):
             user = self.users[i]
             if user.name == str(item.text()):
                 return i
