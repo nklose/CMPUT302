@@ -26,6 +26,7 @@ AudioChannel audio(0);
 struct LevelSet *set;
 int playthrough = 0;
 bool title;
+unsigned finalDemerit;
 GameData gameData;
 StoredObject playthroughNumber = StoredObject::allocate();
 // numbers for saving and loading
@@ -193,8 +194,6 @@ void Game::onTouch(unsigned id)
 
 /* Start running the game after levels are initialized */
 void Game::startRun(){
-	//TODO: Should we move this to init for consistency sake?
-	// or move shake event down here for consistency sake?
 		Events::cubeTouch.set(&Game::onTouch, this);
 
     	loader.load(LevelAssets[0].grp, MainSlot);
@@ -288,11 +287,9 @@ void Game::run()
         // display BRAVO on all cubes
     	for (unsigned k = 0; k < NUM_CUBES; k++){
     		vid[k].bg0.image(vec(0,0), Bravo);
-    		//TODO: add BRAVO sound
     	}
     	System::paint();
 
-    	// TODO: write all info that need be recorded
     	bool advance = evaluateResults();
     	// Didn't perform well enough to start new level
     	if(!advance) {
@@ -364,8 +361,7 @@ void shuffleLoad()
 	System::paint();
 }
 
-//TODO: Only allow increments once per level-try per cube?
-
+/* Add the latest playTime to gameData's time */
 void Game::updateTime(SystemTime initTime, SystemTime finalTime)
 {
     unsigned playTime = (finalTime.uptimeMS() - initTime.uptimeMS())/1000;
@@ -375,25 +371,30 @@ void Game::updateTime(SystemTime initTime, SystemTime finalTime)
 
 /* Evaluate results of the level
  * Return true iff player did well enough to advance to next level */
-bool evaluateResults(){
+bool Game::evaluateResults(){
 
+	// Grab the weights set by the sliders in the Customization UI
 	unsigned hintsWeight = hintsRequestedWeight;
 	unsigned attemptsWeight= failedAttemptsWeight;
 	unsigned timesWeight = timeWeight;
 
-	unsigned finalResult;
-	//TODO: Change to a better threshold (may have to be done by client)
-	unsigned threshold = 12000;
-	finalResult = (hintsWeight * gameData.getCurrentLevel()->getHints())
-	    + (attemptsWeight * gameData.getCurrentLevel()->getAttempts())
-	    + (timesWeight * gameData.getCurrentLevel()->getTime());
-	//	LOG("Hints -> %i \nattempt -> %i \ntime -> %i \ntotal: %i\n",
-	//			hintsWeight*set->numHints, attemptsWeight*set->numAttempts,
-	//			timesWeight*set->time, finalResult);
+	//TODO: Don't hardcode threshold (may have to be changed by client)
+	unsigned threshold = 600 + finalDemerit; // nullify the last attempts finalResult
+	finalDemerit = (hintsWeight * gameData.getHints())
+	    + (attemptsWeight * gameData.getAttempts())
+	    + (timesWeight * gameData.getTime());
+		LOG("Hints -> %u \nattempt -> %u \ntime -> %u \ntotal: %u\n",
+				(hintsWeight * gameData.getHints()),
+				(attemptsWeight * gameData.getAttempts()),
+				(timesWeight * gameData.getTime()),
+				finalDemerit);
 
-	if(finalResult > threshold){
+		// if finalScore is too high, don't advance
+	if(finalDemerit > threshold){
 		return false;
 	}
+	// if finalDemerits is low enough, advance to the next level
+	finalDemerit = 0; // reset the final result for the next level
 	return true;
 }
 

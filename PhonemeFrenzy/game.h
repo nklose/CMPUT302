@@ -42,6 +42,7 @@ private:
     void onShake(unsigned id);
     void onTilt(unsigned id, Byte3 tiltInfo);
     void onTouch(unsigned id);
+    bool evaluateResults();
     void onRestart();
 };
 
@@ -50,7 +51,6 @@ private:
 void wait(float n);
 void shuffleLoad();
 void getSetIndex();
-bool evaluateResults();
 void loadStoredObject();
 
 #endif
