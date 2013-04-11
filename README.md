@@ -9,8 +9,8 @@ The Sifteos for Dyslexia project has the goal of creating games for Sifteo cubes
 
 Required Packages For Use
 =================
-1. Python 3.3
-2. PyQt4. PyQT is Copyright (c) 2013, Riverbank Computing Limited. Riverbank Computing Limited is a company registered in England and Wales with company number 4314904.
+1. Python 2.7. Python is Copyright © 1990-2013, Python Software Foundation
+2. PyQt4. PyQT is Copyright © 2013, Riverbank Computing Limited. Riverbank Computing Limited is a company registered in England and Wales with company number 4314904.
 
 Details
 =======
