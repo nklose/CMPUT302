@@ -136,25 +136,26 @@ class Evaluation(QtGui.QMainWindow):
                                           "Data Extraction",
                                           "Data extraction has completed successfully.")
         
+        # get only the first 30 integers which are relevant
         shortObjs = []
         storedObjs = getStoredObjs(datafilename)
         for lst in storedObjs:
             shortObjs.append(lst[:30])
+
+        # separate playthrough num object from level records objects
         levelObjects = shortObjs[:10]
         playthroughNum = shortObjs[-1][0]
-        print(levelObjects)
-        print("\n\n")
-        print(playthroughNum)
-        
-        user = self.get_user()
+
+        # group level data by 3s to account for [attemps, hints, time]
         lvlObjs = []
         for obj in levelObjects:
             tempObj = list(grouper(3, obj))
             lvlObjs.append(tempObj)
         
+        # put in ascending level order
         lvlObjs.reverse()
-        print(lvlObjs)
-        
+
+        # sort ResultData into levels from sorting by playthrough
         levels = []
         for x in range(0,10):
             level = []
@@ -162,52 +163,23 @@ class Evaluation(QtGui.QMainWindow):
                 level.append(lvlObjs[x][y])
             levels.append(level)
         
-        print(levels)
-        
-        # attempts hints time
+        # get current user so we can start adding data to the UI
+        user = self.get_user()
+
+        # translate list of levels into evaluation UI objects
         for x in range(0,playthroughNum):
             play = Playthrough()
             lvls = play.level
             for lvl in range(0, 10):
                 group = lvls[lvl]
-                group.hints = levels[lvl][x][1]
                 group.attempts = levels[lvl][x][0]
+                group.hints = levels[lvl][x][1]
                 group.time = levels[lvl][x][2]
             user.playthroughs.append(play)
         
         # update visible data, and then save it to the file
         self.refresh()
         self.save()
-    
-    '''
-    # A user has a group of statistics, which consists of various ResultGroups.
-# There is one for the totals, one for the averages, and ten for the levels.
-class User():
-    def __init__(self, name = None):
-        self.name = None
-        if name == None:
-            self.name = "Default"
-        else:
-            self.name = name
-        self.playthroughs = [Playthrough()]
-
-# A ResultGroup is a group of evaluation results containing the number of 
-# hints, attempts, and seconds (time) for a particular game component.
-class ResultGroup():
-    def __init__(self):
-        self.hints = 0
-        self.attempts = 0
-        self.time = 0
-
-# A playthrough represents a single run of the game.
-class Playthrough():
-    def __init__(self):
-        self.total = ResultGroup()
-        self.average = ResultGroup()
-        self.level = []
-        for i in range(0, 10):
-            self.level.append(ResultGroup())
-            '''
     
     # Removes a specific playthrough from the selected user.
     def remove_data(self):
