@@ -379,7 +379,7 @@ bool Game::evaluateResults(){
 	unsigned timesWeight = timeWeight;
 
 	//TODO: Don't hardcode threshold (may have to be changed by client)
-	unsigned threshold = 600 + finalDemerit; // nullify the last attempts finalResult
+	unsigned threshold = 600 + finalDemerit; // nullify the last attempts finalDemerits
 	finalDemerit = (hintsWeight * gameData.getHints())
 	    + (attemptsWeight * gameData.getAttempts())
 	    + (timesWeight * gameData.getTime());
@@ -389,7 +389,7 @@ bool Game::evaluateResults(){
 				(timesWeight * gameData.getTime()),
 				finalDemerit);
 
-		// if finalScore is too high, don't advance
+	// if finalScore is too high, don't advance
 	if(finalDemerit > threshold){
 		return false;
 	}
