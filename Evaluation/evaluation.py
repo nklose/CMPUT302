@@ -238,7 +238,8 @@ class Evaluation(QtGui.QMainWindow):
         if u != None:
             i = 0
             for p in u.playthroughs:
-                self.ui.listPlaythroughs.addItem("Play " + str(i+1))
+                self.ui.listPlaythroughs.addItem(p.name)
+                p.index = i
                 i += 1
             self.ui.listUsers.item(self.userIndex).setSelected(True)
 
@@ -257,7 +258,7 @@ class Evaluation(QtGui.QMainWindow):
     # Update the UI based on selected user's attributes
     def select_playthrough(self, playthrough):
         self.ui.btnRemoveData.setEnabled(True)
-        index = int(playthrough.text()[5:])-1
+        index = playthrough.index
         self.playthroughIndex = index
         
         p = self.get_playthrough()

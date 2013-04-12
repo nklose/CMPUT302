@@ -7,6 +7,7 @@ http://pyqt.sourceforge.net/Docs/PyQt4/classes.html
 Copyright (c) 2013 Jake Brand, Nick Klose, Richard Leung, 
 Andrew Neufeld, and Anthony Sopkow.
 """
+import time
 
 # A user has a group of statistics, which consists of various ResultGroups.
 # There is one for the totals, one for the averages, and ten for the levels.
@@ -33,5 +34,7 @@ class Playthrough():
         self.total = ResultGroup()
         self.average = ResultGroup()
         self.level = []
+        self.name = time.strftime("%Y-%m-%d (%H:%M)")
+        self.index = 0
         for i in range(0, 10):
             self.level.append(ResultGroup())
