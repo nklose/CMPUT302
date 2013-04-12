@@ -67,6 +67,9 @@ class StartQT4(QtGui.QMainWindow):
         # Update the displayed list of sets
         self.update_sets()
         self.msg("Updating set list.")
+        
+        # Display images
+        self.show_images()
 
         #######################################################
         # Interface Object Connections                        #
@@ -135,6 +138,15 @@ class StartQT4(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.verticalSlider,
                                QtCore.SIGNAL("valueChanged(int)"),
                                self.change_level)
+        QtCore.QObject.connect(self.ui.sldrFailedAttempts,
+                               QtCore.SIGNAL("valueChanged(int)"),
+                               self.update_sliders)
+        QtCore.QObject.connect(self.ui.sldrHintsRequested,
+                               QtCore.SIGNAL("valueChanged(int)"),
+                               self.update_sliders)
+        QtCore.QObject.connect(self.ui.sldrTime,
+                               QtCore.SIGNAL("valueChanged(int)"),
+                               self.update_sliders)
 
 
     # Updates the displayed list of sets with the internal list.
@@ -482,6 +494,7 @@ class StartQT4(QtGui.QMainWindow):
                 self.ui.sldrFailedAttempts.setValue(game.failedAttemptsWeight)
                 self.ui.sldrHintsRequested.setValue(game.hintsRequestedWeight)
                 self.ui.sldrTime.setValue(game.timeWeight)
+                self.update_sliders()
                 self.msg("Settings file loaded successfully.")
                 self.update_sets()
         except:
@@ -521,7 +534,18 @@ class StartQT4(QtGui.QMainWindow):
             phoneme.text = "custom"
             self.lblSoundPath.setText(basename(path))
         
-
+    # Updates the displayed values for the sliders.
+    def update_sliders(self):
+        self.ui.lblAttempts.setText(str(self.ui.sldrFailedAttempts.value()) + "%")
+        self.ui.lblHints.setText(str(self.ui.sldrHintsRequested.value()) + "%")
+        self.ui.lblTimeValue.setText(str(self.ui.sldrTime.value()) + "%")
+        
+    def show_images(self):
+        self.ui.btnRemoveSet.setIcon(QtGui.QIcon("minus.png"))
+        self.ui.btnAddSet.setIcon(QtGui.QIcon("plus.png"))
+        self.ui.btnRemovePhoneme.setIcon(QtGui.QIcon("minus.png"))
+        self.ui.btnAddPhoneme.setIcon(QtGui.QIcon("plus.png"))
+        
     # Individual phoneme sound button functions
     def a(self):
         self.select_sound("a")
