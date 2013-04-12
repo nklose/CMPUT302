@@ -258,10 +258,13 @@ class Evaluation(QtGui.QMainWindow):
     # Update the UI based on selected user's attributes
     def select_playthrough(self, playthrough):
         self.ui.btnRemoveData.setEnabled(True)
-        index = playthrough.index
-        self.playthroughIndex = index
+        
+        self.playthroughIndex = self.ui.listPlaythroughs.selectedIndexes()[0].row()
         
         p = self.get_playthrough()
+        
+        index = p.index
+        self.playthroughIndex = index
         
         # Make lists for every level-specific UI element
         hints = [self.ui.lblHintsLevel1, self.ui.lblHintsLevel2,

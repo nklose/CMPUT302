@@ -19,7 +19,7 @@ class User():
         else:
             self.name = name
         self.playthroughs = []
-
+        
 # A ResultGroup is a group of evaluation results containing the number of 
 # hints, attempts, and seconds (time) for a particular game component.
 class ResultGroup():
@@ -35,6 +35,5 @@ class Playthrough():
         self.average = ResultGroup()
         self.level = []
         self.name = time.strftime("%Y-%m-%d (%H:%M)")
-        self.index = 0
         for i in range(0, 10):
             self.level.append(ResultGroup())
