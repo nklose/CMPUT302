@@ -15,7 +15,6 @@ class StartQT4(QtGui.QMainWindow):
 
         # Force consistent theme and font size
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create("Plastique"))
-        self.setStyleSheet("font-size: 11pt")
 
         # Disable resizing
         self.setFixedSize(self.size())
@@ -32,10 +31,11 @@ class StartQT4(QtGui.QMainWindow):
 
     def loadImage(self):
         imageName = str(QtGui.QFileDialog.getOpenFileName())
-        self.ui.label_imageFile = imageName
-
+        self.ui.label_imageFile.setText(imageName)
+        
+        
     def convertImage(self):
-        imageName = self.ui.label_imageFile
+        imageName = str(self.ui.label_imageFile.text())
         imageTitle = self.ui.lineEdit_title.text()
         if not imageTitle == '':
             filename, extension = os.path.splitext(imageName)
@@ -61,6 +61,7 @@ class StartQT4(QtGui.QMainWindow):
             #convert to png
             validFileName = ''.join(c for c in imageTitle if not c in NonValidChars)
             image.save(os.path.join(directory, validFileName) + ".png", quality=100)
+            QtGui.QMessageBox.information(self, "Image Converted", "The image has been converted and is ready for use on the Sifteo Cubes")
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
